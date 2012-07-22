@@ -152,7 +152,18 @@ class TemplateMatcher(object):
             True if the message matches the template, False otherwise.
 
         """
-        # TODO: Implement me.
+        if type(aMessage) is not dict:
+            return False
+
+        if len(aMessage) < len(aTemplate):
+            return False
+
+        for item in aTemplate.items():
+            if item[0] not in aMessage:
+                return False
+            if item[1] != aMessage[item[0]]:
+                return False
+
         return True
 
 def isTemplate(aTemplate):

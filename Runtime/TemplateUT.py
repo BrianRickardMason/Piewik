@@ -201,9 +201,6 @@ class TemplateMatcher_Match(unittest.TestCase):
     def testMatchListComparisonReturnsFalseOnTheSameLists_ManyElements_DifferentOrder(self):
         self.assertFalse(TemplateMatcher([u'a', u'b', u'ć'], [u'ć', u'b', u'a']).match())
 
-    def testMatchListComparisonReturnsFalseOnTheSameLists_ManyElements_DifferentOrder2(self):
-        self.assertFalse(TemplateMatcher([1, 2, 3], [3,1,2]).match())
-
     def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Once_List(self):
         self.assertTrue(TemplateMatcher([1, [1, 2, 3]], [1, [1, 2, 3]]).match())
 
@@ -245,6 +242,100 @@ class TemplateMatcher_Match(unittest.TestCase):
 
     def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Twice_Mixed(self):
         self.skipTest("Implement me.")
+
+    #
+    # Dictionary.
+    #
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_NoneWithDictionary(self):
+        self.assertFalse(TemplateMatcher(None, {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_BooleanWithDictionary(self):
+        self.assertFalse(TemplateMatcher(True, {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_IntegerWithDictionary(self):
+        self.assertFalse(TemplateMatcher(1, {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_FloatWithDictionary(self):
+        self.assertFalse(TemplateMatcher(1.0, {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_LongWithDictionary(self):
+        self.assertFalse(TemplateMatcher(long(1.0), {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_StringWithDictionary(self):
+        self.assertFalse(TemplateMatcher('bad romance', {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_UnicodeWithDictionary(self):
+        self.assertFalse(TemplateMatcher(u'gżegżółka', {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_TupleWithDictionary(self):
+        self.assertFalse(TemplateMatcher((), {}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnIncoherentTypes_ListWithDictionary(self):
+        self.assertFalse(TemplateMatcher([], {}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Empty(self):
+        self.assertTrue(TemplateMatcher({}, {}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_OneElement(self):
+        self.assertTrue(TemplateMatcher({'foo': 1}, {'foo': 1}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_ManyElements(self):
+        self.assertTrue(TemplateMatcher({'foo': 1, 'bar': 2, 'baz': 4}, {'foo': 1, 'bar': 2, 'baz': 4}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_ManyElements_DifferentOrder(self):
+        self.assertTrue(TemplateMatcher({'foo': 1, 'bar': 2, 'baz': 4}, {'bar': 2, 'foo': 1, 'baz': 4}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Once_Dictionary(self):
+        self.assertTrue(TemplateMatcher({'foo': {'bar': 1}}, {'foo': {'bar': 1}}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Once_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Twice_Dictionary(self):
+        dictionary1 = {'foo': {'bar': {'baz': 1}}}
+        dictionary2 = {'foo': {'bar': {'baz': 1}}}
+        self.assertTrue(TemplateMatcher(dictionary1, dictionary2).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Twice_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_SecondDictionaryIsLonger(self):
+        self.assertFalse(TemplateMatcher({'foo': 1}, {'foo': 1, 'bar': 1}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_SecondDictionaryIsNotEmpty(self):
+        self.assertFalse(TemplateMatcher({}, {'foo': 1}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_OneElement(self):
+        self.assertFalse(TemplateMatcher({'Pimkie': 1}, {'Winkie': 2}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_OneElement_Value(self):
+        self.assertFalse(TemplateMatcher({'Pimkie': 1}, {'Pimkie': 2}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_OneElement_Key(self):
+        self.assertFalse(TemplateMatcher({'Pimkie': 1}, {'Winkie': 1}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_ManyElements(self):
+        self.assertFalse(TemplateMatcher({'foo': 1, 'bar': 2, 'baz': 3}, {'foo': 1, 'bar': 2, 'baz': 4}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Once_Dictionary(self):
+        self.assertFalse(TemplateMatcher({'foo': {'bar': 1}}, {'foo': {'baz': 1}}).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Once_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Twice_Dictionary(self):
+        dictionary1 = {'foo': {'bar': {'baz': 1}}}
+        dictionary2 = {'foo': {'bar': {'baw': 1}}}
+        self.assertFalse(TemplateMatcher(dictionary1, dictionary2).match())
+
+    def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Twice_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchDictionaryComparisonReturnsTrueOnDifferentDictionaries_Subset_EmptySet(self):
+        self.assertTrue(TemplateMatcher({'Flip': 1, 'Flap': 2}, {}).match())
+
+    def testMatchDictionaryComparisonReturnsTrueOnDifferentDictionaries_Subset_NonEmptySet(self):
+        self.assertTrue(TemplateMatcher({'Flip': 1, 'Flap': 2}, {'Flip': 1}).match())
 
 class IsTemplate(unittest.TestCase):
 

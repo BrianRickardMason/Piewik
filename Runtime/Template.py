@@ -31,8 +31,8 @@ class TemplateMatcher(object):
     """Compares a given message with a given template.
 
     Attributes:
-        aMessage:  The message to be verified.
-        aTemplate: The template to be verified against.
+        aMessage:  A message to be verified.
+        aTemplate: A template to be verified against.
         aStarted:  Determines whether the comparison was started or not.
 
     """
@@ -41,8 +41,8 @@ class TemplateMatcher(object):
         """Initializes the matcher.
 
         Arguments:
-            aMessage:  The message to be verified.
-            aTemplate: The template to be verified against.
+            aMessage:  A message to be verified.
+            aTemplate: A template to be verified against.
 
         """
         self.mMessage  = aMessage
@@ -53,8 +53,8 @@ class TemplateMatcher(object):
         """The main function that is in charge of comparison.
 
         Arguments:
-            aMessage:  The message to be verified.
-            aTemplate: The template to be verified against.
+            aMessage:  A message to be verified.
+            aTemplate: A template to be verified against.
 
         Returns:
             True if the message matches the template, False otherwise.
@@ -75,6 +75,9 @@ class TemplateMatcher(object):
         # Matching starts here.
         if aTemplate is None:
             return True
+
+        if isinstance(aTemplate, Matcher):
+            return aTemplate.match(aMessage)
 
         if type(aTemplate) is tuple:
             return self.__matchTuple(aMessage, aTemplate)
@@ -130,14 +133,9 @@ class TemplateMatcher(object):
         if len(aMessage) != len(aTemplate):
             return False
 
-        try:
-            for item in aMessage:
-                if aMessage.index(item) != aTemplate.index(item):
-                    return False
-                if self.match(item, aTemplate[aTemplate.index(item)]) == False:
-                    return False
-        except ValueError:
-            return False
+        for item in aMessage:
+            if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
+                return False
 
         return True
 
@@ -185,7 +183,37 @@ def isTemplate(aTemplate):
        type(aTemplate) is unicode or \
        type(aTemplate) is tuple   or \
        type(aTemplate) is list    or \
-       type(aTemplate) is dict:
+       type(aTemplate) is dict    or \
+       isinstance(aTemplate, Matcher):
         return True
 
     return False
+
+class Matcher(object):
+    """A matcher."""
+
+    def match(self, aMessage):
+        """Verifies the message.
+
+        Arguments:
+            aMessage: A message to be verified.
+
+        Returns:
+            True if the message matches the template, False otherwise.
+
+        """
+        raise NotImplementedError()
+
+class Any(Matcher):
+    def match(self, aMessage):
+        return True
+
+class Empty(Matcher):
+    def match(self, aMessage):
+        try:
+            return len(aMessage) == 0
+        except:
+            return False
+
+ANY   = Any()
+EMPTY = Empty()

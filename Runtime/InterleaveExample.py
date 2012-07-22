@@ -37,19 +37,21 @@ class B(Component):
         # FIXME with threading.Timer implementation we will wait for the timer thread otherwise
         tm.stop()
         
-class Example:
-    def execute(self):
-        a = A("A", True)
-        b = B("B", True)
-        
-        connect(a.testPort, b.testPort)
-        
-        a.start()
-        b.start()
-        
-        a.join()
-        b.join()
+class Example(Testcase):
+    def __init__(self):
+        def execute(self):
+            a = A("A", True)
+            b = B("B", True)
+            
+            connect(a.testPort, b.testPort)
+            
+            a.start()
+            b.start()
+            
+            a.join()
+            b.join()
+            
+        Testcase.__init__(self, execute, Mtc, None);
 
-        
-ex = Example()
-ex.execute()
+c = Control()
+c.execute(Example())

@@ -217,6 +217,36 @@ class Component(threading.Thread):
     def behaviour(self):
         pass
 
+class Mtc(Component):
+    def __init__(self):
+        Component.__init__(self, "MTC", False)
+        self.testcase = lambda : None
+        
+    def setTestcase(self, aTestcase):
+        self.testcase = aTestcase
+        
+    def setParams(self, **aParams):
+        self.params = aParams
+        
+    def run(self):
+        self.testcase(self, **self.params)
+
+class Testcase:
+    def __init__(self, aFunction, aMtcType, aSystemType):
+        self.mtcType = aMtcType
+        self.systemType = aSystemType
+        self.function = aFunction
+        
+class Control():
+    def execute(self, aTestcase, **aParameters):
+        mtc = aTestcase.mtcType()
+        # system = aTestcase.systemType()
+        
+        mtc.setTestcase(aTestcase.function)
+        mtc.setParams(**aParameters)
+        
+        mtc.start()
+        
 def innerFunc():
     callCallable = lambda x : x()
     x = "works"

@@ -25,19 +25,25 @@ class B(Component):
         self.testPort.send("Bar")
         self.log("bai")
         
-class Example:
-    def execute(self):
-        a = A("A", True)
-        b = B("B", True)
-        
-        connect(a.testPort, b.testPort)
-        
-        a.start()
-        b.start()
-        
-        a.join()
-        b.join()
+class Example(Testcase):
+    def __init__(self):
+        def execute(self):
+            a = A("A", True)
+            b = B("B", True)
+            
+            connect(a.testPort, b.testPort)
+            
+            a.start()
+            self.log("A started")
+            b.start()
+            self.log("B started")
+            
+            a.join()
+            self.log("A finished")
+            b.join()
+            self.log("B finished")
+            
+        Testcase.__init__(self, execute, Mtc, None);
 
-        
-ex = Example()
-ex.execute()
+c = Control()
+c.execute(Example())

@@ -106,10 +106,11 @@ class TemplateMatcher(object):
             return False
 
         try:
-            result = True
             for item in aTemplate:
                 result = self.match(aMessage[aTemplate.index(item)], aTemplate[aTemplate.index(item)])
-            return result
+                if result == False:
+                    return False
+            return True
         except IndexError:
             assert False, "This should never happen."
 

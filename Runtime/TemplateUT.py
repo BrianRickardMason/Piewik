@@ -121,7 +121,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher((1, (1, 2, 3)), (1, (1, 2, 3))).match())
 
     def testMatchTupleComparisonReturnsTrueOnTheSameTuples_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher((1, {'a': 1}), (1, {'a': 1})).match())
 
     def testMatchTupleComparisonReturnsTrueOnTheSameTuples_Nested_Twice_Tuple(self):
         tuple1 = (1, ('a', u'ręką', 1.0, (3.4, -1, -2)))
@@ -129,7 +129,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher(tuple1, tuple2).match())
 
     def testMatchTupleComparisonReturnsTrueOnTheSameTuples_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher((1, {'a': [1, 2, 3]}), (1, {'a': [1, 2, 3]})).match())
 
     def testMatchTupleComparisonReturnsFalseOnDifferentTuples_DifferentLenght(self):
         self.assertFalse(TemplateMatcher((1), (1, 2)).match())
@@ -149,7 +149,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher((1, (1, 2, 3)), (1, (1, 3, 3))).match())
 
     def testMatchTupleComparisonReturnsFalseOnDifferentTuples_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher((1, {'a': 1}), (1, {'a': 2})).match())
 
     def testMatchTupleComparisonReturnsFalseOnDifferentTuples_Nested_Twice_Tuple(self):
         tuple1 = (1, ('a', u'ręką', 1.0, (3.4, -1, -2)))
@@ -157,7 +157,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher(tuple1, tuple2).match())
 
     def testMatchTupleComparisonReturnsFalseOnDifferentTuples_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher((1, {'a': [1, 2, 3]}), (1, {'a': [1, 4, 3]})).match())
 
     #
     # List.
@@ -205,7 +205,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher([1, [1, 2, 3]], [1, [1, 2, 3]]).match())
 
     def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher([1, (1, 2, 3)], [1, (1, 2, 3)]).match())
 
     def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Twice_List(self):
         list1 = [1, ['a', u'ręką', 1.0, [3.4, -1, -2]]]
@@ -213,7 +213,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher(list1, list2).match())
 
     def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher([1, (1, 2, {'we': 'wy'})], [1, (1, 2, {'we': 'wy'})]).match())
 
     def testMatchListComparisonReturnsFalseOnDifferentLists_DifferentLenght(self):
         self.assertFalse(TemplateMatcher([1], [1, 2]).match())
@@ -233,7 +233,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher([1, [1, 2, 3]], [1, [1, 3, 3]]).match())
 
     def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher([1, (1, 2, 3)], [1, (1, 3, 3)]).match())
 
     def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Twice_List(self):
         list1 = [1, ['a', u'ręką', 1.0, [3.4, -1, -2]]]
@@ -241,7 +241,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher(list1, list2).match())
 
     def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher([1, (1, 2, {'we': 'wy'})], [1, (1, 2, {'wy': 'we'})]).match())
 
     #
     # Dictionary.
@@ -289,7 +289,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher({'foo': {'bar': 1}}, {'foo': {'bar': 1}}).match())
 
     def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher({'foo': [1, 66]}, {'foo': [1, 66]}).match())
 
     def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Twice_Dictionary(self):
         dictionary1 = {'foo': {'bar': {'baz': 1}}}
@@ -297,7 +297,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertTrue(TemplateMatcher(dictionary1, dictionary2).match())
 
     def testMatchDictionaryComparisonReturnsTrueOnTheSameDictionaries_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertTrue(TemplateMatcher({'foo': [1, 66, (1, 2)]}, {'foo': [1, 66, (1, 2)]}).match())
 
     def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_SecondDictionaryIsLonger(self):
         self.assertFalse(TemplateMatcher({'foo': 1}, {'foo': 1, 'bar': 1}).match())
@@ -321,7 +321,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher({'foo': {'bar': 1}}, {'foo': {'baz': 1}}).match())
 
     def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Once_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher({'foo': [1, 66]}, {'foo': [1, 69]}).match())
 
     def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Twice_Dictionary(self):
         dictionary1 = {'foo': {'bar': {'baz': 1}}}
@@ -329,7 +329,7 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher(dictionary1, dictionary2).match())
 
     def testMatchDictionaryComparisonReturnsFalseOnDifferentDictionaries_Nested_Twice_Mixed(self):
-        self.skipTest("Implement me.")
+        self.assertFalse(TemplateMatcher({'foo': [1, 66, (1, 23)]}, {'foo': [1, 66, (1, 2)]}).match())
 
     def testMatchDictionaryComparisonReturnsTrueOnDifferentDictionaries_Subset_EmptySet(self):
         self.assertTrue(TemplateMatcher({'Flip': 1, 'Flap': 2}, {}).match())

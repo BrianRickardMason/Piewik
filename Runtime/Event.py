@@ -10,11 +10,16 @@ class Action:
     """ Action interface and empty action"""
     def __init__(self):
         self.done = False
+        self.callable = lambda : None
 
     def execute(self):
         self.done = True
-        pass
-        
+        self.callable()
+    
+    def withAction(self, aCallable):
+        self.callable = aCallable
+        return self
+    
     def isDone(self):
         return self.done
 
@@ -52,6 +57,9 @@ class Alternative:
         return False
     
 class Interleave:
+    def __init__(self, aListOfActions):
+        self.actionList = aListOfActions
+        
     def applies(self, aEvent):
         for action in self.actionList:
             if action.isDone():
@@ -59,9 +67,10 @@ class Interleave:
             command = action.applies(aEvent)
             if command :
                 return command
+        return False
                 
     def isDone(self):
-        return allDone()
+        return self.allDone()
         
     def allDone(self):
         for action in self.actionList:
@@ -106,6 +115,49 @@ class PortReceiveExpectation:
         if isinstance(aEvent, PortReceivedEvent):
             return aEvent.port == self.port
 
+class Timer:
+    
+    # TODO stop then start, read etc.
+
+    def __init__(self, aEvQ, aTime = None):
+        self.evQ = aEvQ
+        
+        self.time = aTime
+        # self.startTime = None
+        # self.stopTime = None
+        self.timer = None
+    
+    def __del__(self):
+        if self.timer :
+            self.timer.cancel()
+            self.timer = None
+    
+    def start(self, aTime = None):
+        if aTime:
+            self.time = aTime
+        self.timer = threading.Timer(self.time, self.timeout )
+        self.timer.start()
+    
+    def timeout(self):
+        self.evQ.put(TimeoutEvent(self))
+    
+    def stop(self):
+        self.timer.cancel()
+        self.timer = None
+
+class TimeoutEvent:
+    def __init__(self, aTimer):
+        self.timer = aTimer
+        
+class TimeoutExpectation:
+    def __init__(self, aTimer):
+        self.timer = aTimer
+
+    def match(self, aEvent):
+        if isinstance(aEvent, TimeoutEvent):
+            return aEvent.timer == self.timer
+        
+            
 class EventQueue:
     def __init__(self):
         self.queue = Queue.Queue()
@@ -142,7 +194,10 @@ class Component(threading.Thread):
                 # TODO for repeat and some other stuff 
                 # context passing may be needed
                 cmd.execute()
-                repeat = False
+                repeat = not aAction.isDone()
+                # ^assumes failing on unexpected, needed for current Interleave
+                # implementation. When repeat keyword is handled, can be solved
+                # in a proper way.
             else :
                 print("Unhandled event: " + str(ev))
     
@@ -173,11 +228,23 @@ class B(Component):
         self.testPort = Port(self.evQueue)
         
     def behaviour(self):
+        tm = Timer(self.evQueue)
+        tm.start(3.0)
         self.log("hai")
-        self.executeBlockingAction(Blocking(PortReceiveExpectation(self.testPort)))
-        self.log("received")
+        self.executeBlockingAction(
+            Interleave([
+                Blocking(PortReceiveExpectation(self.testPort))
+                    .withAction( lambda : self.log("received")),
+                Blocking(TimeoutExpectation(tm))
+                    .withAction( lambda : self.log("timeout!"))
+            ])
+        )
+        
         self.testPort.send("Bar")
         self.log("bai")
+        
+        # FIXME with threading.Timer implementation we will wait for the timer thread otherwise
+        tm.stop()
         
 class Example:
     def execute(self):
@@ -195,5 +262,14 @@ class Example:
         
 ex = Example()
 ex.execute()
-            
-            
+
+def innerFunc():
+    callCallable = lambda x : x()
+    x = "works"
+    def test(): 
+        print (x)
+    callCallable(test)
+    x = "still works?"
+    callCallable(test)
+    # f... yeah
+    callCallable(lambda : None)

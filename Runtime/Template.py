@@ -62,7 +62,7 @@ class TemplateMatcher(object):
         """
         assert isTemplate(aTemplate), "The template is not a valid Piewik template."
 
-        # Infering the parameters.
+        # Inferring the parameters.
         if aMessage == None and aTemplate == None:
             # Infer the parameters...
             if self.mStarted == False:
@@ -124,7 +124,21 @@ class TemplateMatcher(object):
             True if the message matches the template, False otherwise.
 
         """
-        # TODO: Implement me.
+        if type(aMessage) is not list:
+            return False
+
+        if len(aMessage) != len(aTemplate):
+            return False
+
+        try:
+            for item in aMessage:
+                if aMessage.index(item) != aTemplate.index(item):
+                    return False
+                if self.match(item, aTemplate[aTemplate.index(item)]) == False:
+                    return False
+        except ValueError:
+            return False
+
         return True
 
     def __matchDictionary(self, aMessage, aTemplate):

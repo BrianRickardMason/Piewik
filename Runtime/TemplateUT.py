@@ -78,6 +78,9 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher('a', u'b').match())
         self.assertFalse(TemplateMatcher(u'a', 'b').match())
 
+    #
+    # Tuple.
+    #
     def testMatchTupleComparisonReturnsFalseOnIncoherentTypes_NoneWithTuple(self):
         self.assertFalse(TemplateMatcher(None, ()).match())
 
@@ -154,6 +157,93 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher(tuple1, tuple2).match())
 
     def testMatchTupleComparisonReturnsFalseOnDifferentTuples_Nested_Twice_Mixed(self):
+        self.skipTest("Implement me.")
+
+    #
+    # List.
+    #
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_NoneWithList(self):
+        self.assertFalse(TemplateMatcher(None, []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_BooleanWithList(self):
+        self.assertFalse(TemplateMatcher(True, []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_IntegerWithList(self):
+        self.assertFalse(TemplateMatcher(1, []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_FloatWithList(self):
+        self.assertFalse(TemplateMatcher(1.0, []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_LongWithList(self):
+        self.assertFalse(TemplateMatcher(long(1.0), []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_StringWithList(self):
+        self.assertFalse(TemplateMatcher('bad romance', []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_UnicodeWithList(self):
+        self.assertFalse(TemplateMatcher(u'gżegżółka', []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_TupleWithList(self):
+        self.assertFalse(TemplateMatcher((), []).match())
+
+    def testMatchListComparisonReturnsFalseOnIncoherentTypes_DictionaryWithList(self):
+        self.assertFalse(TemplateMatcher({}, []).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_Empty(self):
+        self.assertTrue(TemplateMatcher([], []).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_OneElement(self):
+        self.assertTrue(TemplateMatcher([1], [1]).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_ManyElements(self):
+        self.assertTrue(TemplateMatcher([u'a', u'b', u'ć'], [u'a', u'b', u'ć']).match())
+
+    def testMatchListComparisonReturnsFalseOnTheSameLists_ManyElements_DifferentOrder(self):
+        self.assertFalse(TemplateMatcher([u'a', u'b', u'ć'], [u'ć', u'b', u'a']).match())
+
+    def testMatchListComparisonReturnsFalseOnTheSameLists_ManyElements_DifferentOrder2(self):
+        self.assertFalse(TemplateMatcher([1, 2, 3], [3,1,2]).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Once_List(self):
+        self.assertTrue(TemplateMatcher([1, [1, 2, 3]], [1, [1, 2, 3]]).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Once_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Twice_List(self):
+        list1 = [1, ['a', u'ręką', 1.0, [3.4, -1, -2]]]
+        list2 = [1, ['a', u'ręką', 1.0, [3.4, -1, -2]]]
+        self.assertTrue(TemplateMatcher(list1, list2).match())
+
+    def testMatchListComparisonReturnsTrueOnTheSameLists_Nested_Twice_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_DifferentLenght(self):
+        self.assertFalse(TemplateMatcher([1], [1, 2]).match())
+        self.assertFalse(TemplateMatcher([1, 2], [1]).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_OneEmpty(self):
+        self.assertFalse(TemplateMatcher([], [1]).match())
+        self.assertFalse(TemplateMatcher([1], []).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_OneElement(self):
+        self.assertFalse(TemplateMatcher([1], [2]).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_ManyElements(self):
+        self.assertFalse(TemplateMatcher([u'a', u'b', u'ć'], [u'a', u'ą', u'ć']).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Once_List(self):
+        self.assertFalse(TemplateMatcher([1, [1, 2, 3]], [1, [1, 3, 3]]).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Once_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Twice_List(self):
+        list1 = [1, ['a', u'ręką', 1.0, [3.4, -1, -2]]]
+        list2 = [1, ['a', u'ręką', 1.0, [3.6, -1, -2]]]
+        self.assertFalse(TemplateMatcher(list1, list2).match())
+
+    def testMatchListComparisonReturnsFalseOnDifferentLists_Nested_Twice_Mixed(self):
         self.skipTest("Implement me.")
 
 class IsTemplate(unittest.TestCase):

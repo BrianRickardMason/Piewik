@@ -106,8 +106,8 @@ class TemplateMatcher(object):
             return False
 
         try:
-            for item in aTemplate:
-                result = self.match(aMessage[aTemplate.index(item)], aTemplate[aTemplate.index(item)])
+            for item in aMessage:
+                result = self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)])
                 if result == False:
                     return False
             return True

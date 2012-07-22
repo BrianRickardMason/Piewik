@@ -27,6 +27,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+# TODO: Unit tests of matchers.
+# TODO: Complex tests with matchers.
+
 import sys
 import unittest
 

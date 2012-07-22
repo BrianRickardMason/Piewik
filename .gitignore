@@ -29,3 +29,4 @@ pip-log.txt
 # Eclipse specific entries.
 .project
 .pydevproject
+.settings

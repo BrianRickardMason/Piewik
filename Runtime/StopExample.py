@@ -20,23 +20,31 @@ class B(Component):
         
     def behaviour(self):
         tm = Timer(self.evQueue)
-        tm.start(3.0)
-        self.log("hai")
-        
-        def timeoutAction():
-            self.log("timeout!")
-        
-        self.executeBlockingAction(
-            Alternative([
-                Blocking(PortReceiveExpectation(self.testPort))
-                    .withAction( lambda : self.log("received")),
-                Blocking(TimeoutExpectation(tm))
-                    .withAction( timeoutAction )
-            ])
-        )
-        
-        self.testPort.send("Bar")
-        self.log("bai")
+        try:
+            tm.start(4.0)
+            self.log("hai")
+            self.setVerdict(Verdict.PASS)
+            
+            def timeoutAction():
+                self.log("timeout!")
+                self.setVerdict(Verdict.FAIL)
+            
+            self.executeBlockingAction(
+                Alternative([
+                    Blocking(PortReceiveExpectation(self.testPort))
+                        .withAction( lambda : self.log("received")),
+                    Blocking(TimeoutExpectation(tm))
+                        .withAction( timeoutAction )
+                ])
+            )
+            
+            self.testPort.send("Bar")
+            self.log("bai")
+        except:
+            # FIXME with threading.Timer implementation we will wait for the timer thread otherwise
+            self.log("meh")
+            tm.stop()
+            raise
         
         # FIXME with threading.Timer implementation we will wait for the timer thread otherwise
         tm.stop()
@@ -51,6 +59,9 @@ class Example(Testcase):
             
             a.start()
             b.start()
+            
+            b.stop()
+            a.stop()
             
             a.join()
             b.join()

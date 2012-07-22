@@ -177,6 +177,9 @@ class EventQueue:
         
     def get(self):
         return self.queue.get()
+        
+    def empty(self):
+        return self.queue.empty()
             
 class Verdict:
     NONE, PASS, INCONC, FAIL, ERROR = range(5)
@@ -190,33 +193,111 @@ class Verdict:
             self.value = aValue
         return self.value
         
+    def getValue(self):
+        return self.value
+        
     def get(self):
         return copy(self)
         
     def str(self):
         return Verdict.STRING[self.value]
-            
+
+class StopRequestEvent:
+    def __init__(self, aComponent):
+        self.component = aComponent
+
+class StopRequestException(Exception):
+    def __init__(self):
+        Exception.__init__(self)
+        
+class ComponentDoneEvent:
+    def __init__(self, aComponent):
+        self.component = aComponent
+        
+class ComponentDoneExpectation:
+    def __init__(self, aComponent):
+        self.component = aComponent
+
+    def match(self, aEvent):
+        if isinstance(aEvent, ComponentDoneEvent):
+            return aEvent.component == self.component
+        elif aEvent == None:  
+            # isAlive is threading.Thread method
+            # only when thread is not running we now for sure it is done
+            # the ComponentDoneEvent may be handled as well when the thread is about to die
+            if not self.component.isAlive() :
+                return True
+        
+class ComponentContext():
+    def __init__(self, aMtc, aSystem, aParent):
+        self.mtc = aMtc
+        self.system = aSystem
+        self.parent = aParent
+        
 class Component(threading.Thread):
-    def __init__(self, aName, aStayAlive):
+    def __init__(self, aContext, aName, aStayAlive):
         threading.Thread.__init__(self, None, None, aName)
+        self.context = aContext
         self.evQueue = EventQueue()
         self.name = aName
         self.stayAlive = aStayAlive
         self.defaults = []
         self.verdict = Verdict()
         
+    def createContext(self):
+        return ComponentContext(
+            self.context.mtc,
+            self.context.system,
+            self 
+        )
+        
     def setVerdict(self, aVerdict):
         self.verdict.take(aVerdict)
         
     def getVerdict(self):
         return self.verdict.get()
+    
+    def stop(self):
+        self.evQueue.put(StopRequestEvent(self))
         
+    def handleSpecialEvent(self, aEvent):
+        if      isinstance(aEvent, StopRequestEvent):
+            # TODO still, this only happens on blocking actions :/
+            raise StopRequestException()
+            return True
+        elif isinstance(aEvent, ComponentDoneEvent):
+            self.verdict.take(aEvent.component.getVerdict().getValue())
+            return True
+    
+    def handleAllSpecialEvents(self):
+        # now this is messy :/
+        q = []
+        
+        while not self.evQueue.empty():
+            ev = self.evQueue.get()
+            try :
+                if not self.handleSpecialEvent(ev) :
+                    new.append(ev)
+            except StopRequestException:
+                pass
+        
+        for ev in q :
+            self.evQueue.put(ev)
+            
     def executeBlockingAction(self, aAction):
         cmd = None
         repeat = True
         while repeat:
-            ev  = self.evQueue.get()
-            cmd = aAction.applies(ev)
+            # check without event (mostly for surplus .done)
+            cmd = aAction.applies(None)
+            
+            # check with event and the explicit blocking statement
+            if not cmd:
+                ev  = self.evQueue.get()
+                special = self.handleSpecialEvent(ev)
+                cmd = aAction.applies(ev)
+            
+            # check the event with defaults
             if not cmd:
                 # check defaults
                 dCount = len(self.defaults)
@@ -231,22 +312,36 @@ class Component(threading.Thread):
                 repeat = not aAction.isDone()
                 # ^"very blocking", does not handle "no repeat" defaults
                 # When repeat keyword is handled, can be solved in a proper way.
-            else :
+            elif not special :
                 print("Unhandled event: " + str(ev))
     
     def log(self, aString):
         print(self.name + ": " + aString);
     
     def run(self):
-        self.behaviour()
-    
+        try:
+            self.behaviour()
+        except StopRequestException:
+            self.log("Stop requested")
+            pass
+        except:
+            self.log("Unexpected error")
+            self.setVerdict(Verdict.ERROR)
+            raise
+            
+        self.handleAllSpecialEvents()
+        self.context.parent.evQueue.put(ComponentDoneEvent(self))
+            
     def behaviour(self):
         pass
 
 class Mtc(Component):
     def __init__(self):
-        Component.__init__(self, "MTC", False)
+        Component.__init__(self, None, "MTC", False)
         self.testcase = lambda : None
+        
+    def setContext(self, aContext):
+        self.context = aContext
         
     def setTestcase(self, aTestcase):
         self.testcase = aTestcase
@@ -256,6 +351,7 @@ class Mtc(Component):
         
     def run(self):
         self.testcase(self, *self.params)
+        self.handleAllSpecialEvents()
 
 class Testcase:
     def __init__(self, aFunction, aMtcType, aSystemType):
@@ -267,14 +363,15 @@ class Control():
     def execute(self, aTestcase, *aParameters):
         mtc = aTestcase.mtcType()
         # system = aTestcase.systemType()
+        system = None
+        
+        mtc.setContext(ComponentContext(mtc, system, None))
         
         mtc.setTestcase(aTestcase.function)
         mtc.setParams(*aParameters)
         
         mtc.start()
         mtc.join()
-        
-        # TODO incorporate PTC verdicts into final verdict
         
         print("Final verdict = " + mtc.getVerdict().str())
         

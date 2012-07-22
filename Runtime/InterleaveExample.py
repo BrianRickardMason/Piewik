@@ -2,8 +2,8 @@
 from Event import * 
         
 class A(Component):
-    def __init__(self, aName, aStayAlive):
-        Component.__init__(self, aName, aStayAlive)
+    def __init__(self, aContext, aName, aStayAlive):
+        Component.__init__(self, aContext, aName, aStayAlive)
         self.testPort = Port(self.evQueue)
         
     def behaviour(self): 
@@ -14,8 +14,8 @@ class A(Component):
         self.log("bai")
         
 class B(Component):
-    def __init__(self, aName, aStayAlive):
-        Component.__init__(self, aName, aStayAlive)
+    def __init__(self, aContext, aName, aStayAlive):
+        Component.__init__(self, aContext, aName, aStayAlive)
         self.testPort = Port(self.evQueue)
         
     def behaviour(self):
@@ -40,8 +40,8 @@ class B(Component):
 class Example(Testcase):
     def __init__(self):
         def execute(self):
-            a = A("A", True)
-            b = B("B", True)
+            a = A(self.createContext(), "A", True)
+            b = B(self.createContext(), "B", True)
             
             connect(a.testPort, b.testPort)
             

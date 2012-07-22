@@ -156,6 +156,7 @@ class TemplateMatcher(object):
         if len(aMessage) < len(aTemplate):
             return False
 
+        # TODO: Recursion needed.
         for item in aTemplate.items():
             if item[0] not in aMessage:
                 return False

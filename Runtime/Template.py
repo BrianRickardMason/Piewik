@@ -99,9 +99,19 @@ class TemplateMatcher(object):
             True if the message matches the template, False otherwise.
 
         """
+        if type(aMessage) is not tuple:
+            return False
 
-        # TODO: Implement me.
-        return True
+        if len(aMessage) != len(aTemplate):
+            return False
+
+        try:
+            result = True
+            for item in aTemplate:
+                result = self.match(aMessage[aTemplate.index(item)], aTemplate[aTemplate.index(item)])
+            return result
+        except IndexError:
+            assert False, "This should never happen."
 
     def __matchList(self, aMessage, aTemplate):
         """A routine comparing a message with template that is a list.

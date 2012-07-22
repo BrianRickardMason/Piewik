@@ -78,6 +78,56 @@ class TemplateMatcher_Match(unittest.TestCase):
         self.assertFalse(TemplateMatcher('a', u'b').match())
         self.assertFalse(TemplateMatcher(u'a', 'b').match())
 
+    def testMatchReturnsFalseOnIncoherentTypes_NoneWithTuple(self):
+        self.assertFalse(TemplateMatcher(None, ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_BooleanWithTuple(self):
+        self.assertFalse(TemplateMatcher(True, ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_IntegerWithTuple(self):
+        self.assertFalse(TemplateMatcher(1, ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_FloatWithTuple(self):
+        self.assertFalse(TemplateMatcher(1.0, ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_LongWithTuple(self):
+        self.assertFalse(TemplateMatcher(long(1.0), ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_StringWithTuple(self):
+        self.assertFalse(TemplateMatcher('bad romance', ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_UnicodeWithTuple(self):
+        self.assertFalse(TemplateMatcher(u'gżegżółka', ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_ListWithTuple(self):
+        self.assertFalse(TemplateMatcher([], ()).match())
+
+    def testMatchReturnsFalseOnIncoherentTypes_DictionaryWithTuple(self):
+        self.assertFalse(TemplateMatcher({}, ()).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_Empty(self):
+        self.assertTrue(TemplateMatcher((), ()).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_OneElement(self):
+        self.assertTrue(TemplateMatcher((1), (1)).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_ManyElements(self):
+        self.assertTrue(TemplateMatcher((u'a', u'b', u'ć'), (u'a', u'b', u'ć')).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_Nested_Once_Tuple(self):
+        self.assertTrue(TemplateMatcher((1, (1, 2, 3)), (1, (1, 2, 3))).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_Nested_Once_Mixed(self):
+        self.skipTest("Implement me.")
+
+    def testMatchReturnsTrueOnTheSameTuples_Nested_Twice_Tuple(self):
+        tuple1 = (1, ('a', u'ręką', 1.0, (3.4, -1, -2)))
+        tuple2 = (1, ('a', u'ręką', 1.0, (3.4, -1, -2)))
+        self.assertTrue(TemplateMatcher(tuple1, tuple2).match())
+
+    def testMatchReturnsTrueOnTheSameTuples_Nested_Twice_Mixed(self):
+        self.skipTest("Implement me.")
+
 class IsTemplate(unittest.TestCase):
 
     def testIsTemplateReturnsTrueOnBooleanTypes(self):

@@ -33,6 +33,8 @@ class Example(Testcase):
             
             connect(a.testPort, b.testPort)
             
+            self.setVerdict(Verdict.PASS)
+            
             a.start()
             self.log("A started")
             b.start()

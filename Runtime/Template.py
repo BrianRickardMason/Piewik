@@ -28,51 +28,88 @@
 # SUCH DAMAGE.
 
 class TemplateMatcher(object):
-    """Compares a given message with a given template."""
+    """Compares a given message with a given template.
+
+    Attributes:
+        aMessage:  The message to be verified.
+        aTemplate: The template to be verified against.
+        aStarted:  Determines whether the comparison was started or not.
+
+    """
 
     def __init__(self, aMessage, aTemplate):
-        """Initializes the matcher."""
+        """Initializes the matcher.
 
+        Arguments:
+            aMessage:  The message to be verified.
+            aTemplate: The template to be verified against.
+
+        """
         self.mMessage  = aMessage
         self.mTemplate = aTemplate
+        self.mStarted  = False
 
-    def match(self):
+    def match(self, aMessage=None, aTemplate=None):
         """The main function that is in charge of comparison.
 
+        Arguments:
+            aMessage:  The message to be verified.
+            aTemplate: The template to be verified against.
+
         Returns:
             True if the message matches the template, False otherwise.
 
         """
-        assert isTemplate(self.mTemplate), "The template is not a valid Piewik template."
+        assert isTemplate(aTemplate), "The template is not a valid Piewik template."
 
-        if self.mTemplate is None:
+        # Infering the parameters.
+        if aMessage == None and aTemplate == None:
+            # Infer the parameters...
+            if self.mStarted == False:
+                aMessage  = self.mMessage
+                aTemplate = self.mTemplate
+
+                # ...but only for the first time.
+                self.mStarted = True
+
+        # Matching starts here.
+        if aTemplate is None:
             return True
 
-        if type(self.mTemplate) is tuple:
-            return self.__matchTuple()
+        if type(aTemplate) is tuple:
+            return self.__matchTuple(aMessage, aTemplate)
 
-        if type(self.mTemplate) is list:
-            return self.__matchList()
+        if type(aTemplate) is list:
+            return self.__matchList(aMessage, aTemplate)
 
-        if type(self.mTemplate) is dict:
-            return self.__matchDictionary()
+        if type(aTemplate) is dict:
+            return self.__matchDictionary(aMessage, aTemplate)
 
         # Simple types.
-        return self.mMessage == self.mTemplate
+        return aMessage == aTemplate
 
-    def __matchTuple(self):
+    def __matchTuple(self, aMessage, aTemplate):
         """A routine comparing a message with template that is a tuple.
 
+        Arguments:
+            aMessage:  The message to be verified.
+            aTemplate: The template to be verified against.
+
         Returns:
             True if the message matches the template, False otherwise.
 
         """
+
         # TODO: Implement me.
         return True
 
-    def __matchList(self):
+    def __matchList(self, aMessage, aTemplate):
         """A routine comparing a message with template that is a list.
 
+        Arguments:
+            aMessage:  The message to be verified.
+            aTemplate: The template to be verified against.
+
         Returns:
             True if the message matches the template, False otherwise.
 
@@ -80,8 +117,12 @@ class TemplateMatcher(object):
         # TODO: Implement me.
         return True
 
-    def __matchDictionary(self):
+    def __matchDictionary(self, aMessage, aTemplate):
         """A routine comparing a message with template that is a dictionary.
+
+        Arguments:
+            aMessage:  The message to be verified.
+            aTemplate: The template to be verified against.
 
         Returns:
             True if the message matches the template, False otherwise.

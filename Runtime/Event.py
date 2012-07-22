@@ -106,14 +106,23 @@ class PortReceivedEvent:
         self.port = aPort
         self.message = aMessage
         self.sender = aSender
-        
-class PortReceiveExpectation:
-    def __init__(self, aPort):
-        self.port = aPort
 
+class PortReceiveExpectation:
+    def __init__(self, aPort, aMessage = None, aSender = None):
+        self.port = aPort
+        self.message = aMessage
+        self.sender = aSender
+
+    def tMatch(self, aTemplate, aValue):
+        # TODO delegate to matcher
+        return aTemplate == aValue
+        
     def match(self, aEvent):
-        if isinstance(aEvent, PortReceivedEvent):
-            return aEvent.port == self.port
+        if not isinstance(aEvent, PortReceivedEvent):
+            return False
+        return  aEvent.port == self.port \
+            and (self.message is None or self.tMatch(self.message, aEvent.message)) \
+            and (self.sender is None or self.sender == aEvent.sender)
 
 class Timer:
     

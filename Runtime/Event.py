@@ -1,6 +1,7 @@
 
 import Queue
 import threading
+from copy import copy
 
 class EventExpectation:
     def match(self, aEvent):
@@ -177,6 +178,24 @@ class EventQueue:
     def get(self):
         return self.queue.get()
             
+class Verdict:
+    NONE, PASS, INCONC, FAIL, ERROR = range(5)
+    STRING = ['NONE', 'PASS', 'INCONC', 'FAIL', 'ERROR']
+    
+    def __init__(self):
+        self.value = Verdict.NONE
+    
+    def take(self, aValue):
+        if self.value < aValue: 
+            self.value = aValue
+        return self.value
+        
+    def get(self):
+        return copy(self)
+        
+    def str(self):
+        return Verdict.STRING[self.value]
+            
 class Component(threading.Thread):
     def __init__(self, aName, aStayAlive):
         threading.Thread.__init__(self, None, None, aName)
@@ -184,6 +203,13 @@ class Component(threading.Thread):
         self.name = aName
         self.stayAlive = aStayAlive
         self.defaults = []
+        self.verdict = Verdict()
+        
+    def setVerdict(self, aVerdict):
+        self.verdict.take(aVerdict)
+        
+    def getVerdict(self):
+        return self.verdict.get()
         
     def executeBlockingAction(self, aAction):
         cmd = None
@@ -217,6 +243,41 @@ class Component(threading.Thread):
     def behaviour(self):
         pass
 
+class Mtc(Component):
+    def __init__(self):
+        Component.__init__(self, "MTC", False)
+        self.testcase = lambda : None
+        
+    def setTestcase(self, aTestcase):
+        self.testcase = aTestcase
+        
+    def setParams(self, *aParams):
+        self.params = aParams
+        
+    def run(self):
+        self.testcase(self, *self.params)
+
+class Testcase:
+    def __init__(self, aFunction, aMtcType, aSystemType):
+        self.mtcType = aMtcType
+        self.systemType = aSystemType
+        self.function = aFunction
+        
+class Control():
+    def execute(self, aTestcase, *aParameters):
+        mtc = aTestcase.mtcType()
+        # system = aTestcase.systemType()
+        
+        mtc.setTestcase(aTestcase.function)
+        mtc.setParams(*aParameters)
+        
+        mtc.start()
+        mtc.join()
+        
+        # TODO incorporate PTC verdicts into final verdict
+        
+        print("Final verdict = " + mtc.getVerdict().str())
+        
 def innerFunc():
     callCallable = lambda x : x()
     x = "works"

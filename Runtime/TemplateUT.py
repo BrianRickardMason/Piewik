@@ -30,7 +30,53 @@
 import sys
 import unittest
 
+from Template import TemplateMatcher
 from Template import isTemplate
+
+class TemplateMatcher_Match(unittest.TestCase):
+
+    def testMatchReturnsTrueOnNoneType(self):
+        self.assertTrue(TemplateMatcher(None, None).match())
+        self.assertTrue(TemplateMatcher('', None).match())
+        self.assertTrue(TemplateMatcher("", None).match())
+        self.assertTrue(TemplateMatcher(1, None).match())
+        self.assertTrue(TemplateMatcher(1.0, None).match())
+        self.assertTrue(TemplateMatcher((), None).match())
+        self.assertTrue(TemplateMatcher([], None).match())
+        self.assertTrue(TemplateMatcher({}, None).match())
+        self.assertTrue(TemplateMatcher((1, 4), None).match())
+        self.assertTrue(TemplateMatcher([1, 4, 56], None).match())
+
+    def testMatchReturnsTrueOnTheSameSimpleTypes(self):
+        self.assertTrue(TemplateMatcher(True, True).match())
+        self.assertTrue(TemplateMatcher(False, False).match())
+        self.assertTrue(TemplateMatcher(1, 1).match())
+        self.assertTrue(TemplateMatcher(1.0, 1.0).match())
+        self.assertTrue(TemplateMatcher('a', 'a').match())
+        self.assertTrue(TemplateMatcher(u'Zażółć gęślą jaźń!', u'Zażółć gęślą jaźń!').match())
+
+    def testMatchReturnsFalseOnDifferentSimpleTypes(self):
+        self.assertFalse(TemplateMatcher(True, False).match())
+        self.assertFalse(TemplateMatcher(1, 2).match())
+        self.assertFalse(TemplateMatcher(1.0, 2.0).match())
+        self.assertFalse(TemplateMatcher('a', 'b').match())
+        self.assertFalse(TemplateMatcher(u'Zażółć gęślą jaźń!', u'Zażółć gęślą jaźń').match())
+
+    def testMatchReturnsTrueOnTheSameIntegersAndFloatsTypes(self):
+        self.assertTrue(TemplateMatcher(1, 1.0).match())
+        self.assertTrue(TemplateMatcher(1.0, 1).match())
+
+    def testMatchReturnsFalseOnDifferentIntegersAndFloatsTypes(self):
+        self.assertFalse(TemplateMatcher(2, 1.0).match())
+        self.assertFalse(TemplateMatcher(2.0, 1).match())
+
+    def testMatchReturnsTrueOnTheSameStringAndUnicodeTypes(self):
+        self.assertTrue(TemplateMatcher('b', u'b').match())
+        self.assertTrue(TemplateMatcher(u'b', 'b').match())
+
+    def testMatchReturnsFalseOnDifferentStringAndUnicodeTypes(self):
+        self.assertFalse(TemplateMatcher('a', u'b').match())
+        self.assertFalse(TemplateMatcher(u'a', 'b').match())
 
 class IsTemplate(unittest.TestCase):
 

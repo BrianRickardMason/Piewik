@@ -43,9 +43,52 @@ class TemplateMatcher(object):
             True if the message matches the template, False otherwise.
 
         """
+        assert isTemplate(self.mTemplate), "The template is not a valid Piewik template."
+
+        if self.mTemplate is None:
+            return True
+
+        if type(self.mTemplate) is tuple:
+            return self.__matchTuple()
+
+        if type(self.mTemplate) is list:
+            return self.__matchList()
+
+        if type(self.mTemplate) is dict:
+            return self.__matchDictionary()
+
+        # Simple types.
+        return self.mMessage == self.mTemplate
+
+    def __matchTuple(self):
+        """A routine comparing a message with template that is a tuple.
+
+        Returns:
+            True if the message matches the template, False otherwise.
+
+        """
         # TODO: Implement me.
         return True
 
+    def __matchList(self):
+        """A routine comparing a message with template that is a list.
+
+        Returns:
+            True if the message matches the template, False otherwise.
+
+        """
+        # TODO: Implement me.
+        return True
+
+    def __matchDictionary(self):
+        """A routine comparing a message with template that is a dictionary.
+
+        Returns:
+            True if the message matches the template, False otherwise.
+
+        """
+        # TODO: Implement me.
+        return True
 
 def isTemplate(aTemplate):
     """Determines the template's correctness.

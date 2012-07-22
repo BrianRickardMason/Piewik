@@ -108,13 +108,11 @@ class TemplateMatcher(object):
         if len(aMessage) != len(aTemplate):
             return False
 
-        try:
-            for item in aMessage:
-                if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
-                    return False
-            return True
-        except IndexError:
-            assert False, "This should never happen."
+        for item in aMessage:
+            if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
+                return False
+
+        return True
 
     def __matchList(self, aMessage, aTemplate):
         """A routine comparing a message with template that is a list.

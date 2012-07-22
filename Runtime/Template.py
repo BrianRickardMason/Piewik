@@ -107,8 +107,7 @@ class TemplateMatcher(object):
 
         try:
             for item in aMessage:
-                result = self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)])
-                if result == False:
+                if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
                     return False
             return True
         except IndexError:

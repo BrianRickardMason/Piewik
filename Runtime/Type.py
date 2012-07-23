@@ -139,13 +139,44 @@ class Default(TTCN3BuiltInType):
 # User-defined types.
 #
 class TTCN3UserDefinedType(TTCN3Type):
-    pass
+    def __init__(self, aValue, aRestrictions):
+        TTCN3Type.__init__(self)
+
+        self.mValue        = aValue
+        self.mRestrictions = aRestrictions
+
+        for restriction in self.mRestrictions:
+            if restriction.check(self) == False:
+                raise UnmetRestriction()
 
 class Enumeration(TTCN3UserDefinedType):
     pass
 
 class Record(TTCN3UserDefinedType):
-    pass
+    def __init__(self, aValue={}, aRestrictions=[]):
+        if type(aValue) is not dict:
+            raise InvalidTTCN3Type
+
+        for value in aValue.values():
+            if not isinstance(value, TTCN3Type):
+                raise InvalidTTCN3Type
+
+        TTCN3UserDefinedType.__init__(self, aValue, aRestrictions)
+
+    def match(self, aOtherType):
+        if isinstance(aOtherType, Record):
+            if len(self.mValue) != len(aOtherType.mValue):
+                return False
+
+            for key in self.mValue.keys():
+                if not key in aOtherType.mValue:
+                    return False
+                else:
+                    if self.mValue[key].match(aOtherType.mValue[key]) == False:
+                        return False
+            return True
+        else:
+            return False
 
 class Set(TTCN3UserDefinedType):
     pass

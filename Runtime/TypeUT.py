@@ -267,5 +267,60 @@ class Type_Charstring(unittest.TestCase):
         with self.assertRaises(UnmetRestriction):
             Charstring("poiu", [ValueList([Charstring("asdf"), Charstring("qwer"), Charstring("zxcv")])])
 
+class Type_Record(unittest.TestCase):
+
+    # Positive construction.
+    def testRecordCtorConstructsAnEmptyRecord(self):
+        Record()
+
+    def testRecordCtorConstructsANonEmptyRecord(self):
+        Record({'foo': Integer(1), 'bar': Float(123.4)})
+
+    def testRecordCtorConstructsANestedRecord(self):
+        Record({'foo': Integer(1), 'bar': Float(123.4), 'baz': Record({'foo': Charstring("SD")})})
+
+    # Negative construction.
+    def testRecordCtorRaisesOnInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            Record(True)
+
+    def testRecordCtorRaisesOnInvalidType_AnyOfElementsIsAnInvalidPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            Record({'foo': Integer(1), 'bar': Float(True)})
+
+    def testRecordCtorRaisesOnInvalidType_AnyOfElementsIsNotAPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            Record({'foo': Integer(1), 'bar': 12})
+
+    # Positive matching.
+    def testRecordMatchReturnsTrueOnTheSameType(self):
+        record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        record2 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        self.assertTrue(record1.match(record2))
+
+    def testRecordMatchReturnsTrueOnTheSameType_OrderDoesNotMatter(self):
+        record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        record2 = Record({'bar': Float(22.2), 'foo': Integer(1)})
+        self.assertTrue(record1.match(record2))
+
+    # Negative matching.
+    def testRecordMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
+        record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        record2 = Record({'foo': Integer(1), 'bar': Float(24.2)})
+        self.assertFalse(record1.match(record2))
+
+    def testRecordMatchReturnsFalseOnTheSameValues_FirstLonger(self):
+        record1 = Record({'foo': Integer(1), 'bar': Float(22.2), 'baz': Charstring("Exist")})
+        record2 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        self.assertFalse(record1.match(record2))
+
+    def testRecordMatchReturnsFalseOnTheSameValues_SecondLonger(self):
+        record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
+        record2 = Record({'foo': Integer(1), 'bar': Float(22.2), 'baz': Charstring("Exist")})
+        self.assertFalse(record1.match(record2))
+
+    def testRecordMatchReturnsFalseOnDifferentType_Boolean(self):
+        self.assertFalse(Record({'foo': Integer(1), 'bar': Float(22.2)}).match(Boolean(True)))
+
 if __name__ == '__main__':
     unittest.main()

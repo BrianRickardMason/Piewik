@@ -51,15 +51,8 @@ class TTCN3Type(object):
 # Built-in types.
 #
 class TTCN3BuiltInType(TTCN3Type):
-    def __init__(self):
+    def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self)
-
-class Boolean(TTCN3BuiltInType):
-    def __init__(self, aValue, aRestrictions=[]):
-        TTCN3BuiltInType.__init__(self)
-
-        if not isinstance(aValue, bool):
-            raise InvalidTTCN3Type
 
         self.mValue        = aValue
         self.mRestrictions = aRestrictions
@@ -67,6 +60,13 @@ class Boolean(TTCN3BuiltInType):
         for restriction in self.mRestrictions:
             if restriction.check(self) == False:
                 raise UnmetRestriction()
+
+class Boolean(TTCN3BuiltInType):
+    def __init__(self, aValue, aRestrictions=[]):
+        if type(aValue) is not bool:
+            raise InvalidTTCN3Type
+
+        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
 
     def match(self, aOtherType):
         # TODO: On the fly conversion: e.g. integer.
@@ -76,13 +76,43 @@ class Boolean(TTCN3BuiltInType):
             return False
 
 class Integer(TTCN3BuiltInType):
-    pass
+    def __init__(self, aValue, aRestrictions=[]):
+        if type(aValue) is not int:
+            raise InvalidTTCN3Type
+
+        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+
+    def match(self, aOtherType):
+        if isinstance(aOtherType, Integer):
+            return self.mValue == aOtherType.mValue
+        else:
+            return False
 
 class Float(TTCN3BuiltInType):
-    pass
+    def __init__(self, aValue, aRestrictions=[]):
+        if type(aValue) is not float:
+            raise InvalidTTCN3Type
+
+        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+
+    def match(self, aOtherType):
+        if isinstance(aOtherType, Float):
+            return self.mValue == aOtherType.mValue
+        else:
+            return False
 
 class Charstring(TTCN3BuiltInType):
-    pass
+    def __init__(self, aValue, aRestrictions=[]):
+        if type(aValue) is not str:
+            raise InvalidTTCN3Type
+
+        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+
+    def match(self, aOtherType):
+        if isinstance(aOtherType, Charstring):
+            return self.mValue == aOtherType.mValue
+        else:
+            return False
 
 class UniversalCharstring(TTCN3BuiltInType):
     pass
@@ -166,7 +196,10 @@ class ValueList(TTCN3Restriction):
         return False
 
     def __checkApplicability(self, aType):
-        if isinstance(aType, Boolean):
+        if isinstance(aType, Boolean   ) or \
+           isinstance(aType, Integer   ) or \
+           isinstance(aType, Float     ) or \
+           isinstance(aType, Charstring)    :
             return True
         else:
             return False

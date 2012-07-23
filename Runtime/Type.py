@@ -217,6 +217,7 @@ class ValueList(TTCN3Restriction):
         self.mAllowedValues = aAllowedValues
 
     def check(self, aType):
+        # TODO: Assertion if any of allowed values is not an instance of TTCN3Type.
         if self.__checkApplicability(aType) == False:
             raise UnapplicableRestriction
 

@@ -241,7 +241,7 @@ class Type_Charstring(unittest.TestCase):
         self.assertFalse(Charstring("qwert").match(Integer(1)))
 
     def testCharstringMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Charstring("qwert").match(Float(1.0))) #ASD
+        self.assertFalse(Charstring("qwert").match(Float(1.0)))
 
     # Positive restrictions.
     def testCharstringCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):

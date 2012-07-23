@@ -59,7 +59,7 @@ class TTCN3BuiltInType(TTCN3Type):
 
         for restriction in self.mRestrictions:
             if restriction.check(self) == False:
-                raise UnmetRestriction()
+                raise UnmetRestriction
 
 class Boolean(TTCN3BuiltInType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -147,7 +147,7 @@ class TTCN3UserDefinedType(TTCN3Type):
 
         for restriction in self.mRestrictions:
             if restriction.check(self) == False:
-                raise UnmetRestriction()
+                raise UnmetRestriction
 
 class Enumeration(TTCN3UserDefinedType):
     pass

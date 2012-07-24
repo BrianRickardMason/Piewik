@@ -198,10 +198,94 @@ class SetOf(TTCN3UserDefinedType):
     pass
 
 #
+# Special symbols.
+#
+class TTCN3SpecialSymbolType(TTCN3Type):
+    def __init__(self, aValue, aRestrictions):
+        TTCN3Type.__init__(self)
+
+        self.mValue        = aValue
+        self.mRestrictions = aRestrictions
+
+        for restriction in self.mRestrictions:
+            if restriction.check(self) == False:
+                raise UnmetRestriction
+
+#
+# Special symbols used instead of values.
+#
+class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
+    pass
+
+class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    def __init__(self, aValue=None, aRestrictions=None):
+        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, TTCN3Type):
+            return True
+        else:
+            return False
+
+class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Omit(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class List(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Complement(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Range(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Superset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Subset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Pattern(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+#
+# Special symbols used inside values.
+#
+class TTCN3SpecialSymbolUsedInsideAValueType(TTCN3SpecialSymbolType):
+    pass
+
+class AnySingleElement(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+class AnyNumberOfElements(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+class Permutation(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+#
+# Special symbols which describe attributes of values.
+#
+class TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType(TTCN3SpecialSymbolType):
+    pass
+
+# TODO: Introduce namespaces.
+class SpecialSymbolLength(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
+    pass
+
+class Present(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
+    pass
+
+#
 # Restrictions - exceptions.
 #
 class UnapplicableRestriction(Exception):
     pass
+
+# TODO: Different type restrictions and template restrictions.
 
 #
 # Restrictions.

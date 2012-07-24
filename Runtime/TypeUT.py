@@ -52,20 +52,20 @@ class Type_Boolean(unittest.TestCase):
 
     # Positive matching.
     def testBooleanMatchReturnsTrueOnTheSameType(self):
-        self.assertTrue(Boolean(True).match(Boolean(True)))
+        self.assertTrue(Boolean(True) == Boolean(True))
 
     # Negative matching.
     def testBooleanMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
-        self.assertFalse(Boolean(True).match(Boolean(False)))
+        self.assertFalse(Boolean(True) == Boolean(False))
 
     def testBooleanMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Boolean(True).match(Integer(1)))
+        self.assertFalse(Boolean(True) == Integer(1))
 
     def testBooleanMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Boolean(True).match(Float(1.0)))
+        self.assertFalse(Boolean(True) == Float(1.0))
 
     def testBooleanMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Boolean(True).match(Charstring("qwe")))
+        self.assertFalse(Boolean(True) == Charstring("qwe"))
 
     # Positive restrictions.
     def testBooleanCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
@@ -107,20 +107,20 @@ class Type_Integer(unittest.TestCase):
 
     # Positive matching.
     def testIntegerMatchReturnsTrueOnTheSameType(self):
-        self.assertTrue(Integer(1).match(Integer(1)))
+        self.assertTrue(Integer(1) == Integer(1))
 
     # Negative matching.
     def testIntegerMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
-        self.assertFalse(Integer(1).match(Integer(2)))
+        self.assertFalse(Integer(1) == Integer(2))
 
     def testIntegerMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Integer(1).match(Boolean(False)))
+        self.assertFalse(Integer(1) == Boolean(False))
 
     def testIntegerMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Integer(1).match(Float(1.0)))
+        self.assertFalse(Integer(1) == Float(1.0))
 
     def testIntegerMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Integer(1).match(Charstring("poi")))
+        self.assertFalse(Integer(1) == Charstring("poi"))
 
     # Positive restrictions.
     def testIntegerCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
@@ -167,20 +167,20 @@ class Type_Float(unittest.TestCase):
 
     # Positive matching.
     def testFloatMatchReturnsTrueOnTheSameType(self):
-        self.assertTrue(Float(1.0).match(Float(1.0)))
+        self.assertTrue(Float(1.0) == Float(1.0))
 
     # Negative matching.
     def testFloatMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
-        self.assertFalse(Float(1.0).match(Float(2.0)))
+        self.assertFalse(Float(1.0) == Float(2.0))
 
     def testFloatMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Float(1.0).match(Boolean(False)))
+        self.assertFalse(Float(1.0) == Boolean(False))
 
     def testFloatMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Float(1.0).match(Integer(1)))
+        self.assertFalse(Float(1.0) == Integer(1))
 
     def testFloatMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Float(1.0).match(Charstring("qwe")))
+        self.assertFalse(Float(1.0) == Charstring("qwe"))
 
     # Positive restrictions.
     def testFloatCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
@@ -227,20 +227,20 @@ class Type_Charstring(unittest.TestCase):
 
     # Positive matching.
     def testCharstringMatchReturnsTrueOnTheSameType(self):
-        self.assertTrue(Charstring("qwert").match(Charstring("qwert")))
+        self.assertTrue(Charstring("qwert") == Charstring("qwert"))
 
     # Negative matching.
     def testCharstringMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
-        self.assertFalse(Charstring("qwert").match(Charstring("yuiop")))
+        self.assertFalse(Charstring("qwert") == Charstring("yuiop"))
 
     def testCharstringMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Charstring("qwert").match(Boolean(False)))
+        self.assertFalse(Charstring("qwert") == Boolean(False))
 
     def testCharstringMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Charstring("qwert").match(Integer(1)))
+        self.assertFalse(Charstring("qwert") == Integer(1))
 
     def testCharstringMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Charstring("qwert").match(Float(1.0)))
+        self.assertFalse(Charstring("qwert") == Float(1.0))
 
     # Positive restrictions.
     def testCharstringCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
@@ -295,31 +295,31 @@ class Type_Record(unittest.TestCase):
     def testRecordMatchReturnsTrueOnTheSameType(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'foo': Integer(1), 'bar': Float(22.2)})
-        self.assertTrue(record1.match(record2))
+        self.assertTrue(record1 == record2)
 
     def testRecordMatchReturnsTrueOnTheSameType_OrderDoesNotMatter(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'bar': Float(22.2), 'foo': Integer(1)})
-        self.assertTrue(record1.match(record2))
+        self.assertTrue(record1 == record2)
 
     # Negative matching.
     def testRecordMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'foo': Integer(1), 'bar': Float(24.2)})
-        self.assertFalse(record1.match(record2))
+        self.assertFalse(record1 == record2)
 
     def testRecordMatchReturnsFalseOnTheSameValues_FirstLonger(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2), 'baz': Charstring("Exist")})
         record2 = Record({'foo': Integer(1), 'bar': Float(22.2)})
-        self.assertFalse(record1.match(record2))
+        self.assertFalse(record1 == record2)
 
     def testRecordMatchReturnsFalseOnTheSameValues_SecondLonger(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'foo': Integer(1), 'bar': Float(22.2), 'baz': Charstring("Exist")})
-        self.assertFalse(record1.match(record2))
+        self.assertFalse(record1 == record2)
 
     def testRecordMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Record({'foo': Integer(1), 'bar': Float(22.2)}).match(Boolean(True)))
+        self.assertFalse(Record({'foo': Integer(1), 'bar': Float(22.2)}) == Boolean(True))
 
 if __name__ == '__main__':
     unittest.main()

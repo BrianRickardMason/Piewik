@@ -68,10 +68,10 @@ class Boolean(TTCN3BuiltInType):
 
         TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
 
-    def match(self, aOtherType):
+    def __eq__(self, aOther):
         # TODO: On the fly conversion: e.g. integer.
-        if isinstance(aOtherType, Boolean):
-            return self.mValue == aOtherType.mValue
+        if isinstance(aOther, Boolean):
+            return self.mValue == aOther.mValue
         else:
             return False
 
@@ -82,9 +82,9 @@ class Integer(TTCN3BuiltInType):
 
         TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
 
-    def match(self, aOtherType):
-        if isinstance(aOtherType, Integer):
-            return self.mValue == aOtherType.mValue
+    def __eq__(self, aOther):
+        if isinstance(aOther, Integer):
+            return self.mValue == aOther.mValue
         else:
             return False
 
@@ -95,9 +95,9 @@ class Float(TTCN3BuiltInType):
 
         TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
 
-    def match(self, aOtherType):
-        if isinstance(aOtherType, Float):
-            return self.mValue == aOtherType.mValue
+    def __eq__(self, aOther):
+        if isinstance(aOther, Float):
+            return self.mValue == aOther.mValue
         else:
             return False
 
@@ -108,9 +108,9 @@ class Charstring(TTCN3BuiltInType):
 
         TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
 
-    def match(self, aOtherType):
-        if isinstance(aOtherType, Charstring):
-            return self.mValue == aOtherType.mValue
+    def __eq__(self, aOther):
+        if isinstance(aOther, Charstring):
+            return self.mValue == aOther.mValue
         else:
             return False
 
@@ -163,16 +163,17 @@ class Record(TTCN3UserDefinedType):
 
         TTCN3UserDefinedType.__init__(self, aValue, aRestrictions)
 
-    def match(self, aOtherType):
-        if isinstance(aOtherType, Record):
-            if len(self.mValue) != len(aOtherType.mValue):
+    def __eq__(self, aOther):
+        if isinstance(aOther, Record):
+            if len(self.mValue) != len(aOther.mValue):
                 return False
 
             for key in self.mValue.keys():
-                if not key in aOtherType.mValue:
+                if not key in aOther.mValue:
                     return False
                 else:
-                    if self.mValue[key].match(aOtherType.mValue[key]) == False:
+                    # TODO: Check !=.
+                    if (self.mValue[key] == aOther.mValue[key]) == False:
                         return False
             return True
         else:
@@ -222,7 +223,7 @@ class ValueList(TTCN3Restriction):
             raise UnapplicableRestriction
 
         for allowedValue in self.mAllowedValues:
-            if allowedValue.match(aType):
+            if allowedValue == aType:
                 return True
 
         return False

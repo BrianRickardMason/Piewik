@@ -27,192 +27,25 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-class TemplateMatcher(object):
-    """Compares a given message with a given template.
+from Type import InvalidTTCN3Type
+from Type import TTCN3Type
+
+class Template(object):
+    """Represents a TTCN3 template.
 
     Attributes:
-        aMessage:  A message to be verified.
-        aTemplate: A template to be verified against.
-        aStarted:  Determines whether the comparison was started or not.
+        mValue: The value of the template.
 
     """
 
-    def __init__(self, aMessage, aTemplate):
-        """Initializes the matcher.
+    def __init__(self, aValue):
+        """Initializes a TTCN3 template.
 
         Arguments:
-            aMessage:  A message to be verified.
-            aTemplate: A template to be verified against.
+            aValue: The value of the template.
 
         """
-        self.mMessage  = aMessage
-        self.mTemplate = aTemplate
-        self.mStarted  = False
-
-    def match(self, aMessage=None, aTemplate=None):
-        """The main function that is in charge of comparison.
-
-        Arguments:
-            aMessage:  A message to be verified.
-            aTemplate: A template to be verified against.
-
-        Returns:
-            True if the message matches the template, False otherwise.
-
-        """
-        assert isTemplate(aTemplate), "The template is not a valid Piewik template."
-
-        # Inferring the parameters.
-        if aMessage == None and aTemplate == None:
-            # Infer the parameters...
-            if self.mStarted == False:
-                aMessage  = self.mMessage
-                aTemplate = self.mTemplate
-
-                # ...but only for the first time.
-                self.mStarted = True
-
-        # Matching starts here.
-        if aTemplate is None:
-            return True
-
-        if isinstance(aTemplate, Matcher):
-            return aTemplate.match(aMessage)
-
-        if type(aTemplate) is tuple:
-            return self.__matchTuple(aMessage, aTemplate)
-
-        if type(aTemplate) is list:
-            return self.__matchList(aMessage, aTemplate)
-
-        if type(aTemplate) is dict:
-            return self.__matchDictionary(aMessage, aTemplate)
-
-        # Simple types.
-        return aMessage == aTemplate
-
-    def __matchTuple(self, aMessage, aTemplate):
-        """A routine comparing a message with template that is a tuple.
-
-        Arguments:
-            aMessage:  The message to be verified.
-            aTemplate: The template to be verified against.
-
-        Returns:
-            True if the message matches the template, False otherwise.
-
-        """
-        if type(aMessage) is not tuple:
-            return False
-
-        if len(aMessage) != len(aTemplate):
-            return False
-
-        for item in aMessage:
-            if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
-                return False
-
-        return True
-
-    def __matchList(self, aMessage, aTemplate):
-        """A routine comparing a message with template that is a list.
-
-        Arguments:
-            aMessage:  The message to be verified.
-            aTemplate: The template to be verified against.
-
-        Returns:
-            True if the message matches the template, False otherwise.
-
-        """
-        if type(aMessage) is not list:
-            return False
-
-        if len(aMessage) != len(aTemplate):
-            return False
-
-        for item in aMessage:
-            if self.match(aMessage[aMessage.index(item)], aTemplate[aMessage.index(item)]) == False:
-                return False
-
-        return True
-
-    def __matchDictionary(self, aMessage, aTemplate):
-        """A routine comparing a message with template that is a dictionary.
-
-        Arguments:
-            aMessage:  The message to be verified.
-            aTemplate: The template to be verified against.
-
-        Returns:
-            True if the message matches the template, False otherwise.
-
-        """
-        if type(aMessage) is not dict:
-            return False
-
-        if len(aMessage) < len(aTemplate):
-            return False
-
-        # TODO: Recursion needed.
-        for item in aTemplate.items():
-            if item[0] not in aMessage:
-                return False
-            if item[1] != aMessage[item[0]]:
-                return False
-
-        return True
-
-def isTemplate(aTemplate):
-    """Determines the template's correctness.
-
-    Arguments:
-        aTemplate: The template to be verified.
-
-    Returns:
-        True if the template is a correct Piewik template, False otherwise.
-
-    """
-    if aTemplate       is None    or \
-       type(aTemplate) is bool    or \
-       type(aTemplate) is int     or \
-       type(aTemplate) is float   or \
-       type(aTemplate) is long    or \
-       type(aTemplate) is str     or \
-       type(aTemplate) is unicode or \
-       type(aTemplate) is tuple   or \
-       type(aTemplate) is list    or \
-       type(aTemplate) is dict    or \
-       isinstance(aTemplate, Matcher):
-        return True
-
-    return False
-
-class Matcher(object):
-    """A matcher."""
-
-    def match(self, aMessage):
-        """Verifies the message.
-
-        Arguments:
-            aMessage: A message to be verified.
-
-        Returns:
-            True if the message matches the template, False otherwise.
-
-        """
-        raise NotImplementedError()
-
-class Any(Matcher):
-    def match(self, aMessage):
-        return True
-
-class Empty(Matcher):
-    def match(self, aMessage):
-        try:
-            return len(aMessage) == 0
-        except:
-            return False
-
-ANY   = Any()
-EMPTY = Empty()
+        if isinstance(aValue, TTCN3Type):
+            self.mValue = aValue
+        else:
+            raise InvalidTTCN3Type

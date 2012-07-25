@@ -48,6 +48,9 @@ class InvalidTTCN3Type(TypeSystemException):
 class InvalidTTCN3TypeInComparison(InvalidTTCN3Type):
     pass
 
+class InvalidTTCN3Type_NotAMessageType(TypeSystemException):
+    pass
+
 class UnmetRestriction(TypeSystemException):
     pass
 

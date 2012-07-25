@@ -28,6 +28,7 @@
 # SUCH DAMAGE.
 
 from Type import InvalidTTCN3Type
+from Type import InvalidTTCN3Type_NotAMessageType
 from Type import TTCN3Type
 
 class Message(object):
@@ -46,6 +47,9 @@ class Message(object):
 
         """
         if isinstance(aValue, TTCN3Type):
+            if aValue.isMessageType() == False:
+                raise InvalidTTCN3Type_NotAMessageType
+
             self.mValue = aValue
         else:
             raise InvalidTTCN3Type

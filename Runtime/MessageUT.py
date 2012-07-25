@@ -43,5 +43,13 @@ class Message_Ctor(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Message(True)
 
+    def testCtorRaisesExceptionForInvalidPiewikType_NotAMessageType(self):
+        with self.assertRaises(InvalidTTCN3Type_NotAMessageType):
+            Message(Any())
+
+    def testCtorRaisesExceptionForInvalidPiewikType_NotAMessageTypeInAStructuredType(self):
+        with self.assertRaises(InvalidTTCN3Type_NotAMessageType):
+            Message(Record({'foo': Charstring("bar"), 'bar': AnyOrNone()}))
+
 if __name__ == '__main__':
     unittest.main()

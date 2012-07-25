@@ -38,6 +38,12 @@ class Template_Ctor(unittest.TestCase):
     def testCtorCreatesATemplateWithValidPiewikType(self):
         Template(Boolean(True))
 
+    def testCtorCreatesATemplateWithValidPiewikType_TemplateType(self):
+        Template(Any())
+
+    def testCtorCreatesATemplateWithValidPiewikType_TemplateTypeInAStructuredType(self):
+        Template(Any())
+
     # Negative construction.
     def testCtorRaisesExceptionForInvalidPiewikType(self):
         with self.assertRaises(InvalidTTCN3Type):

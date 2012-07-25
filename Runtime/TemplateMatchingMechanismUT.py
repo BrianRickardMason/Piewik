@@ -48,20 +48,30 @@ class TemplateMatchingMechanism_Integer_Integer(unittest.TestCase):
 
     # Successful matching.
     def testReturnsTrueOnTheSameValues_Positive(self):
-        self.assertTrue(TemplateMatchingMechanism(Message(Integer(1)), Template(Integer(1)))())
+        message  = Message (Integer(1))
+        template = Template(Integer(1))
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
 
     def testReturnsTrueOnTheSameValues_Negative(self):
-        self.assertTrue(TemplateMatchingMechanism(Message(Integer(-1)), Template(Integer(-1)))())
+        message  = Message (Integer(-1))
+        template = Template(Integer(-1))
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
 
     def testReturnsTrueOnTheSameValues_Zero(self):
-        self.assertTrue(TemplateMatchingMechanism(Message(Integer(0)), Template(Integer(0)))())
+        message  = Message (Integer(0))
+        template = Template(Integer(0))
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
 
     # Unsuccessful matching.
     def testReturnsFalseOnDifferentValues_Positive(self):
-        self.assertFalse(TemplateMatchingMechanism(Message(Integer(1)), Template(Integer(2)))())
+        message  = Message (Integer(1))
+        template = Template(Integer(2))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
 
     def testReturnsFalseOnDifferentValues_Negative(self):
-        self.assertFalse(TemplateMatchingMechanism(Message(Integer(-1)), Template(Integer(-2)))())
+        message  = Message (Integer(-1))
+        template = Template(Integer(-2))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
 
 class TemplateMatchingMechanism_Float_Float(unittest.TestCase):
     pass
@@ -76,7 +86,51 @@ class TemplateMatchingMechanism_Enumeration_Enumeration(unittest.TestCase):
     pass
 
 class TemplateMatchingMechanism_Record_Record(unittest.TestCase):
-    pass
+
+    # Successful matching.
+    def testReturnsTrueOnTheSameValues_EmptyRecord(self):
+        self.assertTrue(TemplateMatchingMechanism(Message(Record({})), Template(Record({})))())
+
+    def testReturnsTrueOnTheSameValues_NonEmptyRecord(self):
+        message  = Message (Record({'foo': Boolean(True)}))
+        template = Template(Record({'foo': Boolean(True)}))
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsTrueOnTheSameValues_NestedRecord(self):
+        message  = Message (Record({'foo': Integer(1), 'bar': Float(123.4), 'baz': Record({'foo': Charstring("SD")})}))
+        template = Template(Record({'foo': Integer(1), 'bar': Float(123.4), 'baz': Record({'foo': Charstring("SD")})}))
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
+
+    # Unsuccessful matching.
+    def testReturnsFalseOnDifferentValues_EmptyRecord_NonEmptyRecord(self):
+        message  = Message (Record({}))
+        template = Template(Record({'foo': Integer(1)}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsFalseOnDifferentValues_NonEmptyRecord_EmptyRecord(self):
+        message  = Message (Record({'foo': Integer(1)}))
+        template = Template(Record({}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsFalseOnDifferentValues_NonEmptyRecord_DifferentValue(self):
+        message  = Message (Record({'foo': Boolean(False)}))
+        template = Template(Record({'foo': Boolean(True )}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsFalseOnDifferentValues_NonEmptyRecord_DifferentKey(self):
+        message  = Message (Record({'fob': Boolean(True)}))
+        template = Template(Record({'foo': Boolean(True)}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsFalseOnDifferentValues_NestedRecord_DifferentValue(self):
+        message  = Message (Record({'foo': Integer(1), 'bar': Float(123.3), 'baz': Record({'foo': Charstring("SD")})}))
+        template = Template(Record({'foo': Integer(1), 'bar': Float(123.4), 'baz': Record({'foo': Charstring("SD")})}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
+    def testReturnsFalseOnDifferentValues_NestedRecord_DifferentKey(self):
+        message  = Message (Record({'foo': Integer(1), 'bar': Float(123.3), 'baz': Record({'foo': Charstring("SD")})}))
+        template = Template(Record({'foo': Integer(1), 'bar': Float(123.3), 'baz': Record({'fos': Charstring("SD")})}))
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
 
 class TemplateMatchingMechanism_Set_Set(unittest.TestCase):
     pass
@@ -106,10 +160,14 @@ class TemplateMatchingMechanism_Integer_SpecialType(unittest.TestCase):
 
     # Successful matching.
     def testReturnsTrueOnTheSameValues_Any(self):
-        self.assertTrue(TemplateMatchingMechanism(Message(Integer(1)), Template(Any()))())
+        message  = Message (Integer(1))
+        template = Template(Any())
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
 
     def testReturnsTrueOnTheSameValues_AnyOrNone(self):
-        self.assertTrue(TemplateMatchingMechanism(Message(Integer(1)), Template(AnyOrNone()))())
+        message  = Message (Integer(1))
+        template = Template(AnyOrNone())
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
 
     def testReturnsTrueOnTheSameValues_Omit(self):
         self.skipTest("Implement me.")

@@ -60,6 +60,9 @@ class TTCN3Type(object):
             if restriction.check(self) == False:
                 raise UnmetRestriction
 
+    def __ne__(self, aOther):
+        return not self.__eq__(aOther)
+
     def value(self):
         return self.mValue
 
@@ -173,8 +176,7 @@ class Record(TTCN3StructuredType):
                 if not key in aOther.mValue:
                     return False
                 else:
-                    # TODO: Check !=.
-                    if (self.mValue[key] == aOther.mValue[key]) == False:
+                    if self.mValue[key] != aOther.mValue[key]:
                         return False
             return True
         else:

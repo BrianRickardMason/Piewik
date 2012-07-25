@@ -28,12 +28,24 @@
 # SUCH DAMAGE.
 
 #
-# Types - exceptions.
+# Piewik type system. An attempt to reach a type system as close to the TTCN-3's one as possible.
 #
-class InvalidTTCN3Type(Exception):
+# A selected approach is to try to implement as many TTCN-3's features (template matching mechanism, subtyping,
+# template restrictions, etc.) inside the type system.
+#
+# TODO: Type conversion (e.g. in comparison).
+#
+
+#
+# Exceptions used in Piewik type system.
+#
+class TypeSystemException(Exception):
     pass
 
-class UnmetRestriction(Exception):
+class InvalidTTCN3Type(TypeSystemException):
+    pass
+
+class UnmetRestriction(TypeSystemException):
     pass
 
 #
@@ -51,13 +63,17 @@ class TTCN3Type(object):
     def value(self):
         return self.mValue
 
-#
-# Built-in types.
-#
 class TTCN3SimpleType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 
+class TTCN3StructuredType(TTCN3Type):
+    def __init__(self, aValue, aRestrictions):
+        TTCN3Type.__init__(self, aValue, aRestrictions)
+
+#
+# Simple types.
+#
 class Boolean(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
         if type(aValue) is not bool:
@@ -66,7 +82,6 @@ class Boolean(TTCN3SimpleType):
         TTCN3SimpleType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
-        # TODO: On the fly conversion: e.g. integer.
         if isinstance(aOther, Boolean):
             return self.mValue == aOther.mValue
         else:
@@ -133,16 +148,12 @@ class Default(TTCN3SimpleType):
     pass
 
 #
-# User-defined types.
+# Structured types.
 #
-class TTCN3UserDefinedType(TTCN3Type):
-    def __init__(self, aValue, aRestrictions):
-        TTCN3Type.__init__(self, aValue, aRestrictions)
-
-class Enumeration(TTCN3UserDefinedType):
+class Enumeration(TTCN3StructuredType):
     pass
 
-class Record(TTCN3UserDefinedType):
+class Record(TTCN3StructuredType):
     def __init__(self, aValue={}, aRestrictions=[]):
         if type(aValue) is not dict:
             raise InvalidTTCN3Type
@@ -151,7 +162,7 @@ class Record(TTCN3UserDefinedType):
             if not isinstance(value, TTCN3Type):
                 raise InvalidTTCN3Type
 
-        TTCN3UserDefinedType.__init__(self, aValue, aRestrictions)
+        TTCN3StructuredType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Record):
@@ -169,22 +180,22 @@ class Record(TTCN3UserDefinedType):
         else:
             return False
 
-class Set(TTCN3UserDefinedType):
+class Set(TTCN3StructuredType):
     pass
 
-class Union(TTCN3UserDefinedType):
+class Union(TTCN3StructuredType):
     pass
 
-class RecordOf(TTCN3UserDefinedType):
+class RecordOf(TTCN3StructuredType):
     pass
 
-class Array(TTCN3UserDefinedType):
+class Array(TTCN3StructuredType):
     pass
 
-class MultiDimensionalArray(TTCN3UserDefinedType):
+class MultiDimensionalArray(TTCN3StructuredType):
     pass
 
-class SetOf(TTCN3UserDefinedType):
+class SetOf(TTCN3StructuredType):
     pass
 
 #

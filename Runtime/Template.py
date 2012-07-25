@@ -49,3 +49,12 @@ class Template(object):
             self.mValue = aValue
         else:
             raise InvalidTTCN3Type
+
+    def value(self):
+        """Returns the value of the template.
+
+        Returns:
+            The value of the template.
+
+        """
+        return self.mValue

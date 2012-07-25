@@ -110,6 +110,8 @@ class Integer(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, TTCN3SpecialSymbolType):
+            return aOther == self
         else:
             return False
 

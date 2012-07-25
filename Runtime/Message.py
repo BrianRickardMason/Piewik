@@ -49,3 +49,12 @@ class Message(object):
             self.mValue = aValue
         else:
             raise InvalidTTCN3Type
+
+    def value(self):
+        """Returns the value of the message.
+
+        Returns:
+            The value of the message.
+
+        """
+        return self.mValue

@@ -26,3 +26,19 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
+
+from functools import partial
+
+from Message  import Message
+from Template import Template
+
+class TemplateMatchingMechanism(object):
+    def __init__(self, aMessage, aTemplate):
+        self.mMessage  = aMessage
+        self.mTemplate = aTemplate
+
+    def __call__(self):
+        if self.mMessage.value() == self.mTemplate.value():
+            return True
+        else:
+            return False

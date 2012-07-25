@@ -83,6 +83,12 @@ class TTCN3SimpleType(TTCN3MessageType):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 
+    def __eq__(self, aOther):
+        if isinstance(aOther, TTCN3SpecialSymbolType):
+            return aOther == self
+        else:
+            raise InvalidTTCN3TypeInComparison
+
 class TTCN3StructuredType(TTCN3MessageType):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
@@ -100,10 +106,8 @@ class Boolean(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Boolean):
             return self.mValue == aOther.mValue
-        elif isinstance(aOther, TTCN3SpecialSymbolType):
-            return aOther == self
         else:
-            raise InvalidTTCN3TypeInComparison
+            return TTCN3SimpleType.__eq__(self, aOther)
 
 class Integer(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -115,10 +119,8 @@ class Integer(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
             return self.mValue == aOther.mValue
-        elif isinstance(aOther, TTCN3SpecialSymbolType):
-            return aOther == self
         else:
-            raise InvalidTTCN3TypeInComparison
+            return TTCN3SimpleType.__eq__(self, aOther)
 
 class Float(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -130,10 +132,8 @@ class Float(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
             return self.mValue == aOther.mValue
-        elif isinstance(aOther, TTCN3SpecialSymbolType):
-            return aOther == self
         else:
-            raise InvalidTTCN3TypeInComparison
+            return TTCN3SimpleType.__eq__(self, aOther)
 
 class Charstring(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -145,10 +145,8 @@ class Charstring(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
             return self.mValue == aOther.mValue
-        elif isinstance(aOther, TTCN3SpecialSymbolType):
-            return aOther == self
         else:
-            raise InvalidTTCN3TypeInComparison
+            return TTCN3SimpleType.__eq__(self, aOther)
 
 class UniversalCharstring(TTCN3SimpleType):
     pass

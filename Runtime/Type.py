@@ -66,11 +66,21 @@ class TTCN3Type(object):
     def value(self):
         return self.mValue
 
-class TTCN3SimpleType(TTCN3Type):
+class TTCN3MessageType(TTCN3Type):
+    """Represents all types that might be used in a message or in a template."""
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 
-class TTCN3StructuredType(TTCN3Type):
+class TTCN3TemplateType(TTCN3Type):
+    """Represents all types that might be used in a template."""
+    def __init__(self, aValue, aRestrictions):
+        TTCN3Type.__init__(self, aValue, aRestrictions)
+
+class TTCN3SimpleType(TTCN3MessageType):
+    def __init__(self, aValue, aRestrictions):
+        TTCN3Type.__init__(self, aValue, aRestrictions)
+
+class TTCN3StructuredType(TTCN3MessageType):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 

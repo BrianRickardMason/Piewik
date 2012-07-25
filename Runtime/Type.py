@@ -74,10 +74,16 @@ class TTCN3MessageType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 
+    def isMessageType(self):
+        return True
+
 class TTCN3TemplateType(TTCN3Type):
     """Represents all types that might be used in a template."""
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
+
+    def isMessageType(self):
+        return False
 
 class TTCN3SimpleType(TTCN3MessageType):
     def __init__(self, aValue, aRestrictions):
@@ -201,6 +207,13 @@ class Record(TTCN3StructuredType):
         else:
             return False
 
+    def isMessageType(self):
+        for key in self.mValue.keys():
+            if self.mValue[key].isMessageType() == False:
+                return False
+
+        return True
+
 class Set(TTCN3StructuredType):
     pass
 
@@ -222,7 +235,7 @@ class SetOf(TTCN3StructuredType):
 #
 # Special symbols.
 #
-class TTCN3SpecialSymbolType(TTCN3Type):
+class TTCN3SpecialSymbolType(TTCN3TemplateType):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self, aValue, aRestrictions)
 

@@ -441,6 +441,16 @@ class Type_Record(unittest.TestCase):
     def testRecordMatchReturnsFalseOnDifferentType_Boolean(self):
         self.assertFalse(Record({'foo': Integer(1), 'bar': Float(22.2)}) == Boolean(True))
 
+    # Is message type.
+    def testIsMessageTypeReturnsTrue_MessageTypes(self):
+        self.assertTrue(Record({'foo': Integer(1), 'bar': Float(22.2)}).isMessageType())
+
+    def testIsMessageTypeReturnsFalse_MessageAndTemplateTypes(self):
+        self.assertFalse(Record({'foo': Integer(1), 'bar': Any()}).isMessageType())
+
+    def testIsMessageTypeReturnsFalse_TemplateTypes(self):
+        self.assertFalse(Record({'foo': Any(), 'bar': AnyOrNone()}).isMessageType())
+
 class Type_Any(unittest.TestCase):
 
     # Successful construction.

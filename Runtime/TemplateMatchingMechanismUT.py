@@ -70,7 +70,7 @@ class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Charst
     pass
 
 #
-# Structred types without special types in template.
+# Structured types without special types in template.
 #
 class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Boolean(unittest.TestCase):
     pass

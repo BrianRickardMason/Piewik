@@ -41,10 +41,10 @@ from Type                      import *
 #
 # Simple types without special types in template.
 #
-class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Boolean(unittest.TestCase):
+class TemplateMatchingMechanism_Boolean_Boolean(unittest.TestCase):
     pass
 
-class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Integer(unittest.TestCase):
+class TemplateMatchingMechanism_Integer_Integer(unittest.TestCase):
 
     # Successful matching.
     def testReturnsTrueOnTheSameValues_Positive(self):
@@ -63,25 +63,46 @@ class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Intege
     def testReturnsFalseOnDifferentValues_Negative(self):
         self.assertFalse(TemplateMatchingMechanism(Message(Integer(-1)), Template(Integer(-2)))())
 
-class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Float(unittest.TestCase):
+class TemplateMatchingMechanism_Float_Float(unittest.TestCase):
     pass
 
-class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Charstring(unittest.TestCase):
+class TemplateMatchingMechanism_Charstring_Charstring(unittest.TestCase):
     pass
 
 #
 # Structured types without special types in template.
 #
-class TemplateMatchingMechanism_SimpleTypes_WithoutSpecialTypesInTemplate_Boolean(unittest.TestCase):
+class TemplateMatchingMechanism_Enumeration_Enumeration(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_Record_Record(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_Set_Set(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_Union_Union(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_RecordOf_RecordOf(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_Array_Array(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_MultiDimensionalArray_MultiDimensionalArray(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_SetOf_SetOf(unittest.TestCase):
     pass
 
 #
 # Simple types with special types in template.
 #
-class TemplateMatchingMechanism_SimpleTypes_WithSpecialTypesInTemplate_Boolean(unittest.TestCase):
+class TemplateMatchingMechanism_Boolean_SpecialType(unittest.TestCase):
     pass
 
-class TemplateMatchingMechanism_SimpleTypes_WithSpecialTypesInTemplate_Integer(unittest.TestCase):
+class TemplateMatchingMechanism_Integer_SpecialType(unittest.TestCase):
 
     # Successful matching.
     def testReturnsTrueOnTheSameValues_Any(self):
@@ -111,12 +132,10 @@ class TemplateMatchingMechanism_SimpleTypes_WithSpecialTypesInTemplate_Integer(u
     def testReturnsTrueOnTheSameValues_Pattern(self):
         self.skipTest("Implement me.")
 
-    # Unsuccessful matching.
-
-class TemplateMatchingMechanism_SimpleTypes_WithSpecialTypesInTemplate_Float(unittest.TestCase):
+class TemplateMatchingMechanism_Float_SpecialType(unittest.TestCase):
     pass
 
-class TemplateMatchingMechanism_SimpleTypes_WithSpecialTypesInTemplate_Charstring(unittest.TestCase):
+class TemplateMatchingMechanism_Charstring_SpecialType(unittest.TestCase):
     pass
 
 #

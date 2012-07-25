@@ -40,9 +40,13 @@ class UnmetRestriction(Exception):
 # Types.
 #
 class TTCN3Type(object):
-    def __init__(self):
-        self.mValue        = None
-        self.mRestrictions = []
+    def __init__(self, aValue, aRestrictions):
+        self.mValue        = aValue
+        self.mRestrictions = aRestrictions
+
+        for restriction in self.mRestrictions:
+            if restriction.check(self) == False:
+                raise UnmetRestriction
 
     def value(self):
         return self.mValue
@@ -52,14 +56,7 @@ class TTCN3Type(object):
 #
 class TTCN3SimpleType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
-        TTCN3Type.__init__(self)
-
-        self.mValue        = aValue
-        self.mRestrictions = aRestrictions
-
-        for restriction in self.mRestrictions:
-            if restriction.check(self) == False:
-                raise UnmetRestriction
+        TTCN3Type.__init__(self, aValue, aRestrictions)
 
 class Boolean(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -140,14 +137,7 @@ class Default(TTCN3SimpleType):
 #
 class TTCN3UserDefinedType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
-        TTCN3Type.__init__(self)
-
-        self.mValue        = aValue
-        self.mRestrictions = aRestrictions
-
-        for restriction in self.mRestrictions:
-            if restriction.check(self) == False:
-                raise UnmetRestriction
+        TTCN3Type.__init__(self, aValue, aRestrictions)
 
 class Enumeration(TTCN3UserDefinedType):
     pass
@@ -202,14 +192,7 @@ class SetOf(TTCN3UserDefinedType):
 #
 class TTCN3SpecialSymbolType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
-        TTCN3Type.__init__(self)
-
-        self.mValue        = aValue
-        self.mRestrictions = aRestrictions
-
-        for restriction in self.mRestrictions:
-            if restriction.check(self) == False:
-                raise UnmetRestriction
+        TTCN3Type.__init__(self, aValue, aRestrictions)
 
 #
 # Special symbols used instead of values.

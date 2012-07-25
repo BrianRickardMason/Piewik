@@ -33,11 +33,11 @@ from Type import *
 
 class Type_Boolean(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testBooleanCtorSetsValueProperly(self):
         self.assertEqual(Boolean(True).value(), True)
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testBooleanCtorRaisesOnInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3Type):
             Boolean(1)
@@ -50,24 +50,27 @@ class Type_Boolean(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Boolean("Charstring")
 
-    # Positive matching.
+    # Successful matching.
     def testBooleanMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Boolean(True) == Boolean(True))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testBooleanMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Boolean(True) == Boolean(False))
 
     def testBooleanMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Boolean(True) == Integer(1))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Integer(1)
 
     def testBooleanMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Boolean(True) == Float(1.0))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Float(1.0)
 
     def testBooleanMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Boolean(True) == Charstring("qwe"))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Charstring("qwe")
 
-    # Positive restrictions.
+    # Successful restrictions.
     def testBooleanCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
         try:
             Boolean(True, [ValueList([Boolean(True)])])
@@ -81,18 +84,18 @@ class Type_Boolean(unittest.TestCase):
         except:
             self.fail()
 
-    # Negative restrictions.
+    # Unsuccessful restrictions.
     def testBooleanCtorRaisesOnInvalidRestriction_ValueList_OneElement(self):
         with self.assertRaises(UnmetRestriction):
             Boolean(True, [ValueList([Boolean(False)])])
 
 class Type_Integer(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testIntegerCtorSetsValueProperly(self):
         self.assertEqual(Integer(1).value(), 1)
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testIntegerCtorRaisesOnInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3Type):
             Integer(True)
@@ -105,24 +108,27 @@ class Type_Integer(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Integer("Charstring")
 
-    # Positive matching.
+    # Successful matching.
     def testIntegerMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Integer(1) == Integer(1))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testIntegerMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Integer(1) == Integer(2))
 
     def testIntegerMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Integer(1) == Boolean(False))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Integer(1) == Boolean(False)
 
     def testIntegerMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Integer(1) == Float(1.0))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Integer(1) == Float(1.0)
 
     def testIntegerMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Integer(1) == Charstring("poi"))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Integer(1) == Charstring("poi")
 
-    # Positive restrictions.
+    # Successful restrictions.
     def testIntegerCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
         try:
             Integer(1, [ValueList([Integer(1)])])
@@ -137,7 +143,7 @@ class Type_Integer(unittest.TestCase):
         except:
             self.fail()
 
-    # Negative restrictions.
+    # Unsuccessful restrictions.
     def testIntegerCtorRaisesOnInvalidRestriction_ValueList_OneElement(self):
         with self.assertRaises(UnmetRestriction):
             Integer(1, [ValueList([Integer(2)])])
@@ -148,11 +154,11 @@ class Type_Integer(unittest.TestCase):
 
 class Type_Float(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testFloatCtorSetsValueProperly(self):
         self.assertEqual(Float(1.0).value(), 1.0)
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testFloatCtorRaisesOnInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3Type):
             Float(True)
@@ -165,24 +171,27 @@ class Type_Float(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Float("Charstring")
 
-    # Positive matching.
+    # Successful matching.
     def testFloatMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Float(1.0) == Float(1.0))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testFloatMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Float(1.0) == Float(2.0))
 
     def testFloatMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Float(1.0) == Boolean(False))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Boolean(False)
 
     def testFloatMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Float(1.0) == Integer(1))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Integer(1)
 
     def testFloatMatchReturnsFalseOnDifferentType_Charstring(self):
-        self.assertFalse(Float(1.0) == Charstring("qwe"))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Charstring("qwe")
 
-    # Positive restrictions.
+    # Successful restrictions.
     def testFloatCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
         try:
             Float(1.0, [ValueList([Float(1.0)])])
@@ -197,7 +206,7 @@ class Type_Float(unittest.TestCase):
         except:
             self.fail()
 
-    # Negative restrictions.
+    # Unsuccessful restrictions.
     def testFloatCtorRaisesOnInvalidRestriction_ValueList_OneElement(self):
         with self.assertRaises(UnmetRestriction):
             Float(1.0, [ValueList([Float(2.0)])])
@@ -208,11 +217,11 @@ class Type_Float(unittest.TestCase):
 
 class Type_Charstring(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testCharstringCtorSetsValueProperly(self):
         self.assertEqual(Charstring("tyrytyr").value(), "tyrytyr")
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testCharstringCtorRaisesOnInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3Type):
             Charstring(True)
@@ -225,24 +234,27 @@ class Type_Charstring(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Charstring(1.0)
 
-    # Positive matching.
+    # Successful matching.
     def testCharstringMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Charstring("qwert") == Charstring("qwert"))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testCharstringMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Charstring("qwert") == Charstring("yuiop"))
 
     def testCharstringMatchReturnsFalseOnDifferentType_Boolean(self):
-        self.assertFalse(Charstring("qwert") == Boolean(False))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Charstring("qwert") == Boolean(False)
 
     def testCharstringMatchReturnsFalseOnDifferentType_Integer(self):
-        self.assertFalse(Charstring("qwert") == Integer(1))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Charstring("qwert") == Integer(1)
 
     def testCharstringMatchReturnsFalseOnDifferentType_Float(self):
-        self.assertFalse(Charstring("qwert") == Float(1.0))
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Charstring("qwert") == Float(1.0)
 
-    # Positive restrictions.
+    # Successful restrictions.
     def testCharstringCtorAllowsCreatingObjectWithRestriction_ValueList_OneElement(self):
         try:
             Charstring("asdf", [ValueList([Charstring("asdf")])])
@@ -257,7 +269,7 @@ class Type_Charstring(unittest.TestCase):
         except:
             self.fail()
 
-    # Negative restrictions.
+    # Unsuccessful restrictions.
     def testCharstringCtorRaisesOnInvalidRestriction_ValueList_OneElement(self):
         with self.assertRaises(UnmetRestriction):
             Charstring("asdf", [ValueList([Charstring("sdf")])])
@@ -268,7 +280,7 @@ class Type_Charstring(unittest.TestCase):
 
 class Type_Record(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testRecordCtorConstructsAnEmptyRecord(self):
         Record()
 
@@ -278,7 +290,7 @@ class Type_Record(unittest.TestCase):
     def testRecordCtorConstructsANestedRecord(self):
         Record({'foo': Integer(1), 'bar': Float(123.4), 'baz': Record({'foo': Charstring("SD")})})
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testRecordCtorRaisesOnInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3Type):
             Record(True)
@@ -291,7 +303,7 @@ class Type_Record(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3Type):
             Record({'foo': Integer(1), 'bar': 12})
 
-    # Positive matching.
+    # Successful matching.
     def testRecordMatchReturnsTrueOnTheSameType(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'foo': Integer(1), 'bar': Float(22.2)})
@@ -302,7 +314,7 @@ class Type_Record(unittest.TestCase):
         record2 = Record({'bar': Float(22.2), 'foo': Integer(1)})
         self.assertTrue(record1 == record2)
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testRecordMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         record1 = Record({'foo': Integer(1), 'bar': Float(22.2)})
         record2 = Record({'foo': Integer(1), 'bar': Float(24.2)})
@@ -323,16 +335,16 @@ class Type_Record(unittest.TestCase):
 
 class Type_Any(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testAnyCtorContstructsAnAnyValue(self):
         Any()
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testAnyCtorRaisesExceptionIfParametersArePassed(self):
         with self.assertRaises(InvalidTTCN3Type):
             Any(False, True)
 
-    # Positive matching.
+    # Successful matching.
     def testAnyReturnsTrueOnMatchingWithAValue_Any(self):
         self.assertTrue(Any() == Any())
 
@@ -348,23 +360,23 @@ class Type_Any(unittest.TestCase):
     def testAnyReturnsTrueOnMatchingWithAValue_Charstring(self):
         self.assertTrue(Any() == Charstring("qwer"))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testAnyRaisesExceptionOnInvalidPiewikType(self):
         with self.assertRaises(InvalidTTCN3Type):
             Any() == True
 
 class Type_AnyOrNone(unittest.TestCase):
 
-    # Positive construction.
+    # Successful construction.
     def testAnyOrNoneCtorContstructsAnAnyOrNoneValue(self):
         AnyOrNone()
 
-    # Negative construction.
+    # Unsuccessful construction.
     def testAnyOrNoneCtorRaisesExceptionIfParametersArePassed(self):
         with self.assertRaises(InvalidTTCN3Type):
             AnyOrNone(False, True)
 
-    # Positive matching.
+    # Successful matching.
     def testAnyOrNoneReturnsTrueOnMatchingWithAValue_AnyOrNone(self):
         self.assertTrue(AnyOrNone() == AnyOrNone())
 
@@ -380,7 +392,7 @@ class Type_AnyOrNone(unittest.TestCase):
     def testAnyOrNoneReturnsTrueOnMatchingWithAValue_Charstring(self):
         self.assertTrue(AnyOrNone() == Charstring("qwer"))
 
-    # Negative matching.
+    # Unsuccessful matching.
     def testAnyOrNoneRaisesExceptionOnInvalidPiewikType(self):
         with self.assertRaises(InvalidTTCN3Type):
             AnyOrNone() == True

@@ -45,6 +45,9 @@ class TypeSystemException(Exception):
 class InvalidTTCN3Type(TypeSystemException):
     pass
 
+class InvalidTTCN3TypeInComparison(InvalidTTCN3Type):
+    pass
+
 class UnmetRestriction(TypeSystemException):
     pass
 
@@ -98,7 +101,7 @@ class Boolean(TTCN3SimpleType):
         if isinstance(aOther, Boolean):
             return self.mValue == aOther.mValue
         else:
-            return False
+            raise InvalidTTCN3TypeInComparison
 
 class Integer(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -113,7 +116,7 @@ class Integer(TTCN3SimpleType):
         elif isinstance(aOther, TTCN3SpecialSymbolType):
             return aOther == self
         else:
-            return False
+            raise InvalidTTCN3TypeInComparison
 
 class Float(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -126,7 +129,7 @@ class Float(TTCN3SimpleType):
         if isinstance(aOther, Float):
             return self.mValue == aOther.mValue
         else:
-            return False
+            raise InvalidTTCN3TypeInComparison
 
 class Charstring(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
@@ -139,7 +142,7 @@ class Charstring(TTCN3SimpleType):
         if isinstance(aOther, Charstring):
             return self.mValue == aOther.mValue
         else:
-            return False
+            raise InvalidTTCN3TypeInComparison
 
 class UniversalCharstring(TTCN3SimpleType):
     pass

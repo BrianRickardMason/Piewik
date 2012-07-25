@@ -233,7 +233,46 @@ class MultiDimensionalArray(TTCN3StructuredType):
     pass
 
 class SetOf(TTCN3StructuredType):
-    pass
+    def __init__(self, aType, aValues=[], aRestrictions=[]):
+        # FIXME: Add the validation as well.
+#        if not isinstance(aType, TTCN3Type):
+#            raise InvalidTTCN3Type
+
+        self.mType = aType
+
+        if type(aValues) is not list:
+            raise InvalidTTCN3Type
+
+        for value in aValues:
+            if not isinstance(value, TTCN3Type):
+                raise InvalidTTCN3Type
+            else:
+                if not isinstance(value, self.mType) and \
+                   not isinstance(value, Any       ) and \
+                   not isinstance(value, AnyOrNone )     :
+                    raise InvalidTTCN3Type
+
+        TTCN3StructuredType.__init__(self, aValues, aRestrictions)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, SetOf):
+            if len(self.mValue) != len(aOther.mValue):
+                return False
+
+            for item in self.mValue:
+                if self.mValue[self.mValue.index(item)] != aOther.mValue[self.mValue.index(item)]:
+                    return False
+
+            return True
+        else:
+            return False
+
+    def isMessageType(self):
+        for value in self.mValue:
+            if not value.isMessageType():
+                return False
+
+        return True
 
 #
 # Special symbols.

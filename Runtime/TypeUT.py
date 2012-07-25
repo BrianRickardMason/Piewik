@@ -451,6 +451,70 @@ class Type_Record(unittest.TestCase):
     def testIsMessageTypeReturnsFalse_TemplateTypes(self):
         self.assertFalse(Record({'foo': Any(), 'bar': AnyOrNone()}).isMessageType())
 
+class Type_SetOf(unittest.TestCase):
+
+    # Successful construction.
+    def testSetOfCtorConstructsAnEmptySetOf(self):
+        self.skipTest("Not implemented yet!")
+        SetOf(Boolean)
+
+    def testSetOfCtorConstructsANonEmptySetOf(self):
+        SetOf(Boolean, [Boolean(True)])
+
+    # Unsuccessful construction.
+    def testSetOfCtorRaisesExceptionOnANestedSetOf(self):
+        SetOf(SetOf(Boolean))
+
+    def testSetOfCtorRaisesOnInvalidType_Boolean(self):
+        self.skipTest("Not implemented yet!")
+        with self.assertRaises(InvalidTTCN3Type):
+            SetOf(True)
+
+    def testSetOfCtorRaisesOnInvalidType_AnyOfElementsIsAnInvalidPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            SetOf(Integer, [Integer(1), Integer(3), Integer(4), 3])
+
+    def testSetOfCtorRaisesOnInvalidType_AnyOfElementsIsNotADeclaredType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            SetOf(Integer, [Integer(1), Integer(3), Float(1.0)])
+
+    # Successful matching.
+    def testRecordMatchReturnsTrueOnTheSameType_EmptySetOf(self):
+        setOf1 = SetOf(Integer)
+        setOf2 = SetOf(Integer)
+        self.assertTrue(setOf1 == setOf2)
+
+    def testRecordMatchReturnsTrueOnTheSameType_NonEmptySetOf(self):
+        setOf1 = SetOf(Integer, [Integer(1), Integer(3), Integer(-1)])
+        setOf2 = SetOf(Integer, [Integer(1), Integer(3), Integer(-1)])
+        self.assertTrue(setOf1 == setOf2)
+
+    # Unsuccessful matching.
+    def testRecordMatchReturnsFalseOnADifferentValue_EmptySetOfAndNonEmptySetOf(self):
+        setOf1 = SetOf(Integer)
+        setOf2 = SetOf(Integer, [Integer(1)])
+        self.assertFalse(setOf1 == setOf2)
+
+    def testRecordMatchReturnsFalseOnADifferentValue_NonEmptySetOfAndNonEmptySetOf(self):
+        setOf1 = SetOf(Integer, [Integer(1), Integer(3), Integer(-1)])
+        setOf2 = SetOf(Integer, [Integer(1), Integer(3), Integer(1)])
+        self.assertFalse(setOf1 == setOf2)
+
+    def testRecordMatchReturnsFalseOnADifferentValue_EmptySetOfAndNonEmptySetOf_SequenceMatters(self):
+        setOf1 = SetOf(Integer, [Integer(1), Integer(3), Integer(-1)])
+        setOf2 = SetOf(Integer, [Integer(1), Integer(-1), Integer(3)])
+        self.assertFalse(setOf1 == setOf2)
+
+    # Is message type.
+    def testIsMessageTypeReturnsTrue_MessageTypes(self):
+        self.assertTrue(SetOf(Integer, [Integer(1), Integer(3), Integer(-1)]).isMessageType())
+
+    def testIsMessageTypeReturnsFalse_MessageAndTemplateTypes(self):
+        self.assertFalse(SetOf(Integer, [Integer(1), Integer(3), Any()]).isMessageType())
+
+    def testIsMessageTypeReturnsFalse_TemplateTypes(self):
+        self.assertFalse(SetOf(Integer, [Any(), Any(), AnyOrNone()]).isMessageType())
+
 class Type_Any(unittest.TestCase):
 
     # Successful construction.

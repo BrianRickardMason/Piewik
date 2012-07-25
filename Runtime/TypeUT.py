@@ -54,6 +54,33 @@ class Type_Boolean(unittest.TestCase):
     def testBooleanMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Boolean(True) == Boolean(True))
 
+    def testBooleanMatchReturnsTrueOnASpecialType_Any(self):
+        self.assertTrue(Boolean(True) == Any())
+
+    def testBooleanMatchReturnsTrueOnASpecialType_AnyOrNone(self):
+        self.assertTrue(Boolean(True) == AnyOrNone())
+
+    def testBooleanComparedToSpecialType_Omit(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_List(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_Complement(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_Range(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_Superset(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_Subset(self):
+        self.skipTest("Implement me.")
+
+    def testBooleanComparedToSpecialType_Pattern(self):
+        self.skipTest("Implement me.")
+
     # Unsuccessful matching.
     def testBooleanMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Boolean(True) == Boolean(False))
@@ -111,6 +138,33 @@ class Type_Integer(unittest.TestCase):
     # Successful matching.
     def testIntegerMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Integer(1) == Integer(1))
+
+    def testIntegerMatchReturnsTrueOnASpecialType_Any(self):
+        self.assertTrue(Integer(2) == Any())
+
+    def testIntegerMatchReturnsTrueOnASpecialType_AnyOrNone(self):
+        self.assertTrue(Integer(-5) == AnyOrNone())
+
+    def testIntegerComparedToSpecialType_Omit(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_List(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_Complement(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_Range(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_Superset(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_Subset(self):
+        self.skipTest("Implement me.")
+
+    def testIntegerComparedToSpecialType_Pattern(self):
+        self.skipTest("Implement me.")
 
     # Unsuccessful matching.
     def testIntegerMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
@@ -175,6 +229,33 @@ class Type_Float(unittest.TestCase):
     def testFloatMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Float(1.0) == Float(1.0))
 
+    def testFloatMatchReturnsTrueOnASpecialType_Any(self):
+        self.assertTrue(Float(4.5) == Any())
+
+    def testFloatMatchReturnsTrueOnASpecialType_AnyOrNone(self):
+        self.assertTrue(Float(22.22) == AnyOrNone())
+
+    def testFloatComparedToSpecialType_Omit(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_List(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_Complement(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_Range(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_Superset(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_Subset(self):
+        self.skipTest("Implement me.")
+
+    def testFloatComparedToSpecialType_Pattern(self):
+        self.skipTest("Implement me.")
+
     # Unsuccessful matching.
     def testFloatMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):
         self.assertFalse(Float(1.0) == Float(2.0))
@@ -237,6 +318,33 @@ class Type_Charstring(unittest.TestCase):
     # Successful matching.
     def testCharstringMatchReturnsTrueOnTheSameType(self):
         self.assertTrue(Charstring("qwert") == Charstring("qwert"))
+
+    def testCharstringMatchReturnsTrueOnASpecialType_Any(self):
+        self.assertTrue(Charstring("True") == Any())
+
+    def testCharstringMatchReturnsTrueOnASpecialType_AnyOrNone(self):
+        self.assertTrue(Charstring("False") == AnyOrNone())
+
+    def testCharstringComparedToSpecialType_Omit(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_List(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_Complement(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_Range(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_Superset(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_Subset(self):
+        self.skipTest("Implement me.")
+
+    def testCharstringComparedToSpecialType_Pattern(self):
+        self.skipTest("Implement me.")
 
     # Unsuccessful matching.
     def testCharstringMatchReturnsFalseOnTheSameTypeAndDifferentValue(self):

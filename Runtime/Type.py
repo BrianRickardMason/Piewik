@@ -100,6 +100,8 @@ class Boolean(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Boolean):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, TTCN3SpecialSymbolType):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -128,6 +130,8 @@ class Float(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, TTCN3SpecialSymbolType):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -141,6 +145,8 @@ class Charstring(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, TTCN3SpecialSymbolType):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 

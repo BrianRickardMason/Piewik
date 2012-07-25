@@ -214,17 +214,29 @@ class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
     pass
 
 class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    def __init__(self, aValue=None, aRestrictions=None):
+    def __init__(self, aValue=None, aRestrictions=[]):
+        if aValue is not None or aRestrictions != []:
+            raise InvalidTTCN3Type
+        TTCN3SpecialSymbolType.__init__(self, aValue, aRestrictions)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, TTCN3Type):
+            # TODO: Empty values.
+            return True
+        else:
+            raise InvalidTTCN3Type
+
+class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    def __init__(self, aValue=None, aRestrictions=[]):
+        if aValue is not None or aRestrictions != []:
+            raise InvalidTTCN3Type
         TTCN3SpecialSymbolType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, TTCN3Type):
             return True
         else:
-            return False
-
-class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
+            raise InvalidTTCN3Type
 
 class Omit(TTCN3SpecialSymbolUsedInsteadOfAValueType):
     pass

@@ -321,5 +321,69 @@ class Type_Record(unittest.TestCase):
     def testRecordMatchReturnsFalseOnDifferentType_Boolean(self):
         self.assertFalse(Record({'foo': Integer(1), 'bar': Float(22.2)}) == Boolean(True))
 
+class Type_Any(unittest.TestCase):
+
+    # Positive construction.
+    def testAnyCtorContstructsAnAnyValue(self):
+        Any()
+
+    # Negative construction.
+    def testAnyCtorRaisesExceptionIfParametersArePassed(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            Any(False, True)
+
+    # Positive matching.
+    def testAnyReturnsTrueOnMatchingWithAValue_Any(self):
+        self.assertTrue(Any() == Any())
+
+    def testAnyReturnsTrueOnMatchingWithAValue_Boolean(self):
+        self.assertTrue(Any() == Boolean(True))
+
+    def testAnyReturnsTrueOnMatchingWithAValue_Integer(self):
+        self.assertTrue(Any() == Integer(1))
+
+    def testAnyReturnsTrueOnMatchingWithAValue_Float(self):
+        self.assertTrue(Any() == Float(1.0))
+
+    def testAnyReturnsTrueOnMatchingWithAValue_Charstring(self):
+        self.assertTrue(Any() == Charstring("qwer"))
+
+    # Negative matching.
+    def testAnyRaisesExceptionOnInvalidPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            Any() == True
+
+class Type_AnyOrNone(unittest.TestCase):
+
+    # Positive construction.
+    def testAnyOrNoneCtorContstructsAnAnyOrNoneValue(self):
+        AnyOrNone()
+
+    # Negative construction.
+    def testAnyOrNoneCtorRaisesExceptionIfParametersArePassed(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            AnyOrNone(False, True)
+
+    # Positive matching.
+    def testAnyOrNoneReturnsTrueOnMatchingWithAValue_AnyOrNone(self):
+        self.assertTrue(AnyOrNone() == AnyOrNone())
+
+    def testAnyOrNoneReturnsTrueOnMatchingWithAValue_Boolean(self):
+        self.assertTrue(AnyOrNone() == Boolean(True))
+
+    def testAnyOrNoneReturnsTrueOnMatchingWithAValue_Integer(self):
+        self.assertTrue(AnyOrNone() == Integer(1))
+
+    def testAnyOrNoneReturnsTrueOnMatchingWithAValue_Float(self):
+        self.assertTrue(AnyOrNone() == Float(1.0))
+
+    def testAnyOrNoneReturnsTrueOnMatchingWithAValue_Charstring(self):
+        self.assertTrue(AnyOrNone() == Charstring("qwer"))
+
+    # Negative matching.
+    def testAnyOrNoneRaisesExceptionOnInvalidPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            AnyOrNone() == True
+
 if __name__ == '__main__':
     unittest.main()

@@ -50,7 +50,7 @@ class TTCN3Type(object):
 #
 # Built-in types.
 #
-class TTCN3BuiltInType(TTCN3Type):
+class TTCN3SimpleType(TTCN3Type):
     def __init__(self, aValue, aRestrictions):
         TTCN3Type.__init__(self)
 
@@ -61,12 +61,12 @@ class TTCN3BuiltInType(TTCN3Type):
             if restriction.check(self) == False:
                 raise UnmetRestriction
 
-class Boolean(TTCN3BuiltInType):
+class Boolean(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
         if type(aValue) is not bool:
             raise InvalidTTCN3Type
 
-        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+        TTCN3SimpleType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         # TODO: On the fly conversion: e.g. integer.
@@ -75,12 +75,12 @@ class Boolean(TTCN3BuiltInType):
         else:
             return False
 
-class Integer(TTCN3BuiltInType):
+class Integer(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
         if type(aValue) is not int:
             raise InvalidTTCN3Type
 
-        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+        TTCN3SimpleType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
@@ -88,12 +88,12 @@ class Integer(TTCN3BuiltInType):
         else:
             return False
 
-class Float(TTCN3BuiltInType):
+class Float(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
         if type(aValue) is not float:
             raise InvalidTTCN3Type
 
-        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+        TTCN3SimpleType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
@@ -101,12 +101,12 @@ class Float(TTCN3BuiltInType):
         else:
             return False
 
-class Charstring(TTCN3BuiltInType):
+class Charstring(TTCN3SimpleType):
     def __init__(self, aValue, aRestrictions=[]):
         if type(aValue) is not str:
             raise InvalidTTCN3Type
 
-        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+        TTCN3SimpleType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
@@ -114,25 +114,25 @@ class Charstring(TTCN3BuiltInType):
         else:
             return False
 
-class UniversalCharstring(TTCN3BuiltInType):
+class UniversalCharstring(TTCN3SimpleType):
     pass
 
-class Verdicttype(TTCN3BuiltInType):
+class Verdicttype(TTCN3SimpleType):
     pass
 
-class Bitstring(TTCN3BuiltInType):
+class Bitstring(TTCN3SimpleType):
     pass
 
-class Octetstring(TTCN3BuiltInType):
+class Octetstring(TTCN3SimpleType):
     pass
 
-class Hexstring(TTCN3BuiltInType):
+class Hexstring(TTCN3SimpleType):
     pass
 
-class Objid(TTCN3BuiltInType):
+class Objid(TTCN3SimpleType):
     pass
 
-class Default(TTCN3BuiltInType):
+class Default(TTCN3SimpleType):
     pass
 
 #
@@ -219,7 +219,7 @@ class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
 
 class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
     def __init__(self, aValue=None, aRestrictions=None):
-        TTCN3BuiltInType.__init__(self, aValue, aRestrictions)
+        TTCN3SpecialSymbolType.__init__(self, aValue, aRestrictions)
 
     def __eq__(self, aOther):
         if isinstance(aOther, TTCN3Type):

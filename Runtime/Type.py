@@ -247,9 +247,8 @@ class SetOf(TTCN3StructuredType):
             if not isinstance(value, TTCN3Type):
                 raise InvalidTTCN3Type
             else:
-                if not isinstance(value, self.mType) and \
-                   not isinstance(value, Any       ) and \
-                   not isinstance(value, AnyOrNone )     :
+                if not isinstance(value, self.mType)                             and \
+                   not isinstance(value, TTCN3SpecialSymbolUsedInsideAValueType)     :
                     raise InvalidTTCN3Type
 
         TTCN3StructuredType.__init__(self, aValues, aRestrictions)
@@ -340,7 +339,17 @@ class TTCN3SpecialSymbolUsedInsideAValueType(TTCN3SpecialSymbolType):
     pass
 
 class AnySingleElement(TTCN3SpecialSymbolUsedInsideAValueType):
-    pass
+    def __init__(self, aValue=None, aRestrictions=[]):
+        if aValue is not None or aRestrictions != []:
+            raise InvalidTTCN3Type
+        TTCN3SpecialSymbolType.__init__(self, aValue, aRestrictions)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, TTCN3Type):
+            # TODO: Empty values.
+            return True
+        else:
+            raise InvalidTTCN3Type
 
 class AnyNumberOfElements(TTCN3SpecialSymbolUsedInsideAValueType):
     pass

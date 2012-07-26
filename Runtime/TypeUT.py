@@ -510,10 +510,10 @@ class Type_SetOf(unittest.TestCase):
         self.assertTrue(SetOf(Integer, [Integer(1), Integer(3), Integer(-1)]).isMessageType())
 
     def testIsMessageTypeReturnsFalse_MessageAndTemplateTypes(self):
-        self.assertFalse(SetOf(Integer, [Integer(1), Integer(3), Any()]).isMessageType())
+        self.assertFalse(SetOf(Integer, [Integer(1), Integer(3), AnySingleElement()]).isMessageType())
 
     def testIsMessageTypeReturnsFalse_TemplateTypes(self):
-        self.assertFalse(SetOf(Integer, [Any(), Any(), AnyOrNone()]).isMessageType())
+        self.assertFalse(SetOf(Integer, [AnySingleElement(), AnySingleElement(), AnySingleElement()]).isMessageType())
 
 class Type_Any(unittest.TestCase):
 
@@ -578,6 +578,38 @@ class Type_AnyOrNone(unittest.TestCase):
     def testAnyOrNoneRaisesExceptionOnInvalidPiewikType(self):
         with self.assertRaises(InvalidTTCN3Type):
             AnyOrNone() == True
+
+class Type_AnySingleElement(unittest.TestCase):
+
+    # Successful construction.
+    def testAnySingleElementCtorContstructsAnAnySingleElementValue(self):
+        AnySingleElement()
+
+    # Unsuccessful construction.
+    def testAnySingleElementCtorRaisesExceptionIfParametersArePassed(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            AnySingleElement(False, True)
+
+    # Successful matching.
+    def testAnySingleElementReturnsTrueOnMatchingWithAValue_AnySingleElement(self):
+        self.assertTrue(AnySingleElement() == AnySingleElement())
+
+    def testAnySingleElementReturnsTrueOnMatchingWithAValue_Boolean(self):
+        self.assertTrue(AnySingleElement() == Boolean(True))
+
+    def testAnySingleElementReturnsTrueOnMatchingWithAValue_Integer(self):
+        self.assertTrue(AnySingleElement() == Integer(1))
+
+    def testAnySingleElementReturnsTrueOnMatchingWithAValue_Float(self):
+        self.assertTrue(AnySingleElement() == Float(1.0))
+
+    def testAnySingleElementReturnsTrueOnMatchingWithAValue_Charstring(self):
+        self.assertTrue(AnySingleElement() == Charstring("qwer"))
+
+    # Unsuccessful matching.
+    def testAnySingleElementRaisesExceptionOnInvalidPiewikType(self):
+        with self.assertRaises(InvalidTTCN3Type):
+            AnySingleElement() == True
 
 if __name__ == '__main__':
     unittest.main()

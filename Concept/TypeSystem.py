@@ -106,4 +106,14 @@ class Float(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
 class Charstring(TTCN3SimpleType):
-    pass
+    def __init__(self, aValue=""):
+        if type(aValue) is not str:
+            raise InvalidTTCN3TypeInCtor
+
+        TTCN3SimpleType.__init__(self, aValue)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, Charstring):
+            return self.mValue == aOther.mValue
+        else:
+            raise InvalidTTCN3TypeInComparison

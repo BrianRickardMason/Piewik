@@ -93,7 +93,17 @@ class Integer(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
 class Float(TTCN3SimpleType):
-    pass
+    def __init__(self, aValue=0.0):
+        if type(aValue) is not float:
+            raise InvalidTTCN3TypeInCtor
+
+        TTCN3SimpleType.__init__(self, aValue)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, Float):
+            return self.mValue == aOther.mValue
+        else:
+            raise InvalidTTCN3TypeInComparison
 
 class Charstring(TTCN3SimpleType):
     pass

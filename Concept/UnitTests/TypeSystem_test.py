@@ -159,5 +159,69 @@ class TypeSystem_Integer(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Integer(1) == Charstring("WAX")
 
+class TypeSystem_Float(unittest.TestCase):
+
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+        try:
+            Float()
+        except:
+            self.fail()
+
+    def test_CtorConstructsAProperVariable_WithParameter(self):
+        try:
+            Float(1.0)
+        except:
+            self.fail()
+
+    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
+        self.assertEqual(Float(), Float(0.0))
+
+    #
+    # Unsuccessful constructions.
+    #
+    # TODO: All types.
+    #
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Float(True)
+
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Float(1)
+
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Float("WAX")
+
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
+        self.assertTrue(Float(1.0) == Float(1.0))
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
+        self.assertFalse(Float(1.0) == Float(2.0))
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Boolean(False)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Integer(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Float(1.0) == Charstring("WAX")
+
 if __name__ == '__main__':
     unittest.main()

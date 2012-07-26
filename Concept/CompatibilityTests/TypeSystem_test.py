@@ -26,3 +26,87 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
+
+import unittest
+
+from Concept.TypeSystem import *
+
+class TypeSystem_Boolean(unittest.TestCase):
+
+    #
+    # var boolean myVariable;
+    #
+    def test_ConstructingVariableWithoutValueAssigned(self):
+        try:
+            myVariable = Boolean()
+        except:
+            self.fail()
+
+    #
+    # var boolean myVariable := True;
+    #
+    def test_ConstructingVariableWithValueAssigned(self):
+        try:
+            myVariable = Boolean(True)
+        except:
+            self.fail()
+
+class TypeSystem_Integer(unittest.TestCase):
+
+    #
+    # var integer myVariable;
+    #
+    def test_ConstructingVariableWithoutValueAssigned(self):
+        try:
+            myVariable = Integer()
+        except:
+            self.fail()
+
+    #
+    # var integer myVariable := 1;
+    #
+    def test_ConstructingVariableWithValueAssigned(self):
+        try:
+            myVariable = Integer(1)
+        except:
+            self.fail()
+
+class TypeSystem_Float(unittest.TestCase):
+
+    #
+    # var float myVariable;
+    #
+    def test_ConstructingVariableWithoutValueAssigned(self):
+        try:
+            myVariable = Float()
+        except:
+            self.fail()
+
+    #
+    # var float myVariable := 1.0;
+    #
+    def test_ConstructingVariableWithValueAssigned(self):
+        try:
+            myVariable = Float(1.0)
+        except:
+            self.fail()
+
+class TypeSystem_Charstring(unittest.TestCase):
+
+    #
+    # var charstring myVariable;
+    #
+    def test_ConstructingVariableWithoutValueAssigned(self):
+        try:
+            myVariable = Charstring()
+        except:
+            self.fail()
+
+    #
+    # var charstring myVariable := 1;
+    #
+    def test_ConstructingVariableWithValueAssigned(self):
+        try:
+            myVariable = Charstring("Jochen von Ulm")
+        except:
+            self.fail()

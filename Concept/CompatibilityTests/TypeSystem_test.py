@@ -31,7 +31,7 @@ import unittest
 
 from Concept.TypeSystem import *
 
-class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
+class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
 
     #
     # TODO: All types.
@@ -43,6 +43,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithoutValueAssigned_Boolean(self):
         try:
             myVariable = Boolean()
+            self.assertTrue(isinstance(myVariable, Boolean))
         except:
             self.fail()
 
@@ -52,6 +53,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithoutValueAssigned_Integer(self):
         try:
             myVariable = Integer()
+            self.assertTrue(isinstance(myVariable, Integer))
         except:
             self.fail()
 
@@ -61,6 +63,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithoutValueAssigned_Float(self):
         try:
             myVariable = Float()
+            self.assertTrue(isinstance(myVariable, Float))
         except:
             self.fail()
 
@@ -70,6 +73,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithoutValueAssigned_Charstring(self):
         try:
             myVariable = Charstring()
+            self.assertTrue(isinstance(myVariable, Charstring))
         except:
             self.fail()
 
@@ -83,6 +87,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithValueAssigned_Boolean(self):
         try:
             myVariable = Boolean(True)
+            self.assertTrue(isinstance(myVariable, Boolean))
         except:
             self.fail()
 
@@ -92,6 +97,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithValueAssigned_Integer(self):
         try:
             myVariable = Integer(1)
+            self.assertTrue(isinstance(myVariable, Integer))
         except:
             self.fail()
 
@@ -101,6 +107,7 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithValueAssigned_Float(self):
         try:
             myVariable = Float(1.0)
+            self.assertTrue(isinstance(myVariable, Float))
         except:
             self.fail()
 
@@ -110,5 +117,6 @@ class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
     def test_ConstructingVariableWithValueAssigned_Charstring(self):
         try:
             myVariable = Charstring("Jochen von Ulm")
+            self.assertTrue(isinstance(myVariable, Charstring))
         except:
             self.fail()

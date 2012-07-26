@@ -54,6 +54,8 @@ class TypeSystem_Boolean(unittest.TestCase):
     #
     # Unsuccessful constructions.
     #
+
+    #
     # TODO: All types.
     #
     def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
@@ -117,6 +119,8 @@ class TypeSystem_Integer(unittest.TestCase):
 
     #
     # Unsuccessful constructions.
+    #
+
     #
     # TODO: All types.
     #
@@ -182,6 +186,8 @@ class TypeSystem_Float(unittest.TestCase):
     #
     # Unsuccessful constructions.
     #
+
+    #
     # TODO: All types.
     #
     def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
@@ -245,6 +251,8 @@ class TypeSystem_Charstring(unittest.TestCase):
 
     #
     # Unsuccessful constructions.
+    #
+
     #
     # TODO: All types.
     #

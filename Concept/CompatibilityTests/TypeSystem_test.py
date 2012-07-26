@@ -31,81 +31,83 @@ import unittest
 
 from Concept.TypeSystem import *
 
-class TypeSystem_Boolean(unittest.TestCase):
+class TypeSystem_ConstructionAndAssignment(unittest.TestCase):
+
+    #
+    # TODO: All types.
+    #
 
     #
     # var boolean myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned(self):
+    def test_ConstructingVariableWithoutValueAssigned_Boolean(self):
         try:
             myVariable = Boolean()
         except:
             self.fail()
 
     #
-    # var boolean myVariable := True;
-    #
-    def test_ConstructingVariableWithValueAssigned(self):
-        try:
-            myVariable = Boolean(True)
-        except:
-            self.fail()
-
-class TypeSystem_Integer(unittest.TestCase):
-
-    #
     # var integer myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned(self):
+    def test_ConstructingVariableWithoutValueAssigned_Integer(self):
         try:
             myVariable = Integer()
         except:
             self.fail()
 
     #
-    # var integer myVariable := 1;
-    #
-    def test_ConstructingVariableWithValueAssigned(self):
-        try:
-            myVariable = Integer(1)
-        except:
-            self.fail()
-
-class TypeSystem_Float(unittest.TestCase):
-
-    #
     # var float myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned(self):
+    def test_ConstructingVariableWithoutValueAssigned_Float(self):
         try:
             myVariable = Float()
         except:
             self.fail()
 
     #
-    # var float myVariable := 1.0;
-    #
-    def test_ConstructingVariableWithValueAssigned(self):
-        try:
-            myVariable = Float(1.0)
-        except:
-            self.fail()
-
-class TypeSystem_Charstring(unittest.TestCase):
-
-    #
     # var charstring myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned(self):
+    def test_ConstructingVariableWithoutValueAssigned_Charstring(self):
         try:
             myVariable = Charstring()
         except:
             self.fail()
 
     #
-    # var charstring myVariable := 1;
+    # TODO: All types.
     #
-    def test_ConstructingVariableWithValueAssigned(self):
+
+    #
+    # var boolean myVariable := True;
+    #
+    def test_ConstructingVariableWithValueAssigned_Boolean(self):
+        try:
+            myVariable = Boolean(True)
+        except:
+            self.fail()
+
+    #
+    # var integer myVariable := 1;
+    #
+    def test_ConstructingVariableWithValueAssigned_Integer(self):
+        try:
+            myVariable = Integer(1)
+        except:
+            self.fail()
+
+    #
+    # var float myVariable := 1.0;
+    #
+    def test_ConstructingVariableWithValueAssigned_Float(self):
+        try:
+            myVariable = Float(1.0)
+        except:
+            self.fail()
+
+    #
+    # var charstring myVariable := "Jochen von Ulm";
+    #
+    def test_ConstructingVariableWithValueAssigned_Charstring(self):
         try:
             myVariable = Charstring("Jochen von Ulm")
         except:

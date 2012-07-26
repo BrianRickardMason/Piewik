@@ -67,7 +67,17 @@ class TTCN3SimpleType(TTCN3Type):
 # Simple types.
 #
 class Boolean(TTCN3SimpleType):
-    pass
+    def __init__(self, aValue=False):
+        if type(aValue) is not bool:
+            raise InvalidTTCN3TypeInCtor
+
+        TTCN3SimpleType.__init__(self, aValue)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, Boolean):
+            return self.mValue == aOther.mValue
+        else:
+            raise InvalidTTCN3TypeInComparison
 
 class Integer(TTCN3SimpleType):
     def __init__(self, aValue=0):

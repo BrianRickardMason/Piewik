@@ -31,6 +31,70 @@ import unittest
 
 from Concept.TypeSystem import *
 
+class TypeSystem_Boolean(unittest.TestCase):
+
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+        try:
+            Boolean()
+        except:
+            self.fail()
+
+    def test_CtorConstructsAProperVariable_WithParameter(self):
+        try:
+            Boolean(True)
+        except:
+            self.fail()
+
+    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
+        self.assertEqual(Boolean(), Boolean(False))
+
+    #
+    # Unsuccessful constructions.
+    #
+    # TODO: All types.
+    #
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Boolean(1)
+
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Boolean(1.0)
+
+    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            Boolean("WAX")
+
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
+        self.assertTrue(Boolean(True) == Boolean(True))
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
+        self.assertFalse(Boolean(True) == Boolean(False))
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Integer(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Float(1.0)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            Boolean(True) == Charstring("WAX")
+
 class TypeSystem_Integer(unittest.TestCase):
 
     #

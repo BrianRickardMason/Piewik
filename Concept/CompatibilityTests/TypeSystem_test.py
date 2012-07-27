@@ -120,3 +120,33 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
             self.assertTrue(isinstance(myVariable, Charstring))
         except:
             self.fail()
+
+class Typesystem_RecordTypeDefinition(unittest.TestCase):
+
+    #
+    # type record myRecord {}
+    #
+    def test_DefiningAnEmptyRecord(self):
+        try:
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self)
+            self.assertTrue(issubclass(myRecord, Record))
+        except:
+            self.fail()
+
+    #
+    # type record myRecord
+    # {
+    #     Integer    field1,
+    #     Charstring field2
+    # }
+    #
+    def test_DefiningARecordWithTwoFieds(self):
+        try:
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+            self.assertTrue(issubclass(myRecord, Record))
+        except:
+            self.fail()

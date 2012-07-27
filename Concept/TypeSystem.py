@@ -46,6 +46,9 @@ class InvalidTTCN3TypeInCtor(TypeSystemException):
 class InvalidTTCN3TypeInComparison(TypeSystemException):
     pass
 
+class InvalidTypeOfDictionaryKey(TypeSystemException):
+    pass
+
 #
 # Types.
 #
@@ -60,6 +63,10 @@ class TTCN3Type(object):
         return self.mValue
 
 class TTCN3SimpleType(TTCN3Type):
+    def __init__(self, aValue):
+        TTCN3Type.__init__(self, aValue)
+
+class TTCN3StructuredType(TTCN3Type):
     def __init__(self, aValue):
         TTCN3Type.__init__(self, aValue)
 
@@ -117,3 +124,28 @@ class Charstring(TTCN3SimpleType):
             return self.mValue == aOther.mValue
         else:
             raise InvalidTTCN3TypeInComparison
+
+class Record(TTCN3StructuredType):
+    def __init__(self, aDictionary={}):
+        if type(aDictionary) is not dict:
+            raise InvalidTTCN3TypeInCtor
+
+        TTCN3StructuredType.__init__(self, {})
+
+        # Keys may only be strings.
+        for key in aDictionary:
+            if type(key) is not str:
+                raise InvalidTypeOfDictionaryKey
+
+        # Values must be subtypes of TTCN3Type.
+        for typeName in aDictionary.values():
+            if not issubclass(typeName, TTCN3Type):
+                raise InvalidTTCN3TypeInCtor
+
+        self.mDictionary = aDictionary
+
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
+    def value(self):
+        raise NotImplementedError

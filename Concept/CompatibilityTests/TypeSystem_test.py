@@ -42,7 +42,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithoutValueAssigned_Boolean(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Boolean()
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Boolean))
         except:
             self.fail()
@@ -52,7 +59,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithoutValueAssigned_Integer(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Integer()
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Integer))
         except:
             self.fail()
@@ -62,7 +76,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithoutValueAssigned_Float(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Float()
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Float))
         except:
             self.fail()
@@ -72,7 +93,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithoutValueAssigned_Charstring(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Charstring()
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Charstring))
         except:
             self.fail()
@@ -86,7 +114,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithValueAssigned_Boolean(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Boolean(True)
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Boolean))
         except:
             self.fail()
@@ -96,7 +131,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithValueAssigned_Integer(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Integer(1)
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Integer))
         except:
             self.fail()
@@ -106,7 +148,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithValueAssigned_Float(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Float(1.0)
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Float))
         except:
             self.fail()
@@ -116,7 +165,14 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     def test_ConstructingVariableWithValueAssigned_Charstring(self):
         try:
+            #
+            # TTCN-3.
+            #
             myVariable = Charstring("Jochen von Ulm")
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(isinstance(myVariable, Charstring))
         except:
             self.fail()
@@ -124,13 +180,20 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
 class Typesystem_RecordTypeDefinition(unittest.TestCase):
 
     #
-    # type record myRecord {}
+    # type record myRecord {};
     #
     def test_DefiningAnEmptyRecord(self):
         try:
+            #
+            # TTCN-3.
+            #
             class myRecord(Record):
                 def __init__(self):
                     Record.__init__(self)
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(issubclass(myRecord, Record))
         except:
             self.fail()
@@ -140,13 +203,76 @@ class Typesystem_RecordTypeDefinition(unittest.TestCase):
     # {
     #     Integer    field1,
     #     Charstring field2
-    # }
+    # };
     #
     def test_DefiningARecordWithTwoFieds(self):
         try:
+            #
+            # TTCN-3.
+            #
             class myRecord(Record):
                 def __init__(self):
                     Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+
+            #
+            # Compatibility.
+            #
             self.assertTrue(issubclass(myRecord, Record))
+        except:
+            self.fail()
+
+class TypeSystem_RecordTypeDefinitionAndAssignment(unittest.TestCase):
+
+    #
+    # type record myRecord {};
+    # var myRecord myRecordInstance := {};
+    #
+    def test_DefiningAndInstantiatingAnEmptyRecord(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self)
+            myRecordInstance = myRecord()
+            myRecordInstance.assign({})
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(isinstance(myRecordInstance, myRecord))
+        except:
+            self.fail()
+
+    #
+    # type record myRecord
+    # {
+    #     Integer    field1,
+    #     Charstring field2
+    # };
+    # var myRecord myRecordInstance :=
+    # {
+    #     field1 := 1,
+    #     field2 := "Varsovie"
+    # };
+    #
+    def test_DefiningAndInstantiatingANonEmptyRecord(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self)
+            myRecordInstance = myRecord()
+            myRecordInstance.assign({'field1': Integer(1), 'field2': Charstring("Varsovie")})
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(isinstance(myRecordInstance, myRecord))
+            self.assertEqual(myRecordInstance.getField('field1'), Integer(1))
+            self.assertEqual(myRecordInstance.getField('field2'), Charstring("Varsovie"))
         except:
             self.fail()

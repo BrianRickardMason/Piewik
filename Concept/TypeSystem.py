@@ -40,6 +40,12 @@
 class TypeSystemException(Exception):
     pass
 
+class InvalidTTCN3TypeInAssignment(TypeSystemException):
+    pass
+
+class LookupErrorMissingField(TypeSystemException):
+    pass
+
 class InvalidTTCN3TypeInCtor(TypeSystemException):
     pass
 
@@ -149,3 +155,16 @@ class Record(TTCN3StructuredType):
 
     def value(self):
         raise NotImplementedError
+
+    def assign(self, aDictionary):
+        if type(aDictionary) is not dict:
+            raise InvalidTTCN3TypeInAssignement
+
+        # TODO: Implement the verification of the assignment.
+        self.mValue = aDictionary
+
+    def getField(self, aName):
+        if aName in self.mValue:
+            return self.mValue[aName]
+        else:
+            raise LookupErrorMissingField

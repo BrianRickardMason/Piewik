@@ -32,7 +32,6 @@ import unittest
 from Concept.TypeSystem import *
 
 class TypeSystem_Construction(unittest.TestCase):
-
     #
     # TODO: All types.
     #
@@ -106,7 +105,6 @@ class TypeSystem_Construction(unittest.TestCase):
             self.fail()
 
 class TypeSystem_Assignment(unittest.TestCase):
-
     #
     # TODO: All types.
     #
@@ -184,7 +182,6 @@ class TypeSystem_Assignment(unittest.TestCase):
             self.fail()
 
 class Typesystem_StructuredTypeDefinition_Record(unittest.TestCase):
-
     #
     # type record myRecord {};
     #
@@ -228,7 +225,6 @@ class Typesystem_StructuredTypeDefinition_Record(unittest.TestCase):
             self.fail()
 
 class TypeSystem_StructuredTypeDefinitionAndAssignment_Record(unittest.TestCase):
-
     #
     # type record myRecord {};
     # var myRecord myRecordInstance := {};
@@ -284,7 +280,6 @@ class TypeSystem_StructuredTypeDefinitionAndAssignment_Record(unittest.TestCase)
             self.fail()
 
 class TypeSystem_Subtyping_TypeAliasing_SimpleType(unittest.TestCase):
-
     #
     # type boolean MyNewBoolean;
     #
@@ -362,7 +357,6 @@ class TypeSystem_Subtyping_TypeAliasing_SimpleType(unittest.TestCase):
             self.fail()
 
 class TypeSystem_Subtyping_TypeAliasing_StructuredType(unittest.TestCase):
-
     #
     # type record myRecord {};
     # type myRecord myNewRecord;

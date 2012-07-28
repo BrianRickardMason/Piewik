@@ -31,7 +31,7 @@ import unittest
 
 from Concept.TypeSystem import *
 
-class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
+class TypeSystem_Construction(unittest.TestCase):
 
     #
     # TODO: All types.
@@ -40,7 +40,7 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     # var boolean myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned_Boolean(self):
+    def test_Boolean(self):
         try:
             #
             # TTCN-3.
@@ -57,7 +57,7 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     # var integer myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned_Integer(self):
+    def test_Integer(self):
         try:
             #
             # TTCN-3.
@@ -74,7 +74,7 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     # var float myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned_Float(self):
+    def test_Float(self):
         try:
             #
             # TTCN-3.
@@ -91,7 +91,7 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     # var charstring myVariable;
     #
-    def test_ConstructingVariableWithoutValueAssigned_Charstring(self):
+    def test_Charstring(self):
         try:
             #
             # TTCN-3.
@@ -105,6 +105,8 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
         except:
             self.fail()
 
+class TypeSystem_Assignment(unittest.TestCase):
+
     #
     # TODO: All types.
     #
@@ -112,51 +114,54 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
     #
     # var boolean myVariable := True;
     #
-    def test_ConstructingVariableWithValueAssigned_Boolean(self):
+    def test_Boolean(self):
         try:
             #
             # TTCN-3.
             #
-            myVariable = Boolean(True)
+            myVariable = Boolean()
+            myVariable.assign(True)
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myVariable, Boolean))
+            self.assertEqual(myVariable.value(), 1)
         except:
             self.fail()
 
     #
     # var integer myVariable := 1;
     #
-    def test_ConstructingVariableWithValueAssigned_Integer(self):
+    def test_Integer(self):
         try:
             #
             # TTCN-3.
             #
-            myVariable = Integer(1)
+            myVariable = Integer()
+            myVariable.assign(1)
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myVariable, Integer))
+            self.assertEqual(myVariable.value(), 1)
         except:
             self.fail()
 
     #
     # var float myVariable := 1.0;
     #
-    def test_ConstructingVariableWithValueAssigned_Float(self):
+    def test_Float(self):
         try:
             #
             # TTCN-3.
             #
-            myVariable = Float(1.0)
+            myVariable = Float()
+            myVariable.assign(1.0)
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myVariable, Float))
+            self.assertEqual(myVariable.value(), 1.0)
         except:
             self.fail()
 
@@ -168,21 +173,22 @@ class TypeSystem_ConstructionAndAssignmentViaCtor(unittest.TestCase):
             #
             # TTCN-3.
             #
-            myVariable = Charstring("Jochen von Ulm")
+            myVariable = Charstring()
+            myVariable.assign("Jochen von Ulm")
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myVariable, Charstring))
+            self.assertEqual(myVariable.value(), "Jochen von Ulm")
         except:
             self.fail()
 
-class Typesystem_RecordTypeDefinition(unittest.TestCase):
+class Typesystem_StructuredTypeDefinition_Record(unittest.TestCase):
 
     #
     # type record myRecord {};
     #
-    def test_DefiningAnEmptyRecord(self):
+    def test_Empty(self):
         try:
             #
             # TTCN-3.
@@ -205,7 +211,7 @@ class Typesystem_RecordTypeDefinition(unittest.TestCase):
     #     Charstring field2
     # };
     #
-    def test_DefiningARecordWithTwoFieds(self):
+    def test_NonEmpty(self):
         try:
             #
             # TTCN-3.
@@ -221,13 +227,13 @@ class Typesystem_RecordTypeDefinition(unittest.TestCase):
         except:
             self.fail()
 
-class TypeSystem_RecordTypeDefinitionAndAssignment(unittest.TestCase):
+class TypeSystem_StructuredTypeDefinitionAndAssignment_Record(unittest.TestCase):
 
     #
     # type record myRecord {};
     # var myRecord myRecordInstance := {};
     #
-    def test_DefiningAndInstantiatingAnEmptyRecord(self):
+    def test_Empty(self):
         try:
             #
             # TTCN-3.
@@ -257,7 +263,7 @@ class TypeSystem_RecordTypeDefinitionAndAssignment(unittest.TestCase):
     #     field2 := "Varsovie"
     # };
     #
-    def test_DefiningAndInstantiatingANonEmptyRecord(self):
+    def test_NonEmpty(self):
         try:
             #
             # TTCN-3.
@@ -266,30 +272,30 @@ class TypeSystem_RecordTypeDefinitionAndAssignment(unittest.TestCase):
                 def __init__(self):
                     Record.__init__(self)
             myRecordInstance = myRecord()
-            myRecordInstance.assign({'field1': Integer(1), 'field2': Charstring("Varsovie")})
+            myRecordInstance.assign({'field1': Integer().assign(1), 'field2': Charstring().assign("Varsovie")})
 
             #
             # Compatibility.
             #
             self.assertTrue(isinstance(myRecordInstance, myRecord))
-            self.assertEqual(myRecordInstance.getField('field1'), Integer(1))
-            self.assertEqual(myRecordInstance.getField('field2'), Charstring("Varsovie"))
+            self.assertEqual(myRecordInstance.getField('field1'), Integer().assign(1))
+            self.assertEqual(myRecordInstance.getField('field2'), Charstring().assign("Varsovie"))
         except:
             self.fail()
 
-class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
+class TypeSystem_Subtyping_TypeAliasing_SimpleType(unittest.TestCase):
 
     #
     # type boolean MyNewBoolean;
     #
-    def test_SubtypingSimpleType_Boolean(self):
+    def test_Boolean(self):
         try:
             #
             # TTCN-3.
             #
             class MyNewBoolean(Boolean):
-                def __init__(self, aValue=False):
-                    Boolean.__init__(self, aValue)
+                def __init__(self):
+                    Boolean.__init__(self)
 
             #
             # Compatibility.
@@ -301,14 +307,14 @@ class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
     #
     # type integer MyNewInteger;
     #
-    def test_SubtypingSimpleType_Integer(self):
+    def test_Integer(self):
         try:
             #
             # TTCN-3.
             #
             class MyNewInteger(Integer):
-                def __init__(self, aValue=0):
-                    Integer.__init__(self, aValue)
+                def __init__(self):
+                    Integer.__init__(self)
 
             #
             # Compatibility.
@@ -320,14 +326,14 @@ class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
     #
     # type float MyNewFloat;
     #
-    def test_SubtypingSimpleType_Float(self):
+    def test_Float(self):
         try:
             #
             # TTCN-3.
             #
             class MyNewFloat(Float):
-                def __init__(self, aValue=0.0):
-                    Float.__init__(self, aValue)
+                def __init__(self):
+                    Float.__init__(self)
 
             #
             # Compatibility.
@@ -339,14 +345,14 @@ class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
     #
     # type charstring MyNewCharstring;
     #
-    def test_SubtypingSimpleType_Charstring(self):
+    def test_Charstring(self):
         try:
             #
             # TTCN-3.
             #
             class MyNewCharstring(Charstring):
-                def __init__(self, aValue=""):
-                    Charstring.__init__(self, aValue)
+                def __init__(self):
+                    Charstring.__init__(self)
 
             #
             # Compatibility.
@@ -355,11 +361,13 @@ class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
         except:
             self.fail()
 
+class TypeSystem_Subtyping_TypeAliasing_StructuredType(unittest.TestCase):
+
     #
     # type record myRecord {};
     # type myRecord myNewRecord;
     #
-    def test_SubtypingStructuredType_Record_Empty(self):
+    def test_Record_Empty(self):
         try:
             class myRecord(Record):
                 def __init__(self):
@@ -383,7 +391,7 @@ class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
     # };
     # type myRecord myNewRecord;
     #
-    def test_SubtypingStructuredType_Record_NonEmpty(self):
+    def test_Record_NonEmpty(self):
         try:
             #
             # TTCN-3.

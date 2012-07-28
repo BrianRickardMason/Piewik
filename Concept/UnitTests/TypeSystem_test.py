@@ -34,266 +34,246 @@ from Concept.TypeSystem import *
 class TypeSystem_Boolean(unittest.TestCase):
 
     #
-    # Successful constructions.
+    # Constructions.
     #
-    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
         try:
-            Boolean()
+            self.assertEqual(Boolean().value(), False)
         except:
             self.fail()
 
-    def test_CtorConstructsAProperVariable_WithParameter(self):
-        try:
-            Boolean(True)
-        except:
-            self.fail()
-
-    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
-        self.assertEqual(Boolean(), Boolean(False))
+    #
+    # Successful assignments.
+    #
+    def test_AssignAssignsProperValue_Boolean(self):
+        self.assertEqual(Boolean().assign(True).value(), True)
 
     #
-    # Unsuccessful constructions.
-    #
-
+    # Unsuccessful assignments.
     #
     # TODO: All types.
     #
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Boolean(1)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Boolean().assign(1)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Boolean(1.0)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Boolean().assign(1.0)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Boolean("WAX")
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Boolean().assign("WAX")
 
     #
     # Successful matching.
     #
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Boolean(True) == Boolean(True))
+        self.assertTrue(Boolean().assign(True) == Boolean().assign(True))
 
     #
     # Unsuccessful matching.
     #
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Boolean(True) == Boolean(False))
+        self.assertFalse(Boolean().assign(True) == Boolean().assign(False))
 
     #
     # TODO: All types.
     #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean(True) == Integer(1)
+            Boolean().assign(True) == Integer().assign(1)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean(True) == Float(1.0)
+            Boolean().assign(True) == Float().assign(1.0)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean(True) == Charstring("WAX")
+            Boolean().assign(True) == Charstring().assign("WAX")
 
 class TypeSystem_Integer(unittest.TestCase):
 
     #
-    # Successful constructions.
+    # Constructions.
     #
-    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
         try:
-            Integer()
+            self.assertEqual(Integer().value(), 0)
         except:
             self.fail()
 
-    def test_CtorConstructsAProperVariable_WithParameter(self):
-        try:
-            Integer(1)
-        except:
-            self.fail()
-
-    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
-        self.assertEqual(Integer(), Integer(0))
+    #
+    # Successful assignments.
+    #
+    def test_AssignAssignsProperValue_Integer(self):
+        self.assertEqual(Integer().assign(1).value(), 1)
 
     #
-    # Unsuccessful constructions.
-    #
-
+    # Unsuccessful assignments.
     #
     # TODO: All types.
     #
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Integer(True)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Integer().assign(True)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Integer(1.0)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Integer().assign(1.0)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Integer("WAX")
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Integer().assign("WAX")
 
     #
     # Successful matching.
     #
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Integer(1) == Integer(1))
+        self.assertTrue(Integer().assign(1) == Integer().assign(1))
 
     #
     # Unsuccessful matching.
     #
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Integer(1) == Integer(2))
+        self.assertFalse(Integer().assign(1) == Integer().assign(2))
 
     #
     # TODO: All types.
     #
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer(1) == Boolean(False)
+            Integer().assign(1) == Boolean().assign(True)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer(1) == Float(1.0)
+            Integer().assign(1) == Float().assign(1.0)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer(1) == Charstring("WAX")
+            Integer().assign(1) == Charstring().assign("WAX")
 
 class TypeSystem_Float(unittest.TestCase):
 
     #
-    # Successful constructions.
+    # Constructions.
     #
-    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
         try:
-            Float()
+            self.assertEqual(Float().value(), 0.0)
         except:
             self.fail()
 
-    def test_CtorConstructsAProperVariable_WithParameter(self):
-        try:
-            Float(1.0)
-        except:
-            self.fail()
-
-    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
-        self.assertEqual(Float(), Float(0.0))
+    #
+    # Successful assignments.
+    #
+    def test_AssignAssignsProperValue(self):
+        self.assertEqual(Float().assign(1.0).value(), 1.0)
 
     #
-    # Unsuccessful constructions.
-    #
-
+    # Unsuccessful assignments.
     #
     # TODO: All types.
     #
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Float(True)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Float().assign(True)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Float(1)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Float().assign(1)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Float("WAX")
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Float().assign("WAX")
 
     #
     # Successful matching.
     #
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Float(1.0) == Float(1.0))
+        self.assertTrue(Float().assign(1.0) == Float().assign(1.0))
 
     #
     # Unsuccessful matching.
     #
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Float(1.0) == Float(2.0))
+        self.assertFalse(Float().assign(1.0) == Float().assign(2.0))
 
     #
     # TODO: All types.
     #
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float(1.0) == Boolean(False)
+            Float().assign(1.0) == Boolean().assign(True)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float(1.0) == Integer(1)
+            Float().assign(1.0) == Integer().assign(1)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float(1.0) == Charstring("WAX")
+            Float().assign(1.0) == Charstring().assign("WAX")
 
 class TypeSystem_Charstring(unittest.TestCase):
 
     #
-    # Successful constructions.
+    # Constructions.
     #
-    def test_CtorConstructsAProperVariable_WithoutParameter(self):
+    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
         try:
-            Charstring()
+            self.assertEqual(Charstring().value(), "")
         except:
             self.fail()
 
-    def test_CtorConstructsAProperVariable_WithParameter(self):
-        try:
-            Charstring("QWETA")
-        except:
-            self.fail()
-
-    def test_CtorSetsAProperValueIfCalledWithoutParameter(self):
-        self.assertEqual(Charstring(), Charstring(""))
+    #
+    # Successful assignments.
+    #
+    def test_AssignAssignsProperValue_Charstring(self):
+        self.assertEqual(Charstring().assign("WAX").value(), "WAX")
 
     #
-    # Unsuccessful constructions.
-    #
-
+    # Unsuccessful assignments.
     #
     # TODO: All types.
     #
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Charstring(True)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Charstring().assign(True)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Charstring(1)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Charstring().assign(1)
 
-    def test_CtorRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            Charstring(1.0)
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            Charstring().assign(1.0)
 
     #
     # Successful matching.
     #
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Charstring("QW") == Charstring("QW"))
+        self.assertTrue(Charstring().assign("WAX") == Charstring().assign("WAX"))
 
     #
     # Unsuccessful matching.
     #
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Charstring("QWE") == Charstring("TA"))
+        self.assertFalse(Charstring().assign("WAX") == Charstring().assign("XAW"))
 
     #
     # TODO: All types.
     #
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring("Arthur") == Boolean(False)
+            Charstring().assign("WAX") == Boolean().assign(True)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring("Luxury") == Integer(1)
+            Charstring().assign("WAX") == Integer().assign(1)
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring("Yacht") == Float(1.0)
+            Charstring().assign("WAX") == Float().assign(1.0)
 
 if __name__ == '__main__':
     unittest.main()

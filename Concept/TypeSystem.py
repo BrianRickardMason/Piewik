@@ -80,11 +80,8 @@ class TTCN3StructuredType(TTCN3Type):
 # Simple types.
 #
 class Boolean(TTCN3SimpleType):
-    def __init__(self, aValue=False):
-        if type(aValue) is not bool:
-            raise InvalidTTCN3TypeInCtor
-
-        TTCN3SimpleType.__init__(self, aValue)
+    def __init__(self):
+        TTCN3SimpleType.__init__(self, False)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Boolean):
@@ -92,12 +89,15 @@ class Boolean(TTCN3SimpleType):
         else:
             raise InvalidTTCN3TypeInComparison
 
-class Integer(TTCN3SimpleType):
-    def __init__(self, aValue=0):
-        if type(aValue) is not int:
-            raise InvalidTTCN3TypeInCtor
+    def assign(self, aValue):
+        if type(aValue) is not bool:
+            raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
 
-        TTCN3SimpleType.__init__(self, aValue)
+class Integer(TTCN3SimpleType):
+    def __init__(self):
+        TTCN3SimpleType.__init__(self, 0)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
@@ -105,12 +105,15 @@ class Integer(TTCN3SimpleType):
         else:
             raise InvalidTTCN3TypeInComparison
 
-class Float(TTCN3SimpleType):
-    def __init__(self, aValue=0.0):
-        if type(aValue) is not float:
-            raise InvalidTTCN3TypeInCtor
+    def assign(self, aValue):
+        if type(aValue) is not int:
+            raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
 
-        TTCN3SimpleType.__init__(self, aValue)
+class Float(TTCN3SimpleType):
+    def __init__(self):
+        TTCN3SimpleType.__init__(self, 0.0)
 
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
@@ -118,12 +121,15 @@ class Float(TTCN3SimpleType):
         else:
             raise InvalidTTCN3TypeInComparison
 
-class Charstring(TTCN3SimpleType):
-    def __init__(self, aValue=""):
-        if type(aValue) is not str:
-            raise InvalidTTCN3TypeInCtor
+    def assign(self, aValue):
+        if type(aValue) is not float:
+            raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
 
-        TTCN3SimpleType.__init__(self, aValue)
+class Charstring(TTCN3SimpleType):
+    def __init__(self):
+        TTCN3SimpleType.__init__(self, "")
 
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
@@ -131,6 +137,15 @@ class Charstring(TTCN3SimpleType):
         else:
             raise InvalidTTCN3TypeInComparison
 
+    def assign(self, aValue):
+        if type(aValue) is not str:
+            raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
+
+#
+# Structured types.
+#
 class Record(TTCN3StructuredType):
     def __init__(self, aDictionary={}):
         if type(aDictionary) is not dict:
@@ -154,15 +169,15 @@ class Record(TTCN3StructuredType):
         # TODO: Implement me.
         raise NotImplementedError
 
-    def value(self):
-        raise NotImplementedError
-
-    def assign(self, aDictionary):
-        if type(aDictionary) is not dict:
+    def assign(self, aValue):
+        if type(aValue) is not dict:
             raise InvalidTTCN3TypeInAssignement
 
         # TODO: Implement the verification of the assignment.
-        self.mValue = aDictionary
+        self.mValue = aValue
+
+    def value(self):
+        raise NotImplementedError
 
     def getField(self, aName):
         if aName in self.mValue:

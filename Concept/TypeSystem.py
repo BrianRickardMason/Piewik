@@ -151,6 +151,7 @@ class Record(TTCN3StructuredType):
         self.mDictionary = aDictionary
 
     def __eq__(self, aOther):
+        # TODO: Implement me.
         raise NotImplementedError
 
     def value(self):

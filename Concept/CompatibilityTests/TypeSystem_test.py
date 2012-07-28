@@ -276,3 +276,128 @@ class TypeSystem_RecordTypeDefinitionAndAssignment(unittest.TestCase):
             self.assertEqual(myRecordInstance.getField('field2'), Charstring("Varsovie"))
         except:
             self.fail()
+
+class TypeSystem_Subtyping_TypeAliasing(unittest.TestCase):
+
+    #
+    # type boolean MyNewBoolean;
+    #
+    def test_SubtypingSimpleType_Boolean(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class MyNewBoolean(Boolean):
+                def __init__(self, aValue=False):
+                    Boolean.__init__(self, aValue)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(MyNewBoolean, Boolean))
+        except:
+            self.fail()
+
+    #
+    # type integer MyNewInteger;
+    #
+    def test_SubtypingSimpleType_Integer(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class MyNewInteger(Integer):
+                def __init__(self, aValue=0):
+                    Integer.__init__(self, aValue)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(MyNewInteger, Integer))
+        except:
+            self.fail()
+
+    #
+    # type float MyNewFloat;
+    #
+    def test_SubtypingSimpleType_Float(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class MyNewFloat(Float):
+                def __init__(self, aValue=0.0):
+                    Float.__init__(self, aValue)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(MyNewFloat, Float))
+        except:
+            self.fail()
+
+    #
+    # type charstring MyNewCharstring;
+    #
+    def test_SubtypingSimpleType_Charstring(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class MyNewCharstring(Charstring):
+                def __init__(self, aValue=""):
+                    Charstring.__init__(self, aValue)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(MyNewCharstring, Charstring))
+        except:
+            self.fail()
+
+    #
+    # type record myRecord {};
+    # type myRecord myNewRecord;
+    #
+    def test_SubtypingStructuredType_Record_Empty(self):
+        try:
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self)
+            class myNewRecord(myRecord):
+                def __init__(self):
+                    myRecord.__init__(self)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(myNewRecord, myRecord))
+        except:
+            self.fail()
+
+    #
+    # type record myRecord
+    # {
+    #     Integer    field1,
+    #     Charstring field2
+    # };
+    # type myRecord myNewRecord;
+    #
+    def test_SubtypingStructuredType_Record_NonEmpty(self):
+        try:
+            #
+            # TTCN-3.
+            #
+            class myRecord(Record):
+                def __init__(self):
+                    Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+            class myNewRecord(myRecord):
+                def __init__(self):
+                    myRecord.__init__(self)
+
+            #
+            # Compatibility.
+            #
+            self.assertTrue(issubclass(myNewRecord, myRecord))
+        except:
+            self.fail()

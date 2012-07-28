@@ -259,6 +259,12 @@ class BoundaryFloat(Boundary):
 class SubtypeOfSimpleType(object):
     pass
 
+class ListOfTemplates(SubtypeOfSimpleType):
+    pass
+
+class ListOfTypes(SubtypeOfSimpleType):
+    pass
+
 class Range(SubtypeOfSimpleType):
     def __init__(self, aLowerBoundary, aUpperBoundary):
         if isinstance(aLowerBoundary, Boundary) and \
@@ -274,3 +280,9 @@ class Range(SubtypeOfSimpleType):
             return True
         else:
             return False
+
+class StringLength(StringLength):
+    pass
+
+class StringPattern(StringPattern):
+    pass

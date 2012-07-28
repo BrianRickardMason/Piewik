@@ -35,12 +35,22 @@
 #
 
 #
+# Part: Types.
+#
+
+#
 # Exceptions used in Piewik type system.
 #
 class TypeSystemException(Exception):
     pass
 
 class InvalidTTCN3TypeInAssignment(TypeSystemException):
+    pass
+
+class InvalidTTCN3TypeInBoundaryAssignment(TypeSystemException):
+    pass
+
+class InvalidTTCN3TypeValueNotInConstraint(TypeSystemException):
     pass
 
 class LookupErrorMissingField(TypeSystemException):
@@ -53,6 +63,12 @@ class InvalidTTCN3TypeInComparison(TypeSystemException):
     pass
 
 class InvalidTypeOfDictionaryKey(TypeSystemException):
+    pass
+
+class InvalidTTCN3ValueInAssignment(TypeSystemException):
+    pass
+
+class InvalidTypeOfBoundary(TypeSystemException):
     pass
 
 #
@@ -184,3 +200,77 @@ class Record(TTCN3StructuredType):
             return self.mValue[aName]
         else:
             raise LookupErrorMissingField
+
+#
+# Part: Subtypes.
+#
+
+#
+# Boundaries.
+#
+class Boundary(object):
+    pass
+
+class BoundaryInteger(Boundary):
+    def __init__(self, aValue, aClosed):
+        if type(aValue)  is int  and \
+           type(aClosed) is bool     :
+            self.mValue  = aValue
+            self.mClosed = aClosed
+        else:
+            raise InvalidTTCN3TypeInBoundaryAssignment
+
+    def acceptLowerBoundary(self, aValue):
+        if self.mClosed:
+            return aValue >= self.mValue
+        else:
+            return aValue >  self.mValue
+
+    def acceptUpperBoundary(self, aValue):
+        if self.mClosed:
+            return aValue <= self.mValue
+        else:
+            return aValue <  self.mValue
+
+class BoundaryFloat(Boundary):
+    def __init__(self, aValue, aClosed):
+        if type(aValue)  is float and \
+           type(aClosed) is bool      :
+            self.mValue  = aValue
+            self.mClosed = aClosed
+        else:
+            raise InvalidTTCN3TypeInBoundaryAssignment
+
+    def acceptLowerBoundary(self, aValue):
+        if self.mClosed:
+            return aValue >= self.mValue
+        else:
+            return aValue >  self.mValue
+
+    def acceptUpperBoundary(self, aValue):
+        if self.mClosed:
+            return aValue <= self.mValue
+        else:
+            return aValue <  self.mValue
+
+#
+# Subtypes.
+#
+class SubtypeOfSimpleType(object):
+    pass
+
+class Range(SubtypeOfSimpleType):
+    def __init__(self, aLowerBoundary, aUpperBoundary):
+        if isinstance(aLowerBoundary, Boundary) and \
+           isinstance(aUpperBoundary, Boundary)     :
+            self.mLowerBoundary = aLowerBoundary
+            self.mUpperBoundary = aUpperBoundary
+        else:
+            raise InvalidTypeOfBoundary
+
+    def verify(self, aValue):
+        if self.mLowerBoundary.acceptLowerBoundary(aValue) and \
+           self.mUpperBoundary.acceptUpperBoundary(aValue)     :
+            return True
+        else:
+            return False

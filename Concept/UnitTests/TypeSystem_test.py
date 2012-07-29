@@ -332,64 +332,26 @@ class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
             subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
             subtypedFloat.assign(3.0)
 
-class MyRangedInteger(Integer):
-    def __init__(self, aSubtypeOfSimpleTypeConstraints):
-        if type(aSubtypeOfSimpleTypeConstraints) is not list:
-            raise InvalidTTCN3TypeInCtor
-
-        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
-
-        Integer.__init__(self)
-
-    def assign(self, aValue):
-        if type(aValue) is not int:
-            raise InvalidTTCN3TypeInAssignment
-
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.verify(aValue):
-                raise InvalidTTCN3TypeValueNotInConstraint
-
-        self.mValue = aValue
-
-class MyRangedFloat(Float):
-    def __init__(self, aSubtypeOfSimpleTypeConstraints):
-        if type(aSubtypeOfSimpleTypeConstraints) is not list:
-            raise InvalidTTCN3TypeInCtor
-
-        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
-
-        Float.__init__(self)
-
-    def assign(self, aValue):
-        if type(aValue) is not float:
-            raise InvalidTTCN3TypeInAssignment
-
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.verify(aValue):
-                raise InvalidTTCN3TypeValueNotInConstraint
-
-        self.mValue = aValue
-
 class TypeSystem_Subtyping_Range_ClosedBoundaries_Integer(unittest.TestCase):
     #
     # Constructions.
     #
     def test_Ctor(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
 
     #
     # Successful assignments.
     #
     def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
         subtypedInteger.assign(1)
 
     def test_SuccessfulAssignment_InRange(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
         subtypedInteger.assign(22)
 
     def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
         subtypedInteger.assign(255)
 
     #
@@ -397,12 +359,12 @@ class TypeSystem_Subtyping_Range_ClosedBoundaries_Integer(unittest.TestCase):
     #
     def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
             subtypedInteger.assign(0)
 
     def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
+            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
             subtypedInteger.assign(256)
 
 class TypeSystem_Subtyping_Range_ClosedBoundaries_Float(unittest.TestCase):
@@ -410,21 +372,21 @@ class TypeSystem_Subtyping_Range_ClosedBoundaries_Float(unittest.TestCase):
     # Constructions.
     #
     def test_Ctor(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
 
     #
     # Successful assignments.
     #
     def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
         subtypedFloat.assign(1.0)
 
     def test_SuccessfulAssignment_InRange(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
         subtypedFloat.assign(22.0)
 
     def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
         subtypedFloat.assign(255.0)
 
     #
@@ -432,12 +394,12 @@ class TypeSystem_Subtyping_Range_ClosedBoundaries_Float(unittest.TestCase):
     #
     def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
             subtypedFloat.assign(0.0)
 
     def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
+            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
             subtypedFloat.assign(256.0)
 
 class TypeSystem_Subtyping_Range_OpenBoundaries_Integer(unittest.TestCase):
@@ -445,21 +407,21 @@ class TypeSystem_Subtyping_Range_OpenBoundaries_Integer(unittest.TestCase):
     # Constructions.
     #
     def test_Ctor(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
 
     #
     # Successful assignments.
     #
     def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
         subtypedInteger.assign(2)
 
     def test_SuccessfulAssignment_InRange(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
         subtypedInteger.assign(22)
 
     def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
         subtypedInteger.assign(254)
 
     #
@@ -467,12 +429,12 @@ class TypeSystem_Subtyping_Range_OpenBoundaries_Integer(unittest.TestCase):
     #
     def test_UnsuccessfulAssignment_LowerBoundary(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
             subtypedInteger.assign(1)
 
     def test_UnsuccessfulAssignment_UpperBoundary(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MyRangedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
+            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
             subtypedInteger.assign(255)
 
 class TypeSystem_Subtyping_Range_OpenBoundaries_Float(unittest.TestCase):
@@ -480,21 +442,21 @@ class TypeSystem_Subtyping_Range_OpenBoundaries_Float(unittest.TestCase):
     # Constructions.
     #
     def test_Ctor(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
 
     #
     # Successful assignments.
     #
     def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
         subtypedFloat.assign(1.1)
 
     def test_SuccessfulAssignment_InRange(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
         subtypedFloat.assign(22.0)
 
     def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
         subtypedFloat.assign(249.9)
 
     #
@@ -502,12 +464,12 @@ class TypeSystem_Subtyping_Range_OpenBoundaries_Float(unittest.TestCase):
     #
     def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
             subtypedFloat.assign(1.0)
 
     def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MyRangedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
+            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
             subtypedFloat.assign(255.0)
 
 if __name__ == '__main__':

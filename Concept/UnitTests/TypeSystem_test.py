@@ -279,12 +279,10 @@ class MySubtypedInteger(Integer):
         Integer.__init__(self)
 
     def assign(self, aValue):
-        if type(aValue) is not int:
-            raise InvalidTTCN3TypeInAssignment
         for constraint in self.mSubtypeOfSimpleTypeConstraints:
             if not constraint.verify(aValue):
                 raise InvalidTTCN3TypeValueNotInConstraint
-        self.mValue = aValue
+        return Integer.assign(self, aValue)
 
 class MySubtypedFloat(Float):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
@@ -294,12 +292,10 @@ class MySubtypedFloat(Float):
         Float.__init__(self)
 
     def assign(self, aValue):
-        if type(aValue) is not float:
-            raise InvalidTTCN3TypeInAssignment
         for constraint in self.mSubtypeOfSimpleTypeConstraints:
             if not constraint.verify(aValue):
                 raise InvalidTTCN3TypeValueNotInConstraint
-        self.mValue = aValue
+        return Float.assign(self, aValue)
 
 class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
     #

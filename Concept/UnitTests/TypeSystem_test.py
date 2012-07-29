@@ -271,6 +271,67 @@ class TypeSystem_Charstring(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Charstring().assign("WAX") == Float().assign(1.0)
 
+class MySubtypedInteger(Integer):
+    def __init__(self, aSubtypeOfSimpleTypeConstraints):
+        if type(aSubtypeOfSimpleTypeConstraints) is not list:
+            raise InvalidTTCN3TypeInCtor
+        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
+        Integer.__init__(self)
+
+    def assign(self, aValue):
+        if type(aValue) is not int:
+            raise InvalidTTCN3TypeInAssignment
+        for constraint in self.mSubtypeOfSimpleTypeConstraints:
+            if not constraint.verify(aValue):
+                raise InvalidTTCN3TypeValueNotInConstraint
+        self.mValue = aValue
+
+class MySubtypedFloat(Float):
+    def __init__(self, aSubtypeOfSimpleTypeConstraints):
+        if type(aSubtypeOfSimpleTypeConstraints) is not list:
+            raise InvalidTTCN3TypeInCtor
+        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
+        Float.__init__(self)
+
+    def assign(self, aValue):
+        if type(aValue) is not float:
+            raise InvalidTTCN3TypeInAssignment
+        for constraint in self.mSubtypeOfSimpleTypeConstraints:
+            if not constraint.verify(aValue):
+                raise InvalidTTCN3TypeValueNotInConstraint
+        self.mValue = aValue
+
+class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+
+    #
+    # Successful assignments.
+    #
+    def test_SuccessfulAssignment_OneItem(self):
+        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+        subtypedFloat.assign(1.0)
+
+    def test_SuccessfulAssignment_ManyItems(self):
+        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
+        subtypedFloat.assign(2.0)
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_UnsuccessfulAssignment_OneItem(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+            subtypedFloat.assign(0.0)
+
+    def test_UnsuccessfulAssignment_ManyItems(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
+            subtypedFloat.assign(3.0)
+
 class MyRangedInteger(Integer):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
         if type(aSubtypeOfSimpleTypeConstraints) is not list:

@@ -71,6 +71,9 @@ class InvalidTTCN3ValueInAssignment(TypeSystemException):
 class InvalidTypeOfBoundary(TypeSystemException):
     pass
 
+class InvalidTypeOfList(TypeSystemException):
+    pass
+
 #
 # Types.
 #
@@ -260,7 +263,21 @@ class SubtypeOfSimpleType(object):
     pass
 
 class ListOfTemplates(SubtypeOfSimpleType):
-    pass
+    # TODO: Check on assignment if all types are the same.
+    def __init__(self, aList):
+        if type(aList) is list:
+            for item in aList:
+                if not isinstance(item, TTCN3Type):
+                    raise InvalidTTCN3TypeInCtor
+            self.mList = aList
+        else:
+            raise InvalidTypeOfList
+
+    def verify(self, aValue):
+        for item in self.mList:
+            if item.value() == aValue:
+                return True
+        return False
 
 class ListOfTypes(SubtypeOfSimpleType):
     pass
@@ -281,8 +298,8 @@ class Range(SubtypeOfSimpleType):
         else:
             return False
 
-class StringLength(StringLength):
+class StringLength(SubtypeOfSimpleType):
     pass
 
-class StringPattern(StringPattern):
+class StringPattern(SubtypeOfSimpleType):
     pass

@@ -297,6 +297,37 @@ class MySubtypedFloat(Float):
                 raise InvalidTTCN3TypeValueNotInConstraint
         return Float.assign(self, aValue)
 
+class TypeSystem_Subtyping_ListOfTemplates_Integer(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+
+    #
+    # Successful assignments.
+    #
+    def test_SuccessfulAssignment_OneItem(self):
+        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+        subtypedInteger.assign(1)
+
+    def test_SuccessfulAssignment_ManyItems(self):
+        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
+        subtypedInteger.assign(2)
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_UnsuccessfulAssignment_OneItem(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+            subtypedInteger.assign(0)
+
+    def test_UnsuccessfulAssignment_ManyItems(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
+            subtypedInteger.assign(3)
+
 class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
     #
     # Constructions.

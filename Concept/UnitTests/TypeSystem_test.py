@@ -419,6 +419,54 @@ class TypeSystem_Subtyping_ListOfTypes_Integer(unittest.TestCase):
             subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
             subtypedInteger3.assign(3)
 
+class TypeSystem_Subtyping_ListOfTypes_Float(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
+        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
+
+    #
+    # Successful assignments.
+    #
+    def test_SuccessfulAssignment_OneItem(self):
+        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+        subtypedFloat2 = MySubtypedFloat([ListOfTypes([subtypedFloat1])])
+        subtypedFloat2.assign(1.0)
+
+    def test_SuccessfulAssignment_ManyItems(self):
+        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
+        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
+        subtypedFloat3.assign(1.0)
+        subtypedFloat3.assign(2.0)
+
+    def test_SuccessfulAssignment_ManyItems_Overlaping(self):
+        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
+        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(3.0)])])
+        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
+        subtypedFloat3.assign(1.0)
+        subtypedFloat3.assign(2.0)
+        subtypedFloat3.assign(3.0)
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_UnsuccessfulAssignment_OneItem(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+            subtypedFloat2 = MySubtypedFloat([ListOfTypes([subtypedFloat1])])
+            subtypedFloat2.assign(0.0)
+
+    def test_UnsuccessfulAssignment_ManyItems(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
+            subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
+            subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
+            subtypedFloat3.assign(3.0)
+
 class TypeSystem_Subtyping_Range_ClosedBoundaries_Integer(unittest.TestCase):
     #
     # Constructions.

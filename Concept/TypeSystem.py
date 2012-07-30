@@ -87,6 +87,9 @@ class TTCN3Type(object):
     def value(self):
         return self.mValue
 
+    def accept(self, aValue):
+        raise NotImplementedError
+
 class TTCN3SimpleType(TTCN3Type):
     def __init__(self, aValue):
         TTCN3Type.__init__(self, aValue)
@@ -114,6 +117,9 @@ class Boolean(TTCN3SimpleType):
         self.mValue = aValue
         return self
 
+    def accept(self, aValue):
+        return type(aValue) is bool
+
 class Integer(TTCN3SimpleType):
     def __init__(self):
         TTCN3SimpleType.__init__(self, 0)
@@ -129,6 +135,9 @@ class Integer(TTCN3SimpleType):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
+
+    def accept(self, aValue):
+        return type(aValue) is int
 
 class Float(TTCN3SimpleType):
     def __init__(self):
@@ -146,6 +155,9 @@ class Float(TTCN3SimpleType):
         self.mValue = aValue
         return self
 
+    def accept(self, aValue):
+        return type(aValue) is float
+
 class Charstring(TTCN3SimpleType):
     def __init__(self):
         TTCN3SimpleType.__init__(self, "")
@@ -161,6 +173,9 @@ class Charstring(TTCN3SimpleType):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
+
+    def accept(self, aValue):
+        return type(aValue) is str
 
 #
 # Structured types.
@@ -194,6 +209,9 @@ class Record(TTCN3StructuredType):
 
         # TODO: Implement the verification of the assignment.
         self.mValue = aValue
+
+    def accept(self, aValue):
+        return type(aValue) is dict
 
     def value(self):
         raise NotImplementedError
@@ -279,8 +297,34 @@ class ListOfTemplates(SubtypeOfSimpleType):
                 return True
         return False
 
+    def accept(self, aValue):
+        for item in self.mList:
+            if item.value() == aValue:
+                return True
+        return False
+
 class ListOfTypes(SubtypeOfSimpleType):
-    pass
+    # TODO: Check on assignment if all types are the same.
+    def __init__(self, aList):
+        if type(aList) is list:
+            for item in aList:
+                if not isinstance(item, TTCN3Type):
+                    raise InvalidTTCN3TypeInCtor
+            self.mList = aList
+        else:
+            raise InvalidTypeOfList
+
+    def verify(self, aValue):
+        for item in self.mList:
+            if item.accept(aValue):
+                return True
+        return False
+
+    def accept(self, aValue):
+        for item in self.mList:
+            if item.accept(aValue):
+                return True
+        return False
 
 class Range(SubtypeOfSimpleType):
     def __init__(self, aLowerBoundary, aUpperBoundary):

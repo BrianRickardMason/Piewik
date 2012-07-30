@@ -284,6 +284,12 @@ class MySubtypedInteger(Integer):
                 raise InvalidTTCN3TypeValueNotInConstraint
         return Integer.assign(self, aValue)
 
+    def accept(self, aValue):
+        for constraint in self.mSubtypeOfSimpleTypeConstraints:
+            if constraint.accept(aValue):
+                return True
+        return False
+
 class MySubtypedFloat(Float):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
         if type(aSubtypeOfSimpleTypeConstraints) is not list:
@@ -296,6 +302,12 @@ class MySubtypedFloat(Float):
             if not constraint.verify(aValue):
                 raise InvalidTTCN3TypeValueNotInConstraint
         return Float.assign(self, aValue)
+
+    def accept(self, aValue):
+        for constraint in self.mSubtypeOfSimpleTypeConstraints:
+            if constraint.accept(aValue):
+                return True
+        return False
 
 class TypeSystem_Subtyping_ListOfTemplates_Integer(unittest.TestCase):
     #
@@ -358,6 +370,54 @@ class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
             subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
             subtypedFloat.assign(3.0)
+
+class TypeSystem_Subtyping_ListOfTypes_Integer(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
+        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
+
+    #
+    # Successful assignments.
+    #
+    def test_SuccessfulAssignment_OneItem(self):
+        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+        subtypedInteger2 = MySubtypedInteger([ListOfTypes([subtypedInteger1])])
+        subtypedInteger2.assign(1)
+
+    def test_SuccessfulAssignment_ManyItems(self):
+        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
+        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
+        subtypedInteger3.assign(1)
+        subtypedInteger3.assign(2)
+
+    def test_SuccessfulAssignment_ManyItems_Overlaping(self):
+        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
+        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(3)])])
+        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
+        subtypedInteger3.assign(1)
+        subtypedInteger3.assign(2)
+        subtypedInteger3.assign(3)
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_UnsuccessfulAssignment_OneItem(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+            subtypedInteger2 = MySubtypedInteger([ListOfTypes([subtypedInteger1])])
+            subtypedInteger2.assign(0)
+
+    def test_UnsuccessfulAssignment_ManyItems(self):
+        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
+            subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
+            subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
+            subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
+            subtypedInteger3.assign(3)
 
 class TypeSystem_Subtyping_Range_ClosedBoundaries_Integer(unittest.TestCase):
     #

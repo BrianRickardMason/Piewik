@@ -335,3 +335,79 @@ class StringLength(SubtypeOfSimpleType):
 
 class StringPattern(SubtypeOfSimpleType):
     pass
+
+#
+# Part: special symbols.
+#
+class TTCN3SpecialSymbolType(TTCN3Type):
+    def __init__(self):
+        TTCN3Type.__init__(self, None)
+
+#
+# Special symbols used instead of values.
+#
+class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
+    pass
+
+class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    def __init__(self):
+        TTCN3SpecialSymbolType.__init__(self)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, TTCN3Type):
+            return True
+        else:
+            raise InvalidTTCN3TypeInComparison
+
+class Omit(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class List(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Complement(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+# TODO: Introduce namespaces.
+class SpecialSymbolRange(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Superset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Subset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+class Pattern(TTCN3SpecialSymbolUsedInsteadOfAValueType):
+    pass
+
+#
+# Special symbols used inside values.
+#
+class TTCN3SpecialSymbolUsedInsideAValueType(TTCN3SpecialSymbolType):
+    pass
+
+class AnySingleElement(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+class AnyNumberOfElements(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+class Permutation(TTCN3SpecialSymbolUsedInsideAValueType):
+    pass
+
+#
+# Special symbols which describe attributes of values.
+#
+class TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType(TTCN3SpecialSymbolType):
+    pass
+
+# TODO: Introduce namespaces.
+class SpecialSymbolLength(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
+    pass
+
+class Present(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
+    pass

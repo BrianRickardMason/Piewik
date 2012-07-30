@@ -606,6 +606,56 @@ class TypeSystem_Subtyping_Range_OpenBoundaries_Float(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
             subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
             subtypedFloat.assign(255.0)
+#
+# TODO: All types
+#
+
+class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        try:
+            AnyOrNone()
+        except:
+            self.fail()
+
+    #
+    # Successful matching: simple types.
+    #
+    def test_MatchingReturnsTrue_Self(self):
+        # TODO: Define whether this should be allowed. Why to compare a template with another template?
+        self.assertTrue(AnyOrNone() == AnyOrNone())
+
+    #
+    # Simple types.
+    #
+    # TODO: All types
+    #
+    def test_MatchingReturnsTrue_Boolean(self):
+        self.assertTrue(AnyOrNone(), Boolean().assign(True))
+
+    def test_MatchingReturnsTrue_Integer(self):
+        self.assertTrue(AnyOrNone(), Integer().assign(1))
+
+    def test_MatchingReturnsTrue_Float(self):
+        self.assertTrue(AnyOrNone(), Float().assign(1.0))
+
+    def test_MatchingReturnsTrue_Charstring(self):
+        self.assertTrue(AnyOrNone(), Charstring().assign("WAX"))
+
+    #
+    # Structured types.
+    #
+    # TODO: All types
+    #
+    def test_Integer(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+        myRecordInstance = myRecord()
+        myRecordInstance.assign({})
+        self.assertTrue(AnyOrNone(), myRecordInstance)
 
 if __name__ == '__main__':
     unittest.main()

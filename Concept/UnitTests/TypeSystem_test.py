@@ -280,7 +280,7 @@ class MySubtypedInteger(Integer):
 
     def assign(self, aValue):
         for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.verify(aValue):
+            if not constraint.accept(aValue):
                 raise InvalidTTCN3TypeValueNotInConstraint
         return Integer.assign(self, aValue)
 
@@ -299,7 +299,7 @@ class MySubtypedFloat(Float):
 
     def assign(self, aValue):
         for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.verify(aValue):
+            if not constraint.accept(aValue):
                 raise InvalidTTCN3TypeValueNotInConstraint
         return Float.assign(self, aValue)
 

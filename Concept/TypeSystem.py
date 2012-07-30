@@ -291,12 +291,6 @@ class ListOfTemplates(SubtypeOfSimpleType):
         else:
             raise InvalidTypeOfList
 
-    def verify(self, aValue):
-        for item in self.mList:
-            if item.value() == aValue:
-                return True
-        return False
-
     def accept(self, aValue):
         for item in self.mList:
             if item.value() == aValue:
@@ -314,12 +308,6 @@ class ListOfTypes(SubtypeOfSimpleType):
         else:
             raise InvalidTypeOfList
 
-    def verify(self, aValue):
-        for item in self.mList:
-            if item.accept(aValue):
-                return True
-        return False
-
     def accept(self, aValue):
         for item in self.mList:
             if item.accept(aValue):
@@ -335,7 +323,7 @@ class Range(SubtypeOfSimpleType):
         else:
             raise InvalidTypeOfBoundary
 
-    def verify(self, aValue):
+    def accept(self, aValue):
         if self.mLowerBoundary.acceptLowerBoundary(aValue) and \
            self.mUpperBoundary.acceptUpperBoundary(aValue)     :
             return True

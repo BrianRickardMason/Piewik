@@ -44,6 +44,9 @@
 class TypeSystemException(Exception):
     pass
 
+class NotAMessageType(Exception):
+    pass
+
 class InvalidTTCN3TypeInAssignment(TypeSystemException):
     pass
 
@@ -90,13 +93,27 @@ class TTCN3Type(object):
     def accept(self, aValue):
         raise NotImplementedError
 
-class TTCN3SimpleType(TTCN3Type):
+class TTCN3MessageType(TTCN3Type):
     def __init__(self, aValue):
         TTCN3Type.__init__(self, aValue)
 
-class TTCN3StructuredType(TTCN3Type):
+    def isMessageType(self):
+        return True
+
+class TTCN3TemplateType(TTCN3Type):
     def __init__(self, aValue):
         TTCN3Type.__init__(self, aValue)
+
+    def isMessageType(self):
+        return False
+
+class TTCN3SimpleType(TTCN3MessageType):
+    def __init__(self, aValue):
+        TTCN3MessageType.__init__(self, aValue)
+
+class TTCN3StructuredType(TTCN3MessageType):
+    def __init__(self, aValue):
+        TTCN3MessageType.__init__(self, aValue)
 
 #
 # Simple types.
@@ -194,6 +211,7 @@ class Record(TTCN3StructuredType):
 
         # Values must be subtypes of TTCN3Type.
         for typeName in aDictionary.values():
+            # TODO: Disallow putting inside the Record special symbols used instead of values.
             if not issubclass(typeName, TTCN3Type):
                 raise InvalidTTCN3TypeInCtor
 
@@ -221,6 +239,12 @@ class Record(TTCN3StructuredType):
             return self.mValue[aName]
         else:
             raise LookupErrorMissingField
+
+    def isMessageType(self):
+        for key in self.mValue.keys():
+            if not self.mValue[key].isMessageType():
+                return False
+        return True
 
 #
 # Part: Subtypes.
@@ -339,9 +363,9 @@ class StringPattern(SubtypeOfSimpleType):
 #
 # Part: special symbols.
 #
-class TTCN3SpecialSymbolType(TTCN3Type):
+class TTCN3SpecialSymbolType(TTCN3TemplateType):
     def __init__(self):
-        TTCN3Type.__init__(self, None)
+        TTCN3TemplateType.__init__(self, None)
 
 #
 # Special symbols used instead of values.

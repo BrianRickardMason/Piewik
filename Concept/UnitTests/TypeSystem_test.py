@@ -648,8 +648,9 @@ class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase)
     # Structured types.
     #
     # TODO: All types
+    # FIXME: This assignment should not be possible! Only special symbols used inside values are allowed.
     #
-    def test_Integer(self):
+    def test_Record(self):
         class myRecord(Record):
             def __init__(self):
                 Record.__init__(self, {'field1': Integer, 'field2': Charstring})

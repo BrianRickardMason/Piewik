@@ -91,6 +91,15 @@ class TypeSystem_Boolean(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Boolean().assign(True) == Charstring().assign("WAX")
 
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone(self):
+        self.assertTrue(Boolean().assign(True), AnyOrNone())
+
+
 class TypeSystem_Integer(unittest.TestCase):
     #
     # Constructions.
@@ -150,6 +159,14 @@ class TypeSystem_Integer(unittest.TestCase):
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Integer().assign(1) == Charstring().assign("WAX")
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone(self):
+        self.assertTrue(Integer().assign(1), AnyOrNone())
 
 class TypeSystem_Float(unittest.TestCase):
     #
@@ -211,6 +228,14 @@ class TypeSystem_Float(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Float().assign(1.0) == Charstring().assign("WAX")
 
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone(self):
+        self.assertTrue(Float().assign(1.0), AnyOrNone())
+
 class TypeSystem_Charstring(unittest.TestCase):
     #
     # Constructions.
@@ -270,6 +295,14 @@ class TypeSystem_Charstring(unittest.TestCase):
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Charstring().assign("WAX") == Float().assign(1.0)
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone(self):
+        self.assertTrue(Charstring().assign("WAX"), AnyOrNone())
 
 class MySubtypedInteger(Integer):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
@@ -645,7 +678,7 @@ class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase)
         self.assertTrue(AnyOrNone(), Charstring().assign("WAX"))
 
     #
-    # Structured types.
+    # Successful matching: structured types.
     #
     # TODO: All types
     # FIXME: This assignment should not be possible! Only special symbols used inside values are allowed.
@@ -657,6 +690,13 @@ class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase)
         myRecordInstance = myRecord()
         myRecordInstance.assign({})
         self.assertTrue(AnyOrNone(), myRecordInstance)
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonRaisesAnException_InvalidType(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            AnyOrNone() == True
 
 if __name__ == '__main__':
     unittest.main()

@@ -183,26 +183,26 @@ class TypeSystem_Assignment(unittest.TestCase):
 
 class Typesystem_StructuredTypeDefinition_Record(unittest.TestCase):
     #
-    # type record myRecord {};
+    # type record MyRecord {};
     #
     def test_Empty(self):
         try:
             #
             # TTCN-3.
             #
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
                     Record.__init__(self)
 
             #
             # Compatibility.
             #
-            self.assertTrue(issubclass(myRecord, Record))
+            self.assertTrue(issubclass(MyRecord, Record))
         except:
             self.fail()
 
     #
-    # type record myRecord
+    # type record MyRecord
     # {
     #     Integer    field1,
     #     Charstring field2
@@ -213,47 +213,47 @@ class Typesystem_StructuredTypeDefinition_Record(unittest.TestCase):
             #
             # TTCN-3.
             #
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
                     Record.__init__(self, {'field1': Integer, 'field2': Charstring})
 
             #
             # Compatibility.
             #
-            self.assertTrue(issubclass(myRecord, Record))
+            self.assertTrue(issubclass(MyRecord, Record))
         except:
             self.fail()
 
 class TypeSystem_StructuredTypeDefinitionAndAssignment_Record(unittest.TestCase):
     #
-    # type record myRecord {};
-    # var myRecord myRecordInstance := {};
+    # type record MyRecord {};
+    # var MyRecord myRecordInstance := {};
     #
     def test_Empty(self):
         try:
             #
             # TTCN-3.
             #
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
                     Record.__init__(self)
-            myRecordInstance = myRecord()
+            myRecordInstance = MyRecord()
             myRecordInstance.assign({})
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myRecordInstance, myRecord))
+            self.assertTrue(isinstance(myRecordInstance, MyRecord))
         except:
             self.fail()
 
     #
-    # type record myRecord
+    # type record MyRecord
     # {
     #     Integer    field1,
     #     Charstring field2
     # };
-    # var myRecord myRecordInstance :=
+    # var MyRecord myRecordInstance :=
     # {
     #     field1 := 1,
     #     field2 := "Varsovie"
@@ -264,16 +264,16 @@ class TypeSystem_StructuredTypeDefinitionAndAssignment_Record(unittest.TestCase)
             #
             # TTCN-3.
             #
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
-                    Record.__init__(self)
-            myRecordInstance = myRecord()
+                    Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+            myRecordInstance = MyRecord()
             myRecordInstance.assign({'field1': Integer().assign(1), 'field2': Charstring().assign("Varsovie")})
 
             #
             # Compatibility.
             #
-            self.assertTrue(isinstance(myRecordInstance, myRecord))
+            self.assertTrue(isinstance(myRecordInstance, MyRecord))
             self.assertEqual(myRecordInstance.getField('field1'), Integer().assign(1))
             self.assertEqual(myRecordInstance.getField('field2'), Charstring().assign("Varsovie"))
         except:
@@ -358,48 +358,49 @@ class TypeSystem_Subtyping_TypeAliasing_SimpleType(unittest.TestCase):
 
 class TypeSystem_Subtyping_TypeAliasing_StructuredType(unittest.TestCase):
     #
-    # type record myRecord {};
-    # type myRecord myNewRecord;
+    # type record MyRecord {};
+    # type MyRecord MyNewRecord;
     #
     def test_Record_Empty(self):
         try:
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
                     Record.__init__(self)
-            class myNewRecord(myRecord):
+            class MyNewRecord(MyRecord):
                 def __init__(self):
-                    myRecord.__init__(self)
+                    MyRecord.__init__(self)
 
             #
             # Compatibility.
             #
-            self.assertTrue(issubclass(myNewRecord, myRecord))
+            self.assertTrue(issubclass(MyNewRecord, MyRecord))
         except:
             self.fail()
 
     #
-    # type record myRecord
+    # type record MyRecord
     # {
     #     Integer    field1,
     #     Charstring field2
     # };
-    # type myRecord myNewRecord;
+    # type MyRecord MyNewRecord;
     #
     def test_Record_NonEmpty(self):
         try:
             #
             # TTCN-3.
             #
-            class myRecord(Record):
+            class MyRecord(Record):
                 def __init__(self):
+                    # FIXME: Will work without definition of the dictionary (invalid assignment possible).
                     Record.__init__(self, {'field1': Integer, 'field2': Charstring})
-            class myNewRecord(myRecord):
+            class MyNewRecord(MyRecord):
                 def __init__(self):
-                    myRecord.__init__(self)
+                    MyRecord.__init__(self)
 
             #
             # Compatibility.
             #
-            self.assertTrue(issubclass(myNewRecord, myRecord))
+            self.assertTrue(issubclass(MyNewRecord, MyRecord))
         except:
             self.fail()

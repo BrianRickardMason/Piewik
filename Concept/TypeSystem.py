@@ -218,8 +218,18 @@ class Record(TTCN3StructuredType):
         self.mDictionary = aDictionary
 
     def __eq__(self, aOther):
-        # TODO: Implement me.
-        raise NotImplementedError
+        if isinstance(aOther, Record):
+            if len(self.mValue) != len(aOther.mValue):
+                return False
+            for key in self.mValue.keys():
+                if not key in aOther.mValue:
+                    return False
+                else:
+                    if self.mValue[key] != aOther.mValue[key]:
+                        return False
+            return True
+        else:
+            raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
         if type(aValue) is not dict:

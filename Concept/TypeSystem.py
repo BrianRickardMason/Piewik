@@ -125,6 +125,8 @@ class Boolean(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Boolean):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -144,6 +146,8 @@ class Integer(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -163,6 +167,8 @@ class Float(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -182,6 +188,8 @@ class Charstring(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
             return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -228,6 +236,8 @@ class Record(TTCN3StructuredType):
                     if self.mValue[key] != aOther.mValue[key]:
                         return False
             return True
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 

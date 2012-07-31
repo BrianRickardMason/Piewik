@@ -234,5 +234,28 @@ class TemplateMatchingMechanism_StructuredTypes_Record_Record(unittest.TestCase)
         template = Template(myRecordInstance2)
         self.assertFalse(TemplateMatchingMechanism(message, template)())
 
+#
+# TODO: All types.
+#
+class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Boolean(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Integer(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    # TODO: All types.
+    #
+    def test_ReturnsTrue_AnyOrNone(self):
+        message  = Message (Integer().assign(1))
+        template = Template(AnyOrNone())
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
+
+class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Float(unittest.TestCase):
+    pass
+
+class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Charstring(unittest.TestCase):
+    pass
+
 if __name__ == '__main__':
     unittest.main()

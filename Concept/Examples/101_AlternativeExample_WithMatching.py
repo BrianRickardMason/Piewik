@@ -44,8 +44,8 @@ class Function(object):
     pass
 
 class Function_ComponentA(Function):
-    def __init__(self, aRunsOn, aParameter):
-        self.mRunsOn    = aRunsOn
+    def __init__(self, aParameter):
+        self.mRunsOn    = ComponentA
         self.mParameter = aParameter
 
     def __call__(self, aComponent):
@@ -56,8 +56,8 @@ class Function_ComponentA(Function):
             raise
 
 class Function_ComponentB(Function):
-    def __init__(self, aRunsOn):
-        self.mRunsOn = aRunsOn
+    def __init__(self):
+        self.mRunsOn = ComponentB
 
     def __call__(self, aComponent):
         if isinstance(aComponent, self.mRunsOn):
@@ -97,9 +97,9 @@ class SimpleTestcase1(Testcase):
         componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
         componentB  = ComponentB(self.mMtc, None, "ComponentB")
 
-        componentA1.addFunction(Function_ComponentA(ComponentA, "Foo"))
-        componentA2.addFunction(Function_ComponentA(ComponentA, "Bar"))
-        componentB.addFunction(Function_ComponentB(ComponentB))
+        componentA1.addFunction(Function_ComponentA("Foo"))
+        componentA2.addFunction(Function_ComponentA("Bar"))
+        componentB .addFunction(Function_ComponentB())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)
         connect(componentA2.mTestPort, componentB.mTestPortA2)
@@ -121,9 +121,9 @@ class SimpleTestcase2(Testcase):
         componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
         componentB  = ComponentB(self.mMtc, None, "ComponentB")
 
-        componentA1.addFunction(Function_ComponentA(ComponentA, "Foo"))
-        componentA2.addFunction(Function_ComponentA(ComponentA, "Bar"))
-        componentB.addFunction(Function_ComponentB(ComponentB))
+        componentA1.addFunction(Function_ComponentA("Foo"))
+        componentA2.addFunction(Function_ComponentA("Bar"))
+        componentB .addFunction(Function_ComponentB())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)
         connect(componentA2.mTestPort, componentB.mTestPortA2)

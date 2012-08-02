@@ -78,13 +78,13 @@ class Function_ReceiveMessages(Function):
             raise
 
 class ComponentA(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPort = Port(self.mEventQueue)
 
 class ComponentB(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPortA1 = Port(self.mEventQueue)
         self.mTestPortA2 = Port(self.mEventQueue)
 
@@ -93,9 +93,9 @@ class SimpleTestcase1(Testcase):
         Testcase.__init__(self)
 
     def execute(self):
-        componentA1 = ComponentA(self.mMtc, None, "ComponentA1")
-        componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
-        componentB  = ComponentB(self.mMtc, None, "ComponentB")
+        componentA1 = ComponentA("ComponentA1")
+        componentA2 = ComponentA("ComponentA2")
+        componentB  = ComponentB("ComponentB")
 
         componentA1.addFunction(Function_SendMessage("Foo"))
         componentA2.addFunction(Function_SendMessage("Bar"))
@@ -117,9 +117,9 @@ class SimpleTestcase2(Testcase):
         Testcase.__init__(self)
 
     def execute(self):
-        componentA1 = ComponentA(self.mMtc, None, "ComponentA1")
-        componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
-        componentB  = ComponentB(self.mMtc, None, "ComponentB")
+        componentA1 = ComponentA("ComponentA1")
+        componentA2 = ComponentA("ComponentA2")
+        componentB  = ComponentB("ComponentB")
 
         componentA1.addFunction(Function_SendMessage("Foo"))
         componentA2.addFunction(Function_SendMessage("Bar"))

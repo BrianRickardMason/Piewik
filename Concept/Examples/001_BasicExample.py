@@ -40,16 +40,16 @@ from Concept.Port             import connect
 from Concept.Testcase         import Testcase
 
 class ComponentA(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPort = Port(self.mEventQueue)
 
     def behaviour(self):
         self.mTestPort.send("Foo")
 
 class ComponentB(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPort = Port(self.mEventQueue)
 
     def behaviour(self):
@@ -60,8 +60,8 @@ class SimpleTestcase(Testcase):
         Testcase.__init__(self)
 
     def execute(self):
-        componentA = ComponentA(self.mMtc, None, "ComponentA")
-        componentB = ComponentB(self.mMtc, None, "ComponentB")
+        componentA = ComponentA("ComponentA")
+        componentB = ComponentB("ComponentB")
 
         connect(componentA.mTestPort, componentB.mTestPort)
 

@@ -65,8 +65,8 @@ class Function_ComponentB(Function):
             raise
 
 class ComponentA(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPort = Port(self.mEventQueue)
 
     def addFunction(self, aFunction):
@@ -76,8 +76,8 @@ class ComponentA(Component):
         self.mFunction(self)
 
 class ComponentB(Component):
-    def __init__(self, aMtc, aSystem, aName):
-        Component.__init__(self, aMtc, aSystem, aName)
+    def __init__(self, aName):
+        Component.__init__(self, aName)
         self.mTestPort = Port(self.mEventQueue)
 
     def addFunction(self, aFunction):
@@ -91,9 +91,9 @@ class SimpleTestcase(Testcase):
         Testcase.__init__(self)
 
     def execute(self):
-        componentA = ComponentA(self.mMtc, None, "ComponentA")
-        componentA = ComponentA(self.mMtc, None, "ComponentA")
-        componentB = ComponentB(self.mMtc, None, "ComponentB")
+        componentA = ComponentA("ComponentA")
+        componentA = ComponentA("ComponentA")
+        componentB = ComponentB("ComponentB")
 
         componentA.addFunction(Function_ComponentA(ComponentA))
         componentB.addFunction(Function_ComponentB(ComponentB))

@@ -29,9 +29,13 @@
 
 class Testcase(object):
     def __init__(self):
-        self.mMtc = None
+        self.mRunsOn = None
+        self.mMtc    = None
 
     def setMtc(self, aMtc):
+        if self.mRunsOn:
+            if not isinstance(aMtc, self.mRunsOn):
+                raise Exception
         self.mMtc = aMtc
 
     def execute(self):

@@ -40,7 +40,8 @@ from Concept.Port             import connect
 from Concept.Testcase         import Testcase
 
 class Function(object):
-    pass
+    def __init__(self):
+        self.mRunsOn = None
 
 class Function_SendMessage(Function):
     def __init__(self, aParameter):
@@ -77,8 +78,11 @@ class Function_ReceiveMessages(Function):
             raise
 
 class Mtc(Component):
-    def __init__(self, aName, aTestcase):
+    def __init__(self, aName):
         Component.__init__(self, aName)
+        self.mTestcase = None
+
+    def setTestcase(self, aTestcase):
         self.mTestcase = aTestcase
 
     def getVerdict(self):
@@ -102,6 +106,7 @@ class ComponentB(Component):
 class SimpleTestcase1(Testcase):
     def __init__(self):
         Testcase.__init__(self)
+        self.mRunsOn = Mtc
 
     def execute(self):
         componentA1 = ComponentA("ComponentA1")
@@ -127,6 +132,8 @@ class SimpleTestcase2(Testcase):
     def __init__(self):
         Testcase.__init__(self)
 
+        self.mRunsOn = Mtc
+
     def execute(self):
         componentA1 = ComponentA("ComponentA1")
         componentA2 = ComponentA("ComponentA2")
@@ -147,8 +154,12 @@ class SimpleTestcase2(Testcase):
         componentA2.join()
         componentB.join()
 
-c1 = Control(Mtc("MTC", SimpleTestcase1()))
+mtc = Mtc("MTC")
+mtc.setTestcase(SimpleTestcase1())
+c1 = Control(mtc)
 c1()
 
-c2 = Control(Mtc("MTC", SimpleTestcase2()))
+mtc = Mtc("MTC")
+mtc.setTestcase(SimpleTestcase2())
+c2 = Control(mtc)
 c2()

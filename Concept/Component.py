@@ -72,15 +72,3 @@ class Component(threading.Thread):
 
     def done(self):
         return self.mDone
-
-class Mtc(Component):
-    def __init__(self, aName, aTestcase):
-        Component.__init__(self, aName)
-        self.mTestcase = aTestcase
-
-    def getVerdict(self):
-        return True
-
-    def run(self):
-        self.mTestcase.setMtc(self)
-        self.mTestcase.execute()

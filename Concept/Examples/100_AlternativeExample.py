@@ -33,7 +33,6 @@ os.sys.path.append("..")
 from Concept.Action           import Alternative
 from Concept.Action           import Blocking
 from Concept.Component        import Component
-from Concept.Component        import Mtc
 from Concept.Control          import Control
 from Concept.EventExpectation import PortReceiveExpectation
 from Concept.Port             import Port
@@ -76,6 +75,18 @@ class Function_ComponentB(Function):
         else:
             # TODO: Raise a meaningful exception.
             raise
+
+class Mtc(Component):
+    def __init__(self, aName, aTestcase):
+        Component.__init__(self, aName)
+        self.mTestcase = aTestcase
+
+    def getVerdict(self):
+        return True
+
+    def run(self):
+        self.mTestcase.setMtc(self)
+        self.mTestcase.execute()
 
 class ComponentA(Component):
     def __init__(self, aName):

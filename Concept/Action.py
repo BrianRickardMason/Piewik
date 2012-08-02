@@ -41,7 +41,15 @@ class Blocking(Action):
         return False
 
 class Alternative(Action):
-    pass
+    def __init__(self, aListOfActions):
+        self.mActionList = aListOfActions
+
+    def applies(self, aEvent):
+        for action in self.mActionList:
+            command = action.applies(aEvent)
+            if command:
+                return command
+        return False
 
 class Interleave(Action):
     pass

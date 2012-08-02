@@ -43,16 +43,23 @@ class Component(threading.Thread):
         self.mComponentReference = ComponentReference(aMtc, aSystem, self)
         self.mName               = aName
         self.mEventQueue         = Queue.Queue()
+        self.mRunning            = False
+        self.mDone               = False
 
     def getVerdict(self):
         raise NotImplementedError
 
     def run(self):
+        self.mRunning = True
         try:
             self.behaviour()
         except:
+            self.mRunning = False
+            self.mDone    = True
             # Set verdict ERROR.
             raise
+        self.mRunning = False
+        self.mDone    = True
 
     def executeBlockingAction(self, aAction):
         command = None
@@ -66,6 +73,12 @@ class Component(threading.Thread):
 
     def log(self, aString):
         print(self.mName + ": " + aString);
+
+    def running(self):
+        return self.mRunning
+
+    def done(self):
+        return self.mDone
 
 class Mtc(Component):
     def __init__(self, aName, aTestcase):

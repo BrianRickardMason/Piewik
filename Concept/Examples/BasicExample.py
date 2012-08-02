@@ -30,15 +30,14 @@
 import os
 os.sys.path.append("..")
 
-from Concept.Action    import Blocking
-from Concept.Component import Component
-from Concept.Component import Mtc
-from Concept.Control   import Control
-from Concept.Event     import PortReceiveExpectation
-from Concept.Event     import PortReceivedEvent
-from Concept.Port      import Port
-from Concept.Port      import connect
-from Concept.Testcase  import Testcase
+from Concept.Action           import Blocking
+from Concept.Component        import Component
+from Concept.Component        import Mtc
+from Concept.Control          import Control
+from Concept.EventExpectation import PortReceiveExpectation
+from Concept.Port             import Port
+from Concept.Port             import connect
+from Concept.Testcase         import Testcase
 
 class ComponentA(Component):
     def __init__(self, aName):

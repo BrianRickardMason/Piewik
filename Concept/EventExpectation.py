@@ -27,11 +27,24 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-class Event(object):
+from Concept.Event import PortReceivedEvent
+
+class EventExpectation(object):
     pass
 
-class PortReceivedEvent(Event):
-    def __init__(self, aPort, aMessage, aSender = None):
+class PortReceiveExpectation(EventExpectation):
+    def __init__(self, aPort, aMessage = None, aSender = None):
         self.mPort    = aPort
         self.mMessage = aMessage
         self.mSender  = aSender
+
+    def match(self, aEvent):
+        if not isinstance(aEvent, PortReceivedEvent):
+            return False
+        return aEvent.mPort == self.mPort                                                and \
+               (self.mMessage is None or self.__doMatch(self.mMessage, aEvent.mMessage)) and \
+               (self.mSender  is None or self.mSender == aEvent.mSender)
+
+    def __doMatch(self, aTemplate, aMessage):
+        # TODO: Delegate to the matcher.
+        return aTemplate == aMessage

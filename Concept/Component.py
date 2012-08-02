@@ -49,6 +49,12 @@ class Component(threading.Thread):
     def getVerdict(self):
         raise NotImplementedError
 
+    def addFunction(self, aFunction):
+        self.mFunction = aFunction
+
+    def behaviour(self):
+        self.mFunction(self)
+
     def run(self):
         self.mRunning = True
         try:

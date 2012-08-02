@@ -34,6 +34,7 @@ class Component(threading.Thread):
     def __init__(self, aName):
         threading.Thread.__init__(self, name=aName)
 
+        self.mName       = aName
         self.mEventQueue = Queue.Queue()
 
     def getVerdict(self):
@@ -55,6 +56,9 @@ class Component(threading.Thread):
                 command = aAction.applies(event)
             if command:
                 repeat = False
+
+    def log(self, aString):
+        print(self.mName + ": " + aString);
 
 class Mtc(Component):
     def __init__(self, aName, aTestcase):

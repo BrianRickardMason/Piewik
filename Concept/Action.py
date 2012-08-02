@@ -36,9 +36,7 @@ class Blocking(Action):
         self.mExpectation = aEvExpectation
 
     def applies(self, aEvent):
-        if self.mExpectation.match(aEvent):
-            return self
-        return False
+        return self.mExpectation.match(aEvent)
 
 class Alternative(Action):
     def __init__(self, aListOfActions):
@@ -46,9 +44,9 @@ class Alternative(Action):
 
     def applies(self, aEvent):
         for action in self.mActionList:
-            command = action.applies(aEvent)
-            if command:
-                return command
+            result = action.applies(aEvent)
+            if result:
+                return True
         return False
 
 class Interleave(Action):

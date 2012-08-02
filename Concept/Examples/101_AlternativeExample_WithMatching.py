@@ -43,7 +43,7 @@ from Concept.Testcase         import Testcase
 class Function(object):
     pass
 
-class Function_ComponentA(Function):
+class Function_SendMessage(Function):
     def __init__(self, aParameter):
         self.mRunsOn    = ComponentA
         self.mParameter = aParameter
@@ -55,7 +55,7 @@ class Function_ComponentA(Function):
             # TODO: Raise a meaningful exception.
             raise
 
-class Function_ComponentB(Function):
+class Function_ReceiveMessages(Function):
     def __init__(self):
         self.mRunsOn = ComponentB
 
@@ -97,9 +97,9 @@ class SimpleTestcase1(Testcase):
         componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
         componentB  = ComponentB(self.mMtc, None, "ComponentB")
 
-        componentA1.addFunction(Function_ComponentA("Foo"))
-        componentA2.addFunction(Function_ComponentA("Bar"))
-        componentB .addFunction(Function_ComponentB())
+        componentA1.addFunction(Function_SendMessage("Foo"))
+        componentA2.addFunction(Function_SendMessage("Bar"))
+        componentB .addFunction(Function_ReceiveMessages())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)
         connect(componentA2.mTestPort, componentB.mTestPortA2)
@@ -121,9 +121,9 @@ class SimpleTestcase2(Testcase):
         componentA2 = ComponentA(self.mMtc, None, "ComponentA2")
         componentB  = ComponentB(self.mMtc, None, "ComponentB")
 
-        componentA1.addFunction(Function_ComponentA("Foo"))
-        componentA2.addFunction(Function_ComponentA("Bar"))
-        componentB .addFunction(Function_ComponentB())
+        componentA1.addFunction(Function_SendMessage("Foo"))
+        componentA2.addFunction(Function_SendMessage("Bar"))
+        componentB .addFunction(Function_ReceiveMessages())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)
         connect(componentA2.mTestPort, componentB.mTestPortA2)

@@ -40,30 +40,30 @@ from Concept.Port             import connect
 from Concept.Testcase         import Testcase
 
 class ComponentA(Component):
-    def __init__(self, aName):
-        Component.__init__(self, aName)
-        self.testPort = Port(self.mEventQueue)
+    def __init__(self, aMtc, aSystem, aName):
+        Component.__init__(self, aMtc, aSystem, aName)
+        self.mTestPort = Port(self.mEventQueue)
 
     def behaviour(self):
-        self.testPort.send("Foo")
+        self.mTestPort.send("Foo")
 
 class ComponentB(Component):
-    def __init__(self, aName):
-        Component.__init__(self, aName)
-        self.testPort = Port(self.mEventQueue)
+    def __init__(self, aMtc, aSystem, aName):
+        Component.__init__(self, aMtc, aSystem, aName)
+        self.mTestPort = Port(self.mEventQueue)
 
     def behaviour(self):
-        self.executeBlockingAction(Blocking(PortReceiveExpectation(self.testPort)))
+        self.executeBlockingAction(Blocking(PortReceiveExpectation(self.mTestPort)))
 
 class SimpleTestcase(Testcase):
     def __init__(self):
         Testcase.__init__(self)
 
     def execute(self):
-        componentA = ComponentA("ComponentA")
-        componentB = ComponentB("ComponentB")
+        componentA = ComponentA(self.mMtc, None, "ComponentA")
+        componentB = ComponentB(self.mMtc, None, "ComponentB")
 
-        connect(componentA.testPort, componentB.testPort)
+        connect(componentA.mTestPort, componentB.mTestPort)
 
         componentA.start()
         componentB.start()

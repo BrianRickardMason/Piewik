@@ -30,12 +30,19 @@
 import Queue
 import threading
 
+class ComponentReference(object):
+    def __init__(self, aMtc, aSystem, aSelf):
+        self.mMtc    = aMtc
+        self.mSystem = aSystem
+        self.mSelf   = aSelf
+
 class Component(threading.Thread):
-    def __init__(self, aName):
+    def __init__(self, aMtc, aSystem, aName):
         threading.Thread.__init__(self, name=aName)
 
-        self.mName       = aName
-        self.mEventQueue = Queue.Queue()
+        self.mComponentReference = ComponentReference(aMtc, aSystem, self)
+        self.mName               = aName
+        self.mEventQueue         = Queue.Queue()
 
     def getVerdict(self):
         raise NotImplementedError
@@ -62,11 +69,12 @@ class Component(threading.Thread):
 
 class Mtc(Component):
     def __init__(self, aName, aTestcase):
-        Component.__init__(self, aName)
+        Component.__init__(self, self, None, aName)
         self.mTestcase = aTestcase
 
     def getVerdict(self):
         return True
 
     def run(self):
+        self.mTestcase.setMtc(self)
         self.mTestcase.execute()

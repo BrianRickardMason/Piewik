@@ -28,5 +28,11 @@
 # SUCH DAMAGE.
 
 class Testcase(object):
+    def __init__(self):
+        self.mMtc = None
+
+    def setMtc(self, aMtc):
+        self.mMtc = aMtc
+
     def execute(self):
         raise NotImplementedError

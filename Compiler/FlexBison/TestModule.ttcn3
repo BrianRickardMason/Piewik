@@ -1,0 +1,9 @@
+module TestModule {
+    const integer myInt := 1;
+    const charsting myChar := "foobar";
+    const octetstring myOct := '11ff'O;
+    //const octetstring myFailOct := '11f'O;
+    const float myFloat := 1.0;
+    
+    const float myFloat1 := 3E10, myFloat2 := 1.0
+}

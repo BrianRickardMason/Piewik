@@ -1,0 +1,1 @@
+bison -t ttcn3.y && flex ttcn3.l && g++ Ttcn3Lexer.cpp Ttcn3BisonParser.cpp -o t

@@ -28,7 +28,14 @@
 # SUCH DAMAGE.
 
 class Action(object):
-    pass
+    def __init__(self):
+        self.mDone = False
+
+    def execute(self):
+        self.mDone = True
+
+    def isDone(self):
+        return self.mDone
 
 class Blocking(Action):
     def __init__ (self, aEvExpectation):
@@ -36,7 +43,10 @@ class Blocking(Action):
         self.mExpectation = aEvExpectation
 
     def applies(self, aEvent):
-        return self.mExpectation.match(aEvent)
+        if self.mExpectation.match(aEvent):
+            return self
+        else:
+            return False
 
 class Alternative(Action):
     def __init__(self, aListOfActions):
@@ -44,10 +54,31 @@ class Alternative(Action):
 
     def applies(self, aEvent):
         for action in self.mActionList:
-            result = action.applies(aEvent)
-            if result:
+            command = action.applies(aEvent)
+            if command:
+                return command
+        return False
+
+    def isDone(self):
+        for action in self.mActionList:
+            if action.isDone():
                 return True
         return False
 
 class Interleave(Action):
-    pass
+    def __init__(self, aListOfActions):
+        self.mActionList = aListOfActions
+
+    def applies(self, aEvent):
+        for action in self.mActionList:
+            if not action.isDone():
+                command = action.applies(aEvent)
+                if command:
+                    return command
+        return False
+
+    def isDone(self):
+        for action in self.mActionList:
+            if not action.isDone():
+                return False
+        return True

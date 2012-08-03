@@ -31,7 +31,7 @@ import Queue
 
 from Event import PortReceivedEvent
 
-class Port:
+class Port(object):
     def __init__(self, aEventQueue):
         self.mEventQueue = aEventQueue
         self.mConnected  = None

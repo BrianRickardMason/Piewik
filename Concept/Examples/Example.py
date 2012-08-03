@@ -47,7 +47,13 @@ from Concept.TypeSystem       import Charstring
 
 class MyPort(MessagePort):
     def __init__(self, aEventQueue):
-        MessagePort.__init__(self, [], [], [Charstring])
+        MessagePort.__init__(self,
+                             aAddress=None,
+                             aMapParam=None,
+                             aUnmapParam=None,
+                             aIn=[],
+                             aOut=[],
+                             aInOut=[Charstring])
         self.mEventQueue = aEventQueue
         self.mConnected  = None
 

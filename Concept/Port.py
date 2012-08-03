@@ -27,20 +27,26 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+from Concept.TypeSystem import TTCN3Type
+
 class Port(object):
-    def __init__(self, aIn, aOut, aInOut):
-        self.mIn    = aIn
-        self.mOut   = aOut
-        self.mInOut = aInOut
+    def __init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut):
+        self.__controlTypes(aIn, aOut, aInOut) # Self test.
+        self.mAddress    = aAddress
+        self.mMapParam   = aMapParam
+        self.mUnmapParam = aUnmapParam
+        self.mIn         = aIn
+        self.mOut        = aOut
+        self.mInOut      = aInOut
 
     def canSend(self, aMessage):
         if len(self.mOut)   > 0 or \
            len(self.mInOut) > 0    :
-            for type in self.mOut:
-                if isinstance(aMessage, type):
+            for messageType in self.mOut:
+                if isinstance(aMessage, messageType):
                     return True
-            for type in self.mInOut:
-                if isinstance(aMessage, type):
+            for messageType in self.mInOut:
+                if isinstance(aMessage, messageType):
                     return True
             return False
         else:
@@ -49,20 +55,38 @@ class Port(object):
     def canReceive(self, aMessage):
         if len(self.mIn)    > 0 or \
            len(self.mInOut) > 0    :
-            for type in self.mIn:
-                if isinstance(aMessage, type):
+            for messageType in self.mIn:
+                if isinstance(aMessage, messageType):
                     return True
-            for type in self.mInOut:
-                if isinstance(aMessage, type):
+            for messageType in self.mInOut:
+                if isinstance(aMessage, messageType):
                     return True
             return False
         else:
             return True
 
+    def __controlTypes(self, aIn, aOut, aInOut):
+        # TODO: Add a meaningful exception.
+        if type(aIn) is not list:
+            raise Exception
+        if type(aOut) is not list:
+            raise Exception
+        if type(aInOut) is not list:
+            raise Exception
+        for messageType in aIn:
+            if not issubclass(messageType, TTCN3Type):
+                raise Exception
+        for messageType in aOut:
+            if not issubclass(messageType, TTCN3Type):
+                raise Exception
+        for messageType in aInOut:
+            if not issubclass(messageType, TTCN3Type):
+                raise Exception
+
 class MessagePort(Port):
-    def __init__(self, aIn, aOut, aInOut):
-        Port.__init__(self, aIn, aOut, aInOut)
+    def __init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut):
+        Port.__init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut)
 
 class ProcedurePort(Port):
-    def __init__(self, aIn, aOut, aInOut):
+    def __init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut):
         raise NotImplementedError

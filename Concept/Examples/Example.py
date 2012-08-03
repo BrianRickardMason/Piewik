@@ -30,16 +30,37 @@
 import os
 os.sys.path.append("..")
 
+import Queue
+
 from Concept.Action           import Alternative
 from Concept.Action           import Blocking
+from Concept.Action           import Interleave
 from Concept.Component        import Component
 from Concept.Control          import Control
+from Concept.Event            import PortReceivedEvent
 from Concept.EventExpectation import ComponentDoneExpectation
 from Concept.EventExpectation import PortReceiveExpectation
-from Concept.Port             import Port
-from Concept.Port             import connect
+from Concept.Port             import MessagePort
 from Concept.Testcase         import Testcase
 from Concept.Testcase         import TestcaseBodySystem
+
+class MyPort(MessagePort):
+    def __init__(self, aEventQueue):
+        self.mEventQueue = aEventQueue
+        self.mConnected  = None
+
+    def inject(self, aMessage):
+        self.mEventQueue.put(PortReceivedEvent(self, aMessage, None))
+
+    def connect(self, aPort):
+        self.mConnected = aPort
+
+    def send(self, aMessage):
+        self.mConnected.inject(aMessage)
+
+def connect(aPort1, aPort2):
+    aPort1.connect(aPort2)
+    aPort2.connect(aPort1)
 
 class Function(object):
     def __init__(self):
@@ -91,13 +112,13 @@ class Mtc(Component):
 class ComponentA(Component):
     def __init__(self, aName):
         Component.__init__(self, aName)
-        self.mTestPort = Port(self.mEventQueue)
+        self.mTestPort = MyPort(self.mEventQueue)
 
 class ComponentB(Component):
     def __init__(self, aName):
         Component.__init__(self, aName)
-        self.mTestPortA1 = Port(self.mEventQueue)
-        self.mTestPortA2 = Port(self.mEventQueue)
+        self.mTestPortA1 = MyPort(self.mEventQueue)
+        self.mTestPortA2 = MyPort(self.mEventQueue)
 
 class SimpleTestcaseBody(TestcaseBodySystem):
     def __call__(self):
@@ -122,7 +143,7 @@ class SimpleTestcaseBody(TestcaseBodySystem):
         componentB .start()
 
         self.mTestcase.mMtc.executeBlockingAction(
-            Alternative([
+            Interleave([
                 Blocking(ComponentDoneExpectation(componentA1)),
                 Blocking(ComponentDoneExpectation(componentA2)),
                 Blocking(ComponentDoneExpectation(componentB ))

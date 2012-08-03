@@ -27,24 +27,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import Queue
-
-from Event import PortReceivedEvent
-
 class Port(object):
-    def __init__(self, aEventQueue):
-        self.mEventQueue = aEventQueue
-        self.mConnected  = None
+    pass
 
-    def inject(self, aMessage):
-        self.mEventQueue.put(PortReceivedEvent(self, aMessage, None))
+class MessagePort(object):
+    pass
 
-    def connect(self, aPort):
-        self.mConnected = aPort
-
-    def send(self, aMessage):
-        self.mConnected.inject(aMessage)
-
-def connect(aPort1, aPort2):
-    aPort1.connect(aPort2)
-    aPort2.connect(aPort1)
+class ProcedurePort(object):
+    pass

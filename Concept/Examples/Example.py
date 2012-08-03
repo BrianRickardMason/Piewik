@@ -119,8 +119,7 @@ class Mtc(Component):
         self.mTestcase = aTestcase
 
     def run(self):
-        self.mTestcase.setMtc(self)
-        self.mTestcase.execute()
+        self.mTestcase.executePTC()
 
 class ComponentA(Component):
     def __init__(self, aName):
@@ -137,8 +136,13 @@ class SimpleTestcase(Testcase):
     def __init__(self):
         Testcase.__init__(self)
         self.mRunsOn = Mtc
+        self.mMtc    = Mtc("MTC", self)
 
-    def execute(self):
+    def executeMTC(self):
+        self.mMtc.start()
+        self.mMtc.join()
+
+    def executePTC(self):
         componentA1 = ComponentA("ComponentA1")
         componentA2 = ComponentA("ComponentA2")
         componentB  = ComponentB("ComponentB")
@@ -172,6 +176,5 @@ class SimpleTestcase(Testcase):
         componentB .join()
 
 testcase = SimpleTestcase()
-mtc      = Mtc("MTC", testcase)
-control  = Control(mtc)
-control()
+control = Control()
+control.execute(testcase)

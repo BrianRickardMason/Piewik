@@ -28,9 +28,5 @@
 # SUCH DAMAGE.
 
 class Control(object):
-    def __init__(self, aMtc):
-        self.mMtc = aMtc
-
-    def __call__(self):
-        self.mMtc.start()
-        self.mMtc.join()
+    def execute(self, aTestcase):
+        aTestcase.executeMTC()

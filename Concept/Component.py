@@ -30,14 +30,24 @@
 import Queue
 import threading
 
+class ComponentContext(object):
+    def __init__(self, aMtc, aSystem, aSelf):
+        self.mMtc    = aMtc
+        self.mSystem = aSystem
+        self.mSelf   = aSelf
+
 class Component(threading.Thread):
     def __init__(self, aName):
         threading.Thread.__init__(self, name=aName)
 
+        self.mContext    = None
         self.mName       = aName
         self.mEventQueue = Queue.Queue()
         self.mRunning    = False
         self.mDone       = False
+
+    def setContext(self, aMtc, aSystem):
+        self.mContext = ComponentContext(aMtc, aSystem, self)
 
     def getVerdict(self):
         raise NotImplementedError

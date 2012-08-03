@@ -28,8 +28,14 @@
 # SUCH DAMAGE.
 
 class TestcaseBody(object):
+    def __init__(self):
+        self.mTestcase = None
+
     def __call__(self):
         raise NotImplementedError
+
+    def setTestcase(self, aTestcase):
+        self.mTestcase = aTestcase
 
 class TestcaseBodySystem(TestcaseBody):
     pass

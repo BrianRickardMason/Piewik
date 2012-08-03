@@ -104,6 +104,11 @@ class SimpleTestcaseBody(TestcaseBodySystem):
         componentA2 = ComponentA("ComponentA2")
         componentB  = ComponentB("ComponentB")
 
+        # Setting the contexts.
+        componentA1.setContext(self.mTestcase.mMtc, self)
+        componentA2.setContext(self.mTestcase.mMtc, self)
+        componentB .setContext(self.mTestcase.mMtc, self)
+
         componentA1.addFunction(Function_SendMessage("Foo"))
         componentA2.addFunction(Function_SendMessage("Bar"))
         componentB .addFunction(Function_ReceiveMessages())
@@ -113,17 +118,18 @@ class SimpleTestcaseBody(TestcaseBodySystem):
 
         componentA1.start()
         componentA2.start()
-        componentB.start()
+        componentB .start()
 
         componentA1.join()
         componentA2.join()
-        componentB.join()
+        componentB .join()
 
 class SimpleTestcase(Testcase):
     def __init__(self, aTestcaseBody):
         Testcase.__init__(self)
         self.mRunsOn       = Mtc
         self.mTestcaseBody = aTestcaseBody
+        self.mTestcaseBody.setTestcase(self)
 
 testcaseBody = SimpleTestcaseBody()
 testcase     = SimpleTestcase(testcaseBody)

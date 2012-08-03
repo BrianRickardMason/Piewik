@@ -43,20 +43,28 @@ from Concept.EventExpectation import PortReceiveExpectation
 from Concept.Port             import MessagePort
 from Concept.Testcase         import Testcase
 from Concept.Testcase         import TestcaseBodySystem
+from Concept.TypeSystem       import Charstring
 
 class MyPort(MessagePort):
     def __init__(self, aEventQueue):
+        MessagePort.__init__(self, [], [], [Charstring])
         self.mEventQueue = aEventQueue
         self.mConnected  = None
 
     def inject(self, aMessage):
-        self.mEventQueue.put(PortReceivedEvent(self, aMessage, None))
+        if self.canReceive(aMessage):
+            self.mEventQueue.put(PortReceivedEvent(self, aMessage, None))
+        else:
+            raise Exception
 
     def connect(self, aPort):
         self.mConnected = aPort
 
     def send(self, aMessage):
-        self.mConnected.inject(aMessage)
+        if self.canSend(aMessage):
+            self.mConnected.inject(aMessage)
+        else:
+            raise Exception
 
 def connect(aPort1, aPort2):
     aPort1.connect(aPort2)
@@ -86,14 +94,14 @@ class Function_ReceiveMessages(Function):
         if isinstance(aComponent, self.mRunsOn):
             aComponent.executeBlockingAction(
                 Alternative([
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, "Foo")),
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, "Bar"))
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring().assign("Foo"))),
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring().assign("Bar")))
                 ])
             )
             aComponent.executeBlockingAction(
                 Alternative([
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, "Foo")),
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, "Bar"))
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring().assign("Foo"))),
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring().assign("Bar")))
                 ])
             )
         else:
@@ -131,8 +139,8 @@ class SimpleTestcaseBody(TestcaseBodySystem):
         componentA2.setContext(self.mTestcase.mMtc, self)
         componentB .setContext(self.mTestcase.mMtc, self)
 
-        componentA1.addFunction(Function_SendMessage("Foo"))
-        componentA2.addFunction(Function_SendMessage("Bar"))
+        componentA1.addFunction(Function_SendMessage(Charstring().assign("Foo")))
+        componentA2.addFunction(Function_SendMessage(Charstring().assign("Bar")))
         componentB .addFunction(Function_ReceiveMessages())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)

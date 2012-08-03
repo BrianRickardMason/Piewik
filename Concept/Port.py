@@ -28,10 +28,41 @@
 # SUCH DAMAGE.
 
 class Port(object):
-    pass
+    def __init__(self, aIn, aOut, aInOut):
+        self.mIn    = aIn
+        self.mOut   = aOut
+        self.mInOut = aInOut
 
-class MessagePort(object):
-    pass
+    def canSend(self, aMessage):
+        if len(self.mOut)   > 0 or \
+           len(self.mInOut) > 0    :
+            for type in self.mOut:
+                if isinstance(aMessage, type):
+                    return True
+            for type in self.mInOut:
+                if isinstance(aMessage, type):
+                    return True
+            return False
+        else:
+            return True
 
-class ProcedurePort(object):
-    pass
+    def canReceive(self, aMessage):
+        if len(self.mIn)    > 0 or \
+           len(self.mInOut) > 0    :
+            for type in self.mIn:
+                if isinstance(aMessage, type):
+                    return True
+            for type in self.mInOut:
+                if isinstance(aMessage, type):
+                    return True
+            return False
+        else:
+            return True
+
+class MessagePort(Port):
+    def __init__(self, aIn, aOut, aInOut):
+        Port.__init__(self, aIn, aOut, aInOut)
+
+class ProcedurePort(Port):
+    def __init__(self, aIn, aOut, aInOut):
+        raise NotImplementedError

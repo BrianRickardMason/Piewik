@@ -61,8 +61,12 @@ class Component(threading.Thread):
         self.mDone    = True
 
     def executeBlockingAction(self, aAction):
-        event = self.mEventQueue.get()
-        result = aAction.applies(event)
+        # TODO: Repeat.
+        while True:
+            event = self.mEventQueue.get()
+            result = aAction.applies(event)
+            if result:
+                break
 
     def log(self, aString):
         print(self.mName + ": " + aString);

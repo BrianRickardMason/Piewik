@@ -27,10 +27,22 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+from Concept.Event import ComponentDoneEvent
 from Concept.Event import PortReceivedEvent
 
 class EventExpectation(object):
     pass
+
+class ComponentDoneExpectation:
+    def __init__(self, aComponent):
+        self.mComponent = aComponent
+
+    def match(self, aEvent):
+        if isinstance(aEvent, ComponentDoneEvent):
+            if aEvent.mComponent == self.mComponent:
+                # TODO: Implement checking the component state.
+                return True
+        return False
 
 class PortReceiveExpectation(EventExpectation):
     def __init__(self, aPort, aMessage = None, aSender = None):

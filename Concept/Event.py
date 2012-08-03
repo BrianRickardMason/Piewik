@@ -30,6 +30,10 @@
 class Event(object):
     pass
 
+class ComponentDoneEvent:
+    def __init__(self, aComponent):
+        self.mComponent = aComponent
+
 class PortReceivedEvent(Event):
     def __init__(self, aPort, aMessage, aSender = None):
         self.mPort    = aPort

@@ -30,6 +30,8 @@
 import Queue
 import threading
 
+from Concept.Event import ComponentDoneEvent
+
 class ComponentContext(object):
     def __init__(self, aMtc, aSystem, aSelf):
         self.mMtc    = aMtc
@@ -69,6 +71,7 @@ class Component(threading.Thread):
             raise
         self.mRunning = False
         self.mDone    = True
+        self.mContext.mMtc.mEventQueue.put(ComponentDoneEvent(self))
 
     def executeBlockingAction(self, aAction):
         # TODO: Repeat.

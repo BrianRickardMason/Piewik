@@ -27,19 +27,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-class TestcaseBody(object):
-    def __init__(self):
-        self.mTestcase = None
-
-    def __call__(self):
-        raise NotImplementedError
-
-    def setTestcase(self, aTestcase):
-        self.mTestcase = aTestcase
-
-class TestcaseBodySystem(TestcaseBody):
-    pass
-
 class Testcase(object):
     def __init__(self):
         self.mRunsOn       = None
@@ -52,5 +39,5 @@ class Testcase(object):
                 raise Exception
         self.mMtc = aMtc
 
-    def execute(self):
-        self.mTestcaseBody()
+    def exectue(self):
+        raise NotImplementedError

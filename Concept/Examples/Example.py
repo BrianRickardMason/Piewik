@@ -42,7 +42,6 @@ from Concept.EventExpectation import ComponentDoneExpectation
 from Concept.EventExpectation import PortReceiveExpectation
 from Concept.Port             import MessagePort
 from Concept.Testcase         import Testcase
-from Concept.Testcase         import TestcaseBodySystem
 from Concept.TypeSystem       import Charstring
 
 class MyPort(MessagePort):
@@ -134,16 +133,20 @@ class ComponentB(Component):
         self.mTestPortA1 = MyPort(self.mEventQueue)
         self.mTestPortA2 = MyPort(self.mEventQueue)
 
-class SimpleTestcaseBody(TestcaseBodySystem):
-    def __call__(self):
+class SimpleTestcase(Testcase):
+    def __init__(self):
+        Testcase.__init__(self)
+        self.mRunsOn = Mtc
+
+    def execute(self):
         componentA1 = ComponentA("ComponentA1")
         componentA2 = ComponentA("ComponentA2")
         componentB  = ComponentB("ComponentB")
 
         # Setting the contexts.
-        componentA1.setContext(self.mTestcase.mMtc, self)
-        componentA2.setContext(self.mTestcase.mMtc, self)
-        componentB .setContext(self.mTestcase.mMtc, self)
+        componentA1.setContext(self.mMtc, self)
+        componentA2.setContext(self.mMtc, self)
+        componentB .setContext(self.mMtc, self)
 
         componentA1.addFunction(Function_SendMessage(Charstring().assign("Foo")))
         componentA2.addFunction(Function_SendMessage(Charstring().assign("Bar")))
@@ -156,7 +159,7 @@ class SimpleTestcaseBody(TestcaseBodySystem):
         componentA2.start()
         componentB .start()
 
-        self.mTestcase.mMtc.executeBlockingAction(
+        self.mMtc.executeBlockingAction(
             Interleave([
                 Blocking(ComponentDoneExpectation(componentA1)),
                 Blocking(ComponentDoneExpectation(componentA2)),
@@ -168,15 +171,7 @@ class SimpleTestcaseBody(TestcaseBodySystem):
         componentA2.join()
         componentB .join()
 
-class SimpleTestcase(Testcase):
-    def __init__(self, aTestcaseBody):
-        Testcase.__init__(self)
-        self.mRunsOn       = Mtc
-        self.mTestcaseBody = aTestcaseBody
-        self.mTestcaseBody.setTestcase(self)
-
-testcaseBody = SimpleTestcaseBody()
-testcase     = SimpleTestcase(testcaseBody)
-mtc          = Mtc("MTC", testcase)
-control      = Control(mtc)
+testcase = SimpleTestcase()
+mtc      = Mtc("MTC", testcase)
+control  = Control(mtc)
 control()

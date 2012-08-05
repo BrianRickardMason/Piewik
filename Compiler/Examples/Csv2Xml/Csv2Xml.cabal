@@ -1,0 +1,17 @@
+name:           Csv2Xml
+version:        1.0
+author:         Tomasz Grzeda
+license:        BSD3
+build-type:     Simple
+cabal-version:  >= 1.2
+
+library
+    build-depends:   base, parsec
+    exposed-modules: Parser
+    hs-source-dirs:  Library/Source
+
+--test-suite csv2xml-tests
+--    type:           detailed-0.9
+--    test-module:    Csv2XmlTests
+--    build-depends:  base, HUnit, Cabal, cabal-test-hunit
+--    hs-source-dirs: Library/Test

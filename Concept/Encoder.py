@@ -30,9 +30,13 @@
 from Concept.TypeSystem import *
 
 class Encoder(object):
-    pass
+    def encode(self):
+        raise NotImplementedError
 
 class ProtobufEncoder(Encoder):
+    def encode(self):
+        raise NotImplementedError
+
     def encodePayload(self, aPayload, aPayloadData):
         # TODO: What type?
         # TODO: What exception?

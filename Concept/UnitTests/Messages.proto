@@ -26,3 +26,17 @@ message HeartbeatAnnouncement
     optional CritterData sender      = 2;
     optional double      timestamp   = 3;
 }
+
+message PresentYourselfRequest
+{
+    optional string      messageName = 1;
+    optional CritterData sender      = 2;
+    optional CritterData receiver    = 3;
+}
+
+message PresentYourselfResponse
+{
+    optional string      messageName = 1;
+    optional CritterData sender      = 2;
+    optional CritterData receiver    = 3;
+}

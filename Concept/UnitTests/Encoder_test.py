@@ -33,36 +33,105 @@ from Concept.Encoder    import ProtobufEncoder
 from Concept.TypeSystem import *
 from Messages_pb2       import *
 
+class PiewiekCritterData(Record):
+    def __init__(self):
+        Record.__init__(self, {'type': Charstring,
+                               'nick': Charstring})
+
+class PiewikHeartbeatAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self, {'messageName': Charstring,
+                               'sender':      PiewiekCritterData,
+                               'timestamp':   Float})
+
+class PiewikPresentYourselfRequest(Record):
+    def __init__(self):
+        Record.__init__(self, {'messageName': Charstring,
+                               'sender':      PiewiekCritterData,
+                               'receiver':    PiewiekCritterData})
+
+class PiewikPresentYourselfResponse(Record):
+    def __init__(self):
+        Record.__init__(self, {'messageName': Charstring,
+                               'sender':      PiewiekCritterData,
+                               'receiver':    PiewiekCritterData})
+
 class Encoder_EncodePayload(unittest.TestCase):
     def test_HeartbeatAnnouncement(self):
-        class PiewiekCritterData(Record):
-            def __init__(self):
-                Record.__init__(self, {'type': Charstring, 'nick': Charstring})
+        sender = PiewiekCritterData()
+        sender.assign({'type': Charstring().assign("TYPE"),
+                       'nick': Charstring().assign("NICK")})
 
-        class PiewikHeartbeatAnnouncement(Record):
-            def __init__(self):
-                Record.__init__(self, {'messageName': Charstring, 'sender': PiewiekCritterData, 'timestamp': Float})
-
-        myPiewikCritterDataInstance = PiewiekCritterData()
-        myPiewikCritterDataInstance.assign({'type': Charstring().assign("TYPE"),
-                                            'nick': Charstring().assign("NICK")})
-
-        myPiewikHeartbeatInstance = PiewikHeartbeatAnnouncement()
-        myPiewikHeartbeatInstance.assign({'messageName': Charstring().assign("HeartbeatAnnouncement"),
-                                          'sender':      myPiewikCritterDataInstance,
-                                          'timestamp':   Float().assign(1234.5678)})
+        heartbeatAnnouncement = PiewikHeartbeatAnnouncement()
+        heartbeatAnnouncement.assign({'messageName': Charstring().assign("HeartbeatAnnouncement"),
+                                      'sender':      sender,
+                                      'timestamp':   Float().assign(1234.5678)})
 
         encoder = ProtobufEncoder()
 
         payload = HeartbeatAnnouncement()
 
         encoder.encodePayload(aHook=payload,
-                              aData=myPiewikHeartbeatInstance)
+                              aData=heartbeatAnnouncement)
 
         self.assertEqual(payload.messageName, "HeartbeatAnnouncement")
         self.assertEqual(payload.sender.type, "TYPE")
         self.assertEqual(payload.sender.nick, "NICK")
         self.assertEqual(payload.timestamp,   1234.5678)
+
+    def test_PresentYourselfRequest(self):
+        sender = PiewiekCritterData()
+        sender.assign({'type': Charstring().assign("HelloCritty"),
+                       'nick': Charstring().assign("Sender")})
+
+        receiver = PiewiekCritterData()
+        receiver.assign({'type': Charstring().assign("HelloCritty"),
+                         'nick': Charstring().assign("Receiver")})
+
+        presentYourselfRequest = PiewikPresentYourselfRequest()
+        presentYourselfRequest.assign({'messageName': Charstring().assign("PresentYourselfRequest"),
+                                       'sender':      sender,
+                                       'receiver':    receiver})
+
+        encoder = ProtobufEncoder()
+
+        payload = PresentYourselfRequest()
+
+        encoder.encodePayload(aHook=payload,
+                              aData=presentYourselfRequest)
+
+        self.assertEqual(payload.messageName,   "PresentYourselfRequest")
+        self.assertEqual(payload.sender.type,   "HelloCritty")
+        self.assertEqual(payload.sender.nick,   "Sender")
+        self.assertEqual(payload.receiver.type, "HelloCritty")
+        self.assertEqual(payload.receiver.nick, "Receiver")
+
+    def test_PresentYourselfResponse(self):
+        sender = PiewiekCritterData()
+        sender.assign({'type': Charstring().assign("HelloCritty"),
+                       'nick': Charstring().assign("Sender")})
+
+        receiver = PiewiekCritterData()
+        receiver.assign({'type': Charstring().assign("HelloCritty"),
+                         'nick': Charstring().assign("Receiver")})
+
+        presentYourselfResponse = PiewikPresentYourselfResponse()
+        presentYourselfResponse.assign({'messageName': Charstring().assign("PresentYourselfResponse"),
+                                        'sender':      sender,
+                                        'receiver':    receiver})
+
+        encoder = ProtobufEncoder()
+
+        payload = PresentYourselfResponse()
+
+        encoder.encodePayload(aHook=payload,
+                              aData=presentYourselfResponse)
+
+        self.assertEqual(payload.messageName,   "PresentYourselfResponse")
+        self.assertEqual(payload.sender.type,   "HelloCritty")
+        self.assertEqual(payload.sender.nick,   "Sender")
+        self.assertEqual(payload.receiver.type, "HelloCritty")
+        self.assertEqual(payload.receiver.nick, "Receiver")
 
 if __name__ == '__main__':
     unittest.main()

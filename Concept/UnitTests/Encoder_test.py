@@ -71,8 +71,8 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = HeartbeatAnnouncement()
 
-        encoder.encodePayload(aHook=payload,
-                              aData=heartbeatAnnouncement)
+        encoder.encodePayload(aPayload=payload,
+                              aPayloadData=heartbeatAnnouncement)
 
         self.assertEqual(payload.messageName, "HeartbeatAnnouncement")
         self.assertEqual(payload.sender.type, "TYPE")
@@ -97,8 +97,8 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = PresentYourselfRequest()
 
-        encoder.encodePayload(aHook=payload,
-                              aData=presentYourselfRequest)
+        encoder.encodePayload(aPayload=payload,
+                              aPayloadData=presentYourselfRequest)
 
         self.assertEqual(payload.messageName,   "PresentYourselfRequest")
         self.assertEqual(payload.sender.type,   "HelloCritty")
@@ -124,8 +124,8 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = PresentYourselfResponse()
 
-        encoder.encodePayload(aHook=payload,
-                              aData=presentYourselfResponse)
+        encoder.encodePayload(aPayload=payload,
+                              aPayloadData=presentYourselfResponse)
 
         self.assertEqual(payload.messageName,   "PresentYourselfResponse")
         self.assertEqual(payload.sender.type,   "HelloCritty")

@@ -33,22 +33,22 @@ class Encoder(object):
     pass
 
 class ProtobufEncoder(Encoder):
-    def encodePayload(self, aHook, aData):
+    def encodePayload(self, aPayload, aPayloadData):
         # TODO: What type?
         # TODO: What exception?
-        if not isinstance(aData, TTCN3Type):
+        if not isinstance(aPayloadData, TTCN3Type):
             raise
 
-        for key in aData.mDictionary.keys():
-            if isinstance(aData.mValue[key], Record):
-                hook = getattr(aHook, key)
-                data = aData.mValue[key]
-                self.encodePayload(hook, data)
-            elif isinstance(aData.mValue[key], RecordOf):
-                hook = getattr(aHook, key)
-                data = aData.mValue[key]
-                for element in data.mValue:
-                    tmpHook = hook.add()
-                    self.encodePayload(tmpHook, element)
+        for key in aPayloadData.mDictionary.keys():
+            if isinstance(aPayloadData.mValue[key], Record):
+                payload     = getattr(aPayload, key)
+                payloadData = aPayloadData.mValue[key]
+                self.encodePayload(payload, payloadData)
+            elif isinstance(aPayloadData.mValue[key], RecordOf):
+                payload     = getattr(aPayload, key)
+                payloadData = aPayloadData.mValue[key]
+                for element in payloadData.mValue:
+                    tmpPayload = payload.add()
+                    self.encodePayload(tmpPayload, element)
             else:
-                setattr(aHook, key, aData.mValue[key].value())
+                setattr(aPayload, key, aPayloadData.mValue[key].value())

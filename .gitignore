@@ -30,3 +30,6 @@ pip-log.txt
 .project
 .pydevproject
 .settings
+
+# Google protobuf specific entries.
+*_pb2.py

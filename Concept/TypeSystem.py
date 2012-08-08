@@ -243,14 +243,16 @@ class Record(TTCN3StructuredType):
 
     def assign(self, aValue):
         if type(aValue) is not dict:
-            raise InvalidTTCN3TypeInAssignement
+            raise InvalidTTCN3TypeInAssignment
 
         # TODO: Implement the verification of the assignment.
         self.mValue = aValue
+        return self
 
     def accept(self, aValue):
         return type(aValue) is dict
 
+    # TODO: Consider implementation.
     def value(self):
         raise NotImplementedError
 

@@ -266,6 +266,56 @@ class Record(TTCN3StructuredType):
                 return False
         return True
 
+class RecordOf(TTCN3StructuredType):
+    def __init__(self, aType):
+        if not issubclass(aType, TTCN3Type):
+            raise InvalidTTCN3TypeInCtor
+
+        TTCN3StructuredType.__init__(self, [])
+
+        self.mType = aType
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, RecordOf):
+            if len(self.mValue) != len(aOther.mValue):
+                return False
+            for element in self.mValue:
+                index = self.mValue.index(element)
+                try:
+                    if self.mValue[index] != aOther.mValue[index]:
+                        return False
+                except:
+                    return False
+            return True
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
+        else:
+            raise InvalidTTCN3TypeInComparison
+
+    def assign(self, aValue):
+        if type(aValue) is not list:
+            raise InvalidTTCN3TypeInAssignment
+        for element in aValue:
+            if type(element) != self.mType:
+                raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
+
+    def accept(self, aValue):
+        return type(aValue) is list
+
+    def getField(self, aIndex):
+        try:
+            return self.mValue[aIndex]
+        except:
+            raise LookupErrorMissingField
+
+    def isMessageType(self):
+        for element in self.mValue:
+            if not element.isMessageType():
+                return False
+        return True
+
 #
 # Part: Subtypes.
 #

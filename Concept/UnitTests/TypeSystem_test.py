@@ -304,6 +304,135 @@ class TypeSystem_Charstring(unittest.TestCase):
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Charstring().assign("WAX"), AnyOrNone())
 
+class TypeSystem_RecordOf(unittest.TestCase):
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
+        try:
+            self.assertEqual(RecordOf(Integer).value(), [])
+        except:
+            self.fail()
+
+    #
+    # Unsuccessful constructions.
+    #
+    def test_CtorRaisesAnExceptionForInvalidValue(self):
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            RecordOf(int)
+
+    #
+    # Successful assignments.
+    #
+    def test_AssignementOfProperValue_EmptyList(self):
+        self.assertEqual(RecordOf(Integer).assign([]).value(), [])
+
+    def test_AssignementOfProperValue_NonEmptyList(self):
+        self.assertEqual(RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2)]).value(),
+                         [Integer().assign(1), Integer().assign(2)])
+
+    #
+    # Unsuccessful assignments.
+    #
+    # TODO: All types.
+    #
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            RecordOf(Boolean).assign(True)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            RecordOf(Boolean).assign(1)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            RecordOf(Boolean).assign(1.0)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneElement(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            RecordOf(Integer).assign([Float().assign(1.0)])
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneOfElements(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            RecordOf(Integer).assign([Integer().assign(1), Float().assign(1.0), Integer().assign(2)])
+
+    #
+    # Getting a field.
+    #
+    def test_GetFieldReturnsTheValueOfTheField(self):
+        myRecord = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        self.assertEqual(myRecord.getField(1), Integer().assign(2))
+
+
+    def test_GetFieldRaisesAnExceptionForMissingField(self):
+        with self.assertRaises(LookupErrorMissingField):
+            myRecord = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+            myRecord.getField(4)
+
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_EmptyRecordsOf(self):
+        myRecord1 = RecordOf(Integer)
+        myRecord2 = RecordOf(Integer)
+        self.assertTrue(myRecord1 == myRecord2)
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_OneElement(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(1)])
+        self.assertTrue(myRecord1 == myRecord2)
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_ManyElements(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        self.assertTrue(myRecord1 == myRecord2)
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(2)])
+        self.assertFalse(myRecord1 == myRecord2)
+
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement_DifferentLength(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2)])
+        self.assertFalse(myRecord1 == myRecord2)
+
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(4)])
+        self.assertFalse(myRecord1 == myRecord2)
+
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements_SequenceMatters(self):
+        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(3), Integer().assign(2)])
+        self.assertFalse(myRecord1 == myRecord2)
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            RecordOf(Integer).assign([Integer().assign(1)]) == Boolean().assign(True)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            RecordOf(Integer).assign([Integer().assign(1)]) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            RecordOf(Integer).assign([Integer().assign(1)]) == Float().assign(1.0)
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone(self):
+        self.assertTrue(RecordOf(Integer).assign([Integer().assign(1)]), AnyOrNone())
+
 class MySubtypedInteger(Integer):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
         if type(aSubtypeOfSimpleTypeConstraints) is not list:

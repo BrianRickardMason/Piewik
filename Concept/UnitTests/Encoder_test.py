@@ -33,7 +33,7 @@ from Concept.Encoder    import ProtobufEncoder
 from Concept.TypeSystem import *
 from Messages_pb2       import *
 
-class PiewiekCritterData(Record):
+class PiewikCritterData(Record):
     def __init__(self):
         Record.__init__(self, {'type': Charstring,
                                'nick': Charstring})
@@ -41,24 +41,50 @@ class PiewiekCritterData(Record):
 class PiewikHeartbeatAnnouncement(Record):
     def __init__(self):
         Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewiekCritterData,
+                               'sender':      PiewikCritterData,
                                'timestamp':   Float})
 
 class PiewikPresentYourselfRequest(Record):
     def __init__(self):
         Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewiekCritterData,
-                               'receiver':    PiewiekCritterData})
+                               'sender':      PiewikCritterData,
+                               'receiver':    PiewikCritterData})
 
 class PiewikPresentYourselfResponse(Record):
     def __init__(self):
         Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewiekCritterData,
-                               'receiver':    PiewiekCritterData})
+                               'sender':      PiewikCritterData,
+                               'receiver':    PiewikCritterData})
+
+class PiewikGraphData(Record):
+    def __init__(self):
+        Record.__init__(self, {'graphName': Charstring})
+
+class PiewikWorkData(Record):
+    def __init__(self):
+        Record.__init__(self, {'graphName': Charstring, 'workName': Charstring})
+
+class PiewikWorkPredecessorData(Record):
+    def __init__(self):
+        Record.__init__(self, {'workName': Charstring, 'predecessorWorkName': Charstring})
+
+class PiewikLoadGraphAndWorkRequest(Record):
+    def __init__(self):
+        Record.__init__(self, {'messageName': Charstring,
+                               'sender':      PiewikCritterData})
+
+class PiewikLoadGraphAndWorkResponse(Record):
+    def __init__(self):
+        Record.__init__(self, {'messageName':      Charstring,
+                               'sender':           PiewikCritterData,
+                               'receiver':         PiewikCritterData,
+                               'graphs':           RecordOf,
+                               'works':            RecordOf,
+                               'workPredecessors': RecordOf})
 
 class Encoder_EncodePayload(unittest.TestCase):
     def test_HeartbeatAnnouncement(self):
-        sender = PiewiekCritterData()
+        sender = PiewikCritterData()
         sender.assign({'type': Charstring().assign("TYPE"),
                        'nick': Charstring().assign("NICK")})
 
@@ -80,11 +106,11 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.timestamp,   1234.5678)
 
     def test_PresentYourselfRequest(self):
-        sender = PiewiekCritterData()
+        sender = PiewikCritterData()
         sender.assign({'type': Charstring().assign("HelloCritty"),
                        'nick': Charstring().assign("Sender")})
 
-        receiver = PiewiekCritterData()
+        receiver = PiewikCritterData()
         receiver.assign({'type': Charstring().assign("HelloCritty"),
                          'nick': Charstring().assign("Receiver")})
 
@@ -107,11 +133,11 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.receiver.nick, "Receiver")
 
     def test_PresentYourselfResponse(self):
-        sender = PiewiekCritterData()
+        sender = PiewikCritterData()
         sender.assign({'type': Charstring().assign("HelloCritty"),
                        'nick': Charstring().assign("Sender")})
 
-        receiver = PiewiekCritterData()
+        receiver = PiewikCritterData()
         receiver.assign({'type': Charstring().assign("HelloCritty"),
                          'nick': Charstring().assign("Receiver")})
 
@@ -132,6 +158,87 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.sender.nick,   "Sender")
         self.assertEqual(payload.receiver.type, "HelloCritty")
         self.assertEqual(payload.receiver.nick, "Receiver")
+
+    def test_LoadGraphAndWorkReqeust(self):
+        sender = PiewikCritterData()
+        sender.assign({'type': Charstring().assign("HelloCritty"),
+                       'nick': Charstring().assign("Sender")})
+
+        loadGraphAndWorkRequest = PiewikLoadGraphAndWorkRequest()
+        loadGraphAndWorkRequest.assign({'messageName': Charstring().assign("LoadGraphAndWorkRequest"),
+                                        'sender':      sender})
+
+        encoder = ProtobufEncoder()
+
+        payload = LoadGraphAndWorkRequest()
+
+        encoder.encodePayload(aPayload=payload,
+                              aPayloadData=loadGraphAndWorkRequest)
+
+        self.assertEqual(payload.messageName, "LoadGraphAndWorkRequest")
+        self.assertEqual(payload.sender.type, "HelloCritty")
+        self.assertEqual(payload.sender.nick, "Sender")
+
+    def test_LoadGraphAndWorkResponse(self):
+        sender = PiewikCritterData()
+        sender.assign({'type': Charstring().assign("HelloCritty"),
+                       'nick': Charstring().assign("Sender")})
+
+        receiver = PiewikCritterData()
+        receiver.assign({'type': Charstring().assign("HelloCritty"),
+                         'nick': Charstring().assign("Receiver")})
+
+        graphs = RecordOf(PiewikGraphData)
+        graphs.assign([
+            PiewikGraphData().assign({'graphName': Charstring().assign("Graph1")}),
+            PiewikGraphData().assign({'graphName': Charstring().assign("Graph2")})
+        ])
+
+        works = RecordOf(PiewikWorkData)
+        works.assign([
+            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
+                                     'workName':  Charstring().assign("Work1")}),
+            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
+                                     'workName':  Charstring().assign("Work2")})
+        ])
+
+        workPredecessors = RecordOf(PiewikWorkPredecessorData)
+        workPredecessors.assign([
+            PiewikWorkPredecessorData().assign({'workName':            Charstring().assign("Work2"),
+                                                'predecessorWorkName': Charstring().assign("Work1")})
+        ])
+
+        loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
+        loadGraphAndWorkResponse.assign({'messageName':      Charstring().assign("LoadGraphAndWorkResponse"),
+                                         'sender':           sender,
+                                         'receiver':         receiver,
+                                         'graphs':           graphs,
+                                         'works':            works,
+                                         'workPredecessors': workPredecessors})
+
+        encoder = ProtobufEncoder()
+
+        payload = LoadGraphAndWorkResponse()
+
+        encoder.encodePayload(aPayload=payload,
+                              aPayloadData=loadGraphAndWorkResponse)
+
+        self.assertEqual(payload.messageName,   "LoadGraphAndWorkResponse")
+        self.assertEqual(payload.sender.type,   "HelloCritty")
+        self.assertEqual(payload.sender.nick,   "Sender")
+        self.assertEqual(payload.receiver.type, "HelloCritty")
+        self.assertEqual(payload.receiver.nick, "Receiver")
+
+        self.assertEqual(payload.graphs[0].graphName, "Graph1")
+        self.assertEqual(payload.graphs[1].graphName, "Graph2")
+
+        self.assertEqual(payload.works[0].graphName, "Graph1")
+        self.assertEqual(payload.works[0].workName,  "Work1")
+        self.assertEqual(payload.works[1].graphName, "Graph1")
+        self.assertEqual(payload.works[1].workName,  "Work2")
+
+        self.assertEqual(payload.workPredecessors[0].workName,            "Work2")
+        self.assertEqual(payload.workPredecessors[0].predecessorWorkName, "Work1")
 
 if __name__ == '__main__':
     unittest.main()

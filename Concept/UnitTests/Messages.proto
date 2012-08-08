@@ -40,3 +40,36 @@ message PresentYourselfResponse
     optional CritterData sender      = 2;
     optional CritterData receiver    = 3;
 }
+
+message GraphData
+{
+    optional string graphName = 1;
+}
+
+message WorkData
+{
+    optional string graphName = 1;
+    optional string workName  = 2;
+}
+
+message WorkPredecessorData
+{
+    optional string workName            = 1;
+    optional string predecessorWorkName = 2;
+}
+
+message LoadGraphAndWorkRequest
+{
+    optional string      messageName = 1;
+    optional CritterData sender      = 2;
+}
+
+message LoadGraphAndWorkResponse
+{
+    optional string              messageName      = 1;
+    optional CritterData         sender           = 2;
+    optional CritterData         receiver         = 3;
+    repeated GraphData           graphs           = 4;
+    repeated WorkData            works            = 5;
+    repeated WorkPredecessorData workPredecessors = 6;
+}

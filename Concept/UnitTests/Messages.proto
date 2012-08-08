@@ -1,0 +1,28 @@
+message Header
+{
+    optional uint32 id = 1;
+}
+
+message Payload
+{
+    optional bytes payload = 1;
+}
+
+message Envelope
+{
+    optional Header  header  = 1;
+    optional Payload payload = 2;
+}
+
+message CritterData
+{
+    optional string type = 1;
+    optional string nick = 2;
+}
+
+message HeartbeatAnnouncement
+{
+    optional string      messageName = 1;
+    optional CritterData sender      = 2;
+    optional double      timestamp   = 3;
+}

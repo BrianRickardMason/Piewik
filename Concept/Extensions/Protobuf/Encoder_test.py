@@ -29,9 +29,9 @@
 
 import unittest
 
-from Concept.Encoder    import ProtobufEncoder
-from Concept.TypeSystem import *
-from Messages_pb2       import *
+from Concept.Extensions.Protobuf.Encoder      import ProtobufEncoder
+from Concept.Extensions.Protobuf.Messages_pb2 import *
+from Concept.TypeSystem                       import *
 
 class PiewikCritterData(Record):
     def __init__(self):

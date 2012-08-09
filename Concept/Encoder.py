@@ -34,10 +34,17 @@ class Encoder(object):
         raise NotImplementedError
 
 class ProtobufEncoder(Encoder):
-    def encode(self):
-        raise NotImplementedError
+    # TODO: Remove the aHeaderId.
+    def encode(self, aEnvelope, aHeaderId, aMessageName, aPayloadData):
+        envelope = aEnvelope()
+        envelope.header.id = aHeaderId
+        payload = aMessageName()
+        self.encodePayload(aPayloadContent=payload,
+                           aPayloadData=aPayloadData)
+        envelope.payload.payload = payload.SerializeToString()
+        return envelope
 
-    def encodePayload(self, aPayload, aPayloadData):
+    def encodePayload(self, aPayloadContent, aPayloadData):
         # TODO: What type?
         # TODO: What exception?
         if not isinstance(aPayloadData, TTCN3Type):
@@ -45,14 +52,14 @@ class ProtobufEncoder(Encoder):
 
         for key in aPayloadData.mDictionary.keys():
             if isinstance(aPayloadData.mValue[key], Record):
-                payload     = getattr(aPayload, key)
+                payload     = getattr(aPayloadContent, key)
                 payloadData = aPayloadData.mValue[key]
                 self.encodePayload(payload, payloadData)
             elif isinstance(aPayloadData.mValue[key], RecordOf):
-                payload     = getattr(aPayload, key)
+                payload     = getattr(aPayloadContent, key)
                 payloadData = aPayloadData.mValue[key]
                 for element in payloadData.mValue:
                     tmpPayload = payload.add()
                     self.encodePayload(tmpPayload, element)
             else:
-                setattr(aPayload, key, aPayloadData.mValue[key].value())
+                setattr(aPayloadContent, key, aPayloadData.mValue[key].value())

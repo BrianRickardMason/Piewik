@@ -82,6 +82,74 @@ class PiewikLoadGraphAndWorkResponse(Record):
                                'works':            RecordOf,
                                'workPredecessors': RecordOf})
 
+class Encoder_Encode(unittest.TestCase):
+    def test_LoadGraphAndWorkResponse(self):
+        sender = PiewikCritterData()
+        sender.assign({'type': Charstring().assign("HelloCritty"),
+                       'nick': Charstring().assign("Sender")})
+
+        receiver = PiewikCritterData()
+        receiver.assign({'type': Charstring().assign("HelloCritty"),
+                         'nick': Charstring().assign("Receiver")})
+
+        graphs = RecordOf(PiewikGraphData)
+        graphs.assign([
+            PiewikGraphData().assign({'graphName': Charstring().assign("Graph1")}),
+            PiewikGraphData().assign({'graphName': Charstring().assign("Graph2")})
+        ])
+
+        works = RecordOf(PiewikWorkData)
+        works.assign([
+            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
+                                     'workName':  Charstring().assign("Work1")}),
+            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
+                                     'workName':  Charstring().assign("Work2")})
+        ])
+
+        workPredecessors = RecordOf(PiewikWorkPredecessorData)
+        workPredecessors.assign([
+            PiewikWorkPredecessorData().assign({'workName':            Charstring().assign("Work2"),
+                                                'predecessorWorkName': Charstring().assign("Work1")})
+        ])
+
+        loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
+        loadGraphAndWorkResponse.assign({'messageName':      Charstring().assign("LoadGraphAndWorkResponse"),
+                                         'sender':           sender,
+                                         'receiver':         receiver,
+                                         'graphs':           graphs,
+                                         'works':            works,
+                                         'workPredecessors': workPredecessors})
+
+        encoder = ProtobufEncoder()
+
+        # TODO: Remove the hardcoded value of the header's id.
+        envelope = encoder.encode(aEnvelope=Envelope,
+                                  aHeaderId=1,
+                                  aMessageName=LoadGraphAndWorkResponse,
+                                  aPayloadData=loadGraphAndWorkResponse)
+
+        self.assertEqual(envelope.header.id, 1)
+
+        payload = LoadGraphAndWorkResponse()
+        payload.ParseFromString(envelope.payload.payload)
+
+        self.assertEqual(payload.messageName,   "LoadGraphAndWorkResponse")
+        self.assertEqual(payload.sender.type,   "HelloCritty")
+        self.assertEqual(payload.sender.nick,   "Sender")
+        self.assertEqual(payload.receiver.type, "HelloCritty")
+        self.assertEqual(payload.receiver.nick, "Receiver")
+
+        self.assertEqual(payload.graphs[0].graphName, "Graph1")
+        self.assertEqual(payload.graphs[1].graphName, "Graph2")
+
+        self.assertEqual(payload.works[0].graphName, "Graph1")
+        self.assertEqual(payload.works[0].workName,  "Work1")
+        self.assertEqual(payload.works[1].graphName, "Graph1")
+        self.assertEqual(payload.works[1].workName,  "Work2")
+
+        self.assertEqual(payload.workPredecessors[0].workName,            "Work2")
+        self.assertEqual(payload.workPredecessors[0].predecessorWorkName, "Work1")
+
 class Encoder_EncodePayload(unittest.TestCase):
     def test_HeartbeatAnnouncement(self):
         sender = PiewikCritterData()
@@ -97,7 +165,7 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = HeartbeatAnnouncement()
 
-        encoder.encodePayload(aPayload=payload,
+        encoder.encodePayload(aPayloadContent=payload,
                               aPayloadData=heartbeatAnnouncement)
 
         self.assertEqual(payload.messageName, "HeartbeatAnnouncement")
@@ -123,7 +191,7 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = PresentYourselfRequest()
 
-        encoder.encodePayload(aPayload=payload,
+        encoder.encodePayload(aPayloadContent=payload,
                               aPayloadData=presentYourselfRequest)
 
         self.assertEqual(payload.messageName,   "PresentYourselfRequest")
@@ -150,7 +218,7 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = PresentYourselfResponse()
 
-        encoder.encodePayload(aPayload=payload,
+        encoder.encodePayload(aPayloadContent=payload,
                               aPayloadData=presentYourselfResponse)
 
         self.assertEqual(payload.messageName,   "PresentYourselfResponse")
@@ -172,7 +240,7 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = LoadGraphAndWorkRequest()
 
-        encoder.encodePayload(aPayload=payload,
+        encoder.encodePayload(aPayloadContent=payload,
                               aPayloadData=loadGraphAndWorkRequest)
 
         self.assertEqual(payload.messageName, "LoadGraphAndWorkRequest")
@@ -220,7 +288,7 @@ class Encoder_EncodePayload(unittest.TestCase):
 
         payload = LoadGraphAndWorkResponse()
 
-        encoder.encodePayload(aPayload=payload,
+        encoder.encodePayload(aPayloadContent=payload,
                               aPayloadData=loadGraphAndWorkResponse)
 
         self.assertEqual(payload.messageName,   "LoadGraphAndWorkResponse")

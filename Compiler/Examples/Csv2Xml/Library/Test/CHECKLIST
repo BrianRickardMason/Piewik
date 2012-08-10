@@ -1,0 +1,49 @@
+CSV Files
+
+CSV, comma separated values, files are commonly used to transport large amounts of tabular data between either companies or applications that are not directly connected. The files are easily editable using common spreadsheet applications like Microsoft Excel.
+
+Fields are separated by commas.
+
+Records are separated with system end of line characters, CRLF (ASCII 13 Dec or 0D Hex and ASCII 10 Dec or 0A Hex respectively) for Windows, LF for Unix, and CR for Mac.
+
+Fields containing a comma must be escaped.
+
+Excel escapes these values by embedding the field inside a set of double quotes, generally referred to as text qualifiers, i.e. a single cell with the text apples, carrots, and oranges becomes "apples, carrots, and oranges".
+
+Unix style programs escape these values by inserting a single backslash character before each comma, i.e. a single cell with the text apples, carrots, and oranges becomes apples\, carrots\, and oranges. If a field contains a backslash character, then an additional backslash character is inserted before it.
+
+End of line characters within a field must also be escaped. A lot of programs do not support this feature. Excel and all the Microsoft text drivers do support it.
+
+Excel escapes these values the same as it escapes commas, and just embeds the field value inside a set of double quotes.
+
+Unix style programs have two distinct ways of escaping end of line characters within a field. Some Unix style programs use the same escape method as with commas, and just insert a single backslash before the end of line character. Other Unix style programs replace the end of line character using c style character escaping where CR becomes \r and LF becomes \n.
+
+In an Excel escaped CSV file, in fields containing a double quote, the double quote must be escaped by replacing the single double quote with two double quotes.
+
+Some files use an escaping format that is a mixture of the Excel escaping and Unix escaping where fields with commas are embedded in a set of double quotes like the Excel escaping, but fields containing double quotes are escaped by inserting a single backslash character before each double quote like the Unix style comma escaping.
+
+The first record in a CSV file might represent the names of the following columns of data, and are generally referred to as column headers. Each record in a file with column headers may be have fewer fields in it than the number of column headers. If so, the left out fields' values should be considered empty.
+
+Leading and trailing whitespace characters, commas and tab characters, adjacent to commas or record delimiters are trimmed.
+
+To guarantee preservation of leading and trailing whitespace characters, a field must be text qualified by embedding the field inside a set of double quotes.
+
+The column delimiter is often changed from a comma to some other character. The tab character is the most common replacement and the resulting format is sometimes referred to as TSV. The same escaping rules generally apply. If a field contains the column delimiter, then it must be escaped. Some Unix CSV files are known to use CR for the column delimiter and LF for the record delimiter.
+
+Records with seemingly no data in them, with no occurrences of the column delimiter and no value for the first field, should be skipped. A record with only a single field with no value must be text qualified to attempt to prevent the record from being skipped.
+
+The last record in a file may or may not be ended with an end of line character.
+
+The double quote character for the Excel style escaping text qualifier is sometimes replaced with a single quote or apostrophe, ASCII 39 Dec or 27 Hex.
+
+The end of line characters used for record delimiters are sometimes changed to other characters like a semicolon.
+
+Some users find it useful for a parser to be able to ignore an empty field in data and instead return the next non empty field.
+
+Non-printable characters in a field are sometimes escaped using one of several c style character escape sequences, \### and \o### Octal, \x## Hex, \d### Decimal, and \u#### Unicode.
+
+Some delimited file formats have a comment character, generally #, that can be used as the first character on a line to represent that the following text up to the next end of line character is to be ignored. An IIS web log file is a good example.
+
+Some CSV parsing products require all fields be enclosed in double quotes as if there were characters within the field that need to be escaped but there aren't.
+
+Some CSV parsers that require strongly typed data from a CSV file consider non-textqualified fields to be numeric, or null if the field contains no data, and text data if a field is textqualified.

@@ -11,8 +11,10 @@ import Text.Parsec.Combinator
 -- CSV file grammar
 -- ------
 -- file         ::= [ header ] { line }
--- header       ::= [ entry { separator entry } ] newline
+-- comment      ::= # { character* }
+-- header       ::= [ line | lastLine ]
 -- line         ::= [ entry { separator entry } ] newline
+-- lastLine     ::= [ entry { separator entry } ]
 -- entry        ::= alphanum+ | " { character* } "
 -- newline      ::= \n
 -- separator    ::= ,
@@ -21,16 +23,27 @@ import Text.Parsec.Combinator
 
 csvP :: (Stream s m Char) => ParsecT s u m [[String]]
 csvP =
-    do header <- option [] lineP
-       lines <- many lineP
+    do header <- option [] (try lineP)
+       lines <- option [] (many $ commentP <|> try lineP)
+       lastLine <- option [] lastLineP
        eof
-       return (header : lines)
+       return $! filter (not . null) ((header : lines) ++ (lastLine : []))
+
+commentP :: (Stream s m Char) => ParsecT s u m [String]
+commentP =
+    startCommentP >> skipMany (noneOf "\n") >> (return [])
+    where
+        startCommentP :: (Stream s m Char) => ParsecT s u m Char
+        startCommentP = (char '#')
 
 lineP :: (Stream s m Char) => ParsecT s u m [String]
-lineP = 
+lineP =
     do entry <- option [] (entryP `sepBy` separatorP)
-       newlineP; 
+       newlineP
        return entry
+
+lastLineP :: (Stream s m Char) => ParsecT s u m [String]
+lastLineP = option [] (entryP `sepBy` separatorP)
 
 entryP :: (Stream s m Char) => ParsecT s u m String
 entryP = manyAlphaNumP <|> manyQuotedCharacterP
@@ -66,4 +79,11 @@ newlineP :: (Stream s m Char) => ParsecT s u m Char
 newlineP = newline
 
 separatorP :: (Stream s m Char) => ParsecT s u m Char
-separatorP = (char ',')
+separatorP = 
+    spacesP >>
+    (char ',') >> 
+    spacesP >>
+    (return ',')
+    where
+        spacesP :: (Stream s m Char) => ParsecT s u m ()
+        spacesP = skipMany (oneOf " \t")

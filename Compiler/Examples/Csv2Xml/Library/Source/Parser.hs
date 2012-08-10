@@ -70,20 +70,13 @@ quoteP :: (Stream s m Char) => ParsecT s u m Char
 quoteP = (char '"')
 
 doubleQuoteP :: (Stream s m Char) => ParsecT s u m Char
-doubleQuoteP = 
-   try $ quoteP >> 
-         quoteP >> 
-         (return '"')
+doubleQuoteP = try $ quoteP >> quoteP >> (return '"')
 
 newlineP :: (Stream s m Char) => ParsecT s u m Char
 newlineP = newline
 
 separatorP :: (Stream s m Char) => ParsecT s u m Char
-separatorP = 
-    spacesP >>
-    (char ',') >> 
-    spacesP >>
-    (return ',')
+separatorP = spacesP >> (char ',') >> spacesP >> (return ',')
     where
         spacesP :: (Stream s m Char) => ParsecT s u m ()
         spacesP = skipMany (oneOf " \t")

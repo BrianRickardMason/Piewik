@@ -29,10 +29,10 @@
 
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 
-from Concept.Decoder                           import Decoder
-from Concept.Extensions.Protobuf.MessageCommon import *
-from Concept.Extensions.Protobuf.Messages_pb2  import *
-from Concept.TypeSystem                        import *
+from Concept.Decoder                                                   import Decoder
+from Concept.Extensions.CritterProtobuf.CritterInterface.MessageCommon import *
+from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2  import *
+from Concept.TypeSystem                                                import *
 
 class PiewikCritterData(Record):
     def __init__(self):

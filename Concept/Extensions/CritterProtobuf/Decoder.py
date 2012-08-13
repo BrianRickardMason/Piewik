@@ -29,11 +29,12 @@
 
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 
-from Concept.Decoder                                                   import Decoder
-from Concept.Extensions.CritterProtobuf.CritterInterface.MessageCommon import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2  import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.Translation   import *
-from Concept.TypeSystem                                                import *
+from Concept.Decoder                                                        import Decoder
+from Concept.Extensions.CritterProtobuf.CritterInterface.MessageCommon      import *
+from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2       import *
+from Concept.Extensions.CritterProtobuf.CritterInterface.Translation        import *
+from Concept.Extensions.CritterProtobuf.CritterInterface.TranslationHelpers import *
+from Concept.TypeSystem                                                     import *
 
 class ProtobufDecoder(Decoder):
     def decode(self, aBytesRead):
@@ -91,17 +92,3 @@ class ProtobufDecoder(Decoder):
                 dictionary[field[0].name] = recordOf
 
         return dictionary
-
-def getCorrespondingPiewikType(aProtobufType):
-    # TODO: All types.
-    # Messages.
-    if   type(aProtobufType) is LoadGraphAndWorkResponse: return PiewikLoadGraphAndWorkResponse
-
-    # Structures.
-    elif type(aProtobufType) is GraphData:                return PiewikGraphData
-    elif type(aProtobufType) is WorkData:                 return PiewikWorkData
-    elif type(aProtobufType) is WorkPredecessorData:      return PiewikWorkPredecessorData
-
-    # TODO: A meaningful exception.
-    # Not found.
-    else:                                                 raise

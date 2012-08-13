@@ -29,8 +29,8 @@
 
 import unittest
 
-from Runtime.Template   import Template
-from Runtime.TypeSystem import *
+from Piewik.Runtime.Template   import Template
+from Piewik.Runtime.TypeSystem import *
 
 class Template_Ctor(unittest.TestCase):
     #

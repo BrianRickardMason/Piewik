@@ -29,10 +29,10 @@
 
 import unittest
 
-from Runtime.Message                   import Message
-from Runtime.Template                  import Template
-from Runtime.TemplateMatchingMechanism import TemplateMatchingMechanism
-from Runtime.TypeSystem                import *
+from Piewik.Runtime.Message                   import Message
+from Piewik.Runtime.Template                  import Template
+from Piewik.Runtime.TemplateMatchingMechanism import TemplateMatchingMechanism
+from Piewik.Runtime.TypeSystem                import *
 
 #
 # TODO: All types.

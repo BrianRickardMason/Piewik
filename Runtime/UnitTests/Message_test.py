@@ -29,8 +29,8 @@
 
 import unittest
 
-from Runtime.Message    import Message
-from Runtime.TypeSystem import *
+from Piewik.Runtime.Message    import Message
+from Piewik.Runtime.TypeSystem import *
 
 class Message_Ctor(unittest.TestCase):
     #

@@ -27,8 +27,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.Encoder    import Encoder
-from Runtime.TypeSystem import *
+from Piewik.Runtime.Encoder    import Encoder
+from Piewik.Runtime.TypeSystem import *
 
 class ProtobufEncoder(Encoder):
     # TODO: Remove the aHeaderId.

@@ -30,7 +30,7 @@
 import Queue
 import threading
 
-from Runtime.Event import ComponentDoneEvent
+from Piewik.Runtime.Event import ComponentDoneEvent
 
 class ComponentContext(object):
     def __init__(self, aMtc, aSystem, aSelf):

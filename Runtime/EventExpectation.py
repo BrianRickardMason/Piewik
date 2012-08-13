@@ -27,8 +27,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.Event import ComponentDoneEvent
-from Runtime.Event import PortReceivedEvent
+from Piewik.Runtime.Event import ComponentDoneEvent
+from Piewik.Runtime.Event import PortReceivedEvent
 
 class EventExpectation(object):
     pass

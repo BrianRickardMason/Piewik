@@ -27,7 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.TypeSystem import *
+from Piewik.Runtime.TypeSystem import *
 
 #
 # NOTE: Header, Payload and Envelope are not translated.

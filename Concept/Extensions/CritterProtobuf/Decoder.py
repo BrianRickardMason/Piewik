@@ -28,6 +28,7 @@
 # SUCH DAMAGE.
 
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
+from google.protobuf.message             import Message
 
 from Concept.Decoder                                                        import Decoder
 from Concept.Extensions.CritterProtobuf.CritterInterface.MessageCommon      import *
@@ -74,16 +75,13 @@ class ProtobufDecoder(Decoder):
 
         for field in aData.ListFields():
             # TODO: Integer, float...
+            # Built-in types.
             if type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.
                 dictionary[field[0].name] = Charstring().assign(str(field[1]))
 
-            # Only CritterData possible for now.
-            if type(field[1]) is CritterData:
-                piewikType = getCorrespondingPiewikType(field[1])
-                dictionary[field[0].name] = piewikType().assign(self.encodeDictionary(field[1]))
-
-            if type(field[1]) is RepeatedCompositeFieldContainer:
+            # Composite fields.
+            elif type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?
                 piewikType = getCorrespondingPiewikType(field[1][0])
                 recordOf = RecordOf(piewikType)
@@ -93,5 +91,10 @@ class ProtobufDecoder(Decoder):
                     self.encodeDictionary(element)
                 recordOf.assign(list)
                 dictionary[field[0].name] = recordOf
+
+            # Other protobuf types (structured).
+            elif isinstance(field[1], Message):
+                piewikType = getCorrespondingPiewikType(field[1])
+                dictionary[field[0].name] = piewikType().assign(self.encodeDictionary(field[1]))
 
         return dictionary

@@ -42,23 +42,7 @@ class ProtobufDecoder(Decoder):
         envelope = Envelope()
         envelope.ParseFromString(aBytesRead)
 
-        if   envelope.header.id == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: message = CommandWorkExecutionAnnouncement()
-        elif envelope.header.id == DETERMINE_GRAPH_CYCLE_REQUEST:       message = DetermineGraphCycleRequest()
-        elif envelope.header.id == DETERMINE_GRAPH_CYCLE_RESPONSE:      message = DetermineGraphCycleResponse()
-        elif envelope.header.id == DETERMINE_WORK_CYCLE_REQUEST:        message = DetermineWorkCycleRequest()
-        elif envelope.header.id == DETERMINE_WORK_CYCLE_RESPONSE:       message = DetermineWorkCycleResponse()
-        elif envelope.header.id == EXECUTE_GRAPH_ANNOUNCEMENT:          message = ExecuteGraphAnnouncement()
-        elif envelope.header.id == EXECUTE_WORK_ANNOUNCEMENT:           message = ExecuteWorkAnnouncement()
-        elif envelope.header.id == HEARTBEAT_ANNOUNCEMENT:              message = HeartbeatAnnouncement()
-        elif envelope.header.id == LOAD_GRAPH_AND_WORK_REQUEST:         message = LoadGraphAndWorkRequest()
-        elif envelope.header.id == LOAD_GRAPH_AND_WORK_RESPONSE:        message = LoadGraphAndWorkResponse()
-        elif envelope.header.id == POKE_ANNOUNCEMENT:                   message = PokeAnnouncement()
-        elif envelope.header.id == PRESENT_YOURSELF_REQUEST:            message = PresentYourselfRequest()
-        elif envelope.header.id == PRESENT_YOURSELF_RESPONSE:           message = PresentYourselfResponse()
-        elif envelope.header.id == REPORT_FINISHED_WORK_ANNOUNCEMENT:   message = ReportFinishedWorkAnnouncement()
-        # TODO: Raise a meaningful exception.
-        else:                                                           raise
-
+        message = getMessageByHeaderId(envelope.header.id)
         message.ParseFromString(envelope.payload.payload)
 
         # Translation of the python representation of protobuf to the Piewik representation.

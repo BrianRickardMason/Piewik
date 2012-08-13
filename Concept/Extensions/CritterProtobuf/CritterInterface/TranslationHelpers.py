@@ -27,12 +27,32 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Messages_pb2 import *
-from Translation  import *
+from MessageCommon import *
+from Messages_pb2  import *
+from Translation   import *
 
 #
 # NOTE: Header, Payload and Envelope are not translated.
 #
+
+def getMessageByHeaderId(aId):
+    if   aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()
+    elif aId == DETERMINE_GRAPH_CYCLE_REQUEST:       return DetermineGraphCycleRequest()
+    elif aId == DETERMINE_GRAPH_CYCLE_RESPONSE:      return DetermineGraphCycleResponse()
+    elif aId == DETERMINE_WORK_CYCLE_REQUEST:        return DetermineWorkCycleRequest()
+    elif aId == DETERMINE_WORK_CYCLE_RESPONSE:       return DetermineWorkCycleResponse()
+    elif aId == EXECUTE_GRAPH_ANNOUNCEMENT:          return ExecuteGraphAnnouncement()
+    elif aId == EXECUTE_WORK_ANNOUNCEMENT:           return ExecuteWorkAnnouncement()
+    elif aId == HEARTBEAT_ANNOUNCEMENT:              return HeartbeatAnnouncement()
+    elif aId == LOAD_GRAPH_AND_WORK_REQUEST:         return LoadGraphAndWorkRequest()
+    elif aId == LOAD_GRAPH_AND_WORK_RESPONSE:        return LoadGraphAndWorkResponse()
+    elif aId == POKE_ANNOUNCEMENT:                   return PokeAnnouncement()
+    elif aId == PRESENT_YOURSELF_REQUEST:            return PresentYourselfRequest()
+    elif aId == PRESENT_YOURSELF_RESPONSE:           return PresentYourselfResponse()
+    elif aId == REPORT_FINISHED_WORK_ANNOUNCEMENT:   return ReportFinishedWorkAnnouncement()
+    # TODO: Raise a meaningful exception.
+    # Not found.
+    else:                                            raise
 
 def getCorrespondingPiewikType(aProtobufType):
     # Structures.

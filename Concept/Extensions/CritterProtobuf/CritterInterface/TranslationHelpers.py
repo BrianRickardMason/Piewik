@@ -30,16 +30,31 @@
 from Messages_pb2 import *
 from Translation  import *
 
+#
+# NOTE: Header, Payload and Envelope are not translated.
+#
+
 def getCorrespondingPiewikType(aProtobufType):
-    # TODO: All types.
     # Structures.
-    if   type(aProtobufType) is GraphData:                return PiewikGraphData
-    elif type(aProtobufType) is WorkData:                 return PiewikWorkData
-    elif type(aProtobufType) is WorkPredecessorData:      return PiewikWorkPredecessorData
-
+    if   type(aProtobufType) is CritterData:                      return PiewikCritterData
+    elif type(aProtobufType) is GraphData:                        return PiewikGraphData
+    elif type(aProtobufType) is WorkData:                         return PiewikWorkData
+    elif type(aProtobufType) is WorkPredecessorData:              return PiewikWorkPredecessorData
     # Messages.
-    elif type(aProtobufType) is LoadGraphAndWorkResponse: return PiewikLoadGraphAndWorkResponse
-
+    elif type(aProtobufType) is HeartbeatAnnouncement:            return PiewikHeartbeatAnnouncement
+    elif type(aProtobufType) is PresentYourselfRequest:           return PiewikPresentYourselfRequest
+    elif type(aProtobufType) is PresentYourselfResponse:          return PiewikPresentYourselfResponse
+    elif type(aProtobufType) is PokeAnnouncement:                 return PiewikPokeAnnouncement
+    elif type(aProtobufType) is ExecuteGraphAnnouncement:         return PiewikExecuteGraphAnnouncement
+    elif type(aProtobufType) is LoadGraphAndWorkRequest:          return PiewikLoadGraphAndWorkRequest
+    elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadGraphAndWorkResponse
+    elif type(aProtobufType) is DetermineGraphCycleRequest:       return PiewikDetermineGraphCycleRequest
+    elif type(aProtobufType) is DetermineGraphCycleResponse:      return PiewikDetermineGraphCycleResponse
+    elif type(aProtobufType) is CommandWorkExecutionAnnouncement: return PiewikCommandWorkExecutionAnnouncement
+    elif type(aProtobufType) is ExecuteWorkAnnouncement:          return PiewikExecuteWorkAnnouncement
+    elif type(aProtobufType) is DetermineWorkCycleRequest:        return PiewikDetermineWorkCycleRequest
+    elif type(aProtobufType) is DetermineWorkCycleResponse:       return PiewikDetermineWorkCycleResponse
+    elif type(aProtobufType) is ReportFinishedWorkAnnouncement:   return PiewikReportFinishedWorkAnnouncement
     # TODO: A meaningful exception.
     # Not found.
-    else:                                                 raise
+    else:                                                         raise

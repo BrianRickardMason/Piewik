@@ -27,8 +27,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import Queue
-
 from Runtime.Action           import Alternative
 from Runtime.Action           import Blocking
 from Runtime.Action           import Interleave

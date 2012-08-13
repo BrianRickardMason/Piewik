@@ -29,20 +29,22 @@
 
 import os
 os.sys.path.append("..")
+os.sys.path.append("../..")
+os.sys.path.append("../../..")
 
 import Queue
 
-from Piewik.Runtime.Action           import Alternative
-from Piewik.Runtime.Action           import Blocking
-from Piewik.Runtime.Action           import Interleave
-from Piewik.Runtime.Component        import Component
-from Piewik.Runtime.Control          import Control
-from Piewik.Runtime.Event            import PortReceivedEvent
-from Piewik.Runtime.EventExpectation import ComponentDoneExpectation
-from Piewik.Runtime.EventExpectation import PortReceiveExpectation
-from Piewik.Runtime.Port             import MessagePort
-from Piewik.Runtime.Testcase         import Testcase
-from Piewik.Runtime.TypeSystem       import Charstring
+from Runtime.Action           import Alternative
+from Runtime.Action           import Blocking
+from Runtime.Action           import Interleave
+from Runtime.Component        import Component
+from Runtime.Control          import Control
+from Runtime.Event            import PortReceivedEvent
+from Runtime.EventExpectation import ComponentDoneExpectation
+from Runtime.EventExpectation import PortReceiveExpectation
+from Runtime.Port             import MessagePort
+from Runtime.Testcase         import Testcase
+from Runtime.TypeSystem       import Charstring
 
 class MyPort(MessagePort):
     def __init__(self, aEventQueue):

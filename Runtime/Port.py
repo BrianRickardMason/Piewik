@@ -27,7 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.TypeSystem import TTCN3Type
+from Runtime.TypeSystem import TTCN3Type
 
 class Port(object):
     def __init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut):

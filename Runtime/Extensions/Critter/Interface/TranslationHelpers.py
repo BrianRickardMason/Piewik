@@ -50,7 +50,9 @@ def getHeaderIdAndMessageTypeByMessageName(aMessageName):
     elif aMessageName == 'PresentYourselfRequest':           return (PRESENT_YOURSELF_REQUEST,            PresentYourselfRequest)
     elif aMessageName == 'PresentYourselfResponse':          return (PRESENT_YOURSELF_RESPONSE,           PresentYourselfResponse)
     elif aMessageName == 'ReportFinishedWorkAnnouncement':   return (REPORT_FINISHED_WORK_ANNOUNCEMENT,   ReportFinishedWorkAnnouncement)
-    else: raise
+    # TODO: Raise a meaningful exception.
+    # Not found.
+    else:                                                    raise
 
 def getMessageByHeaderId(aId):
     if   aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()

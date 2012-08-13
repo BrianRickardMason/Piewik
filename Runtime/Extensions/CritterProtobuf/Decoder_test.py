@@ -29,11 +29,11 @@
 
 import unittest
 
-from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2 import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.Translation  import *
-from Concept.Extensions.CritterProtobuf.Decoder                       import ProtobufDecoder
-from Concept.Extensions.CritterProtobuf.Encoder                       import ProtobufEncoder
-from Concept.TypeSystem                                               import *
+from Runtime.Extensions.CritterProtobuf.CritterInterface.Messages_pb2 import *
+from Runtime.Extensions.CritterProtobuf.CritterInterface.Translation  import *
+from Runtime.Extensions.CritterProtobuf.Decoder                       import ProtobufDecoder
+from Runtime.Extensions.CritterProtobuf.Encoder                       import ProtobufEncoder
+from Runtime.TypeSystem                                               import *
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):

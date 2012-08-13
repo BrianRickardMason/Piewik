@@ -27,34 +27,36 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Concept.TypeSystem import InvalidTTCN3TypeInCtor
-from Concept.TypeSystem import TTCN3Type
+from Runtime.Encoder    import Encoder
+from Runtime.TypeSystem import *
 
-class Template(object):
-    """Represents a TTCN3 template.
+class ProtobufEncoder(Encoder):
+    # TODO: Remove the aHeaderId.
+    def encode(self, aEnvelope, aHeaderId, aMessageName, aPayloadData):
+        envelope = aEnvelope()
+        envelope.header.id = aHeaderId
+        payload = aMessageName()
+        self.encodePayload(aPayloadContent=payload,
+                           aPayloadData=aPayloadData)
+        envelope.payload.payload = payload.SerializeToString()
+        return envelope
 
-    Attributes:
-        mValue: The value of the template.
+    def encodePayload(self, aPayloadContent, aPayloadData):
+        # TODO: What type?
+        # TODO: What exception?
+        if not isinstance(aPayloadData, TTCN3Type):
+            raise
 
-    """
-
-    def __init__(self, aValue):
-        """Initializes a TTCN3 template.
-
-        Arguments:
-            aValue: The value of the template.
-
-        """
-        if isinstance(aValue, TTCN3Type):
-            self.mValue = aValue
-        else:
-            raise InvalidTTCN3TypeInCtor
-
-    def value(self):
-        """Returns the value of the template.
-
-        Returns:
-            The value of the template.
-
-        """
-        return self.mValue
+        for key in aPayloadData.mDictionary.keys():
+            if isinstance(aPayloadData.mValue[key], Record):
+                payload     = getattr(aPayloadContent, key)
+                payloadData = aPayloadData.mValue[key]
+                self.encodePayload(payload, payloadData)
+            elif isinstance(aPayloadData.mValue[key], RecordOf):
+                payload     = getattr(aPayloadContent, key)
+                payloadData = aPayloadData.mValue[key]
+                for element in payloadData.mValue:
+                    tmpPayload = payload.add()
+                    self.encodePayload(tmpPayload, element)
+            else:
+                setattr(aPayloadContent, key, aPayloadData.mValue[key].value())

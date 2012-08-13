@@ -32,17 +32,17 @@ os.sys.path.append("..")
 
 import Queue
 
-from Concept.Action           import Alternative
-from Concept.Action           import Blocking
-from Concept.Action           import Interleave
-from Concept.Component        import Component
-from Concept.Control          import Control
-from Concept.Event            import PortReceivedEvent
-from Concept.EventExpectation import ComponentDoneExpectation
-from Concept.EventExpectation import PortReceiveExpectation
-from Concept.Port             import MessagePort
-from Concept.Testcase         import Testcase
-from Concept.TypeSystem       import Charstring
+from Runtime.Action           import Alternative
+from Runtime.Action           import Blocking
+from Runtime.Action           import Interleave
+from Runtime.Component        import Component
+from Runtime.Control          import Control
+from Runtime.Event            import PortReceivedEvent
+from Runtime.EventExpectation import ComponentDoneExpectation
+from Runtime.EventExpectation import PortReceiveExpectation
+from Runtime.Port             import MessagePort
+from Runtime.Testcase         import Testcase
+from Runtime.TypeSystem       import Charstring
 
 class MyPort(MessagePort):
     def __init__(self, aEventQueue):

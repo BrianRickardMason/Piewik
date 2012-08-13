@@ -30,12 +30,12 @@
 from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 from google.protobuf.message             import Message
 
-from Concept.Decoder                                                        import Decoder
-from Concept.Extensions.CritterProtobuf.CritterInterface.MessageCommon      import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2       import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.Translation        import *
-from Concept.Extensions.CritterProtobuf.CritterInterface.TranslationHelpers import *
-from Concept.TypeSystem                                                     import *
+from Runtime.Decoder                                                        import Decoder
+from Runtime.Extensions.CritterProtobuf.CritterInterface.MessageCommon      import *
+from Runtime.Extensions.CritterProtobuf.CritterInterface.Messages_pb2       import *
+from Runtime.Extensions.CritterProtobuf.CritterInterface.Translation        import *
+from Runtime.Extensions.CritterProtobuf.CritterInterface.TranslationHelpers import *
+from Runtime.TypeSystem                                                     import *
 
 class ProtobufDecoder(Decoder):
     def decode(self, aBytesRead):

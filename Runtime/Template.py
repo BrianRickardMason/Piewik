@@ -27,36 +27,34 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Concept.Event import ComponentDoneEvent
-from Concept.Event import PortReceivedEvent
+from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
+from Runtime.TypeSystem import TTCN3Type
 
-class EventExpectation(object):
-    pass
+class Template(object):
+    """Represents a TTCN3 template.
 
-class ComponentDoneExpectation:
-    def __init__(self, aComponent):
-        self.mComponent = aComponent
+    Attributes:
+        mValue: The value of the template.
 
-    def match(self, aEvent):
-        if isinstance(aEvent, ComponentDoneEvent):
-            if aEvent.mComponent == self.mComponent:
-                # TODO: Implement checking the component state.
-                return True
-        return False
+    """
 
-class PortReceiveExpectation(EventExpectation):
-    def __init__(self, aPort, aMessage = None, aSender = None):
-        self.mPort    = aPort
-        self.mMessage = aMessage
-        self.mSender  = aSender
+    def __init__(self, aValue):
+        """Initializes a TTCN3 template.
 
-    def match(self, aEvent):
-        if not isinstance(aEvent, PortReceivedEvent):
-            return False
-        return aEvent.mPort == self.mPort                                                and \
-               (self.mMessage is None or self.__doMatch(self.mMessage, aEvent.mMessage)) and \
-               (self.mSender  is None or self.mSender == aEvent.mSender)
+        Arguments:
+            aValue: The value of the template.
 
-    def __doMatch(self, aTemplate, aMessage):
-        # TODO: Delegate to the matcher.
-        return aTemplate == aMessage
+        """
+        if isinstance(aValue, TTCN3Type):
+            self.mValue = aValue
+        else:
+            raise InvalidTTCN3TypeInCtor
+
+    def value(self):
+        """Returns the value of the template.
+
+        Returns:
+            The value of the template.
+
+        """
+        return self.mValue

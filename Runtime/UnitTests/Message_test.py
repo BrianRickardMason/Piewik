@@ -29,8 +29,8 @@
 
 import unittest
 
-from Concept.Message    import Message
-from Concept.TypeSystem import *
+from Runtime.Message    import Message
+from Runtime.TypeSystem import *
 
 class Message_Ctor(unittest.TestCase):
     #

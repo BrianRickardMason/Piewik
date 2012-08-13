@@ -29,7 +29,7 @@
 
 import unittest
 
-from Concept.TypeSystem import *
+from Runtime.TypeSystem import *
 
 class TypeSystem_Construction(unittest.TestCase):
     #

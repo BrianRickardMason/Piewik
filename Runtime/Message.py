@@ -27,36 +27,39 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Concept.Encoder    import Encoder
-from Concept.TypeSystem import *
+from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
+from Runtime.TypeSystem import NotAMessageType
+from Runtime.TypeSystem import TTCN3Type
 
-class ProtobufEncoder(Encoder):
-    # TODO: Remove the aHeaderId.
-    def encode(self, aEnvelope, aHeaderId, aMessageName, aPayloadData):
-        envelope = aEnvelope()
-        envelope.header.id = aHeaderId
-        payload = aMessageName()
-        self.encodePayload(aPayloadContent=payload,
-                           aPayloadData=aPayloadData)
-        envelope.payload.payload = payload.SerializeToString()
-        return envelope
+# TODO: Return to the two-steps convention (construction + assignment).
 
-    def encodePayload(self, aPayloadContent, aPayloadData):
-        # TODO: What type?
-        # TODO: What exception?
-        if not isinstance(aPayloadData, TTCN3Type):
-            raise
+class Message(object):
+    """Represents a TTCN3 message.
 
-        for key in aPayloadData.mDictionary.keys():
-            if isinstance(aPayloadData.mValue[key], Record):
-                payload     = getattr(aPayloadContent, key)
-                payloadData = aPayloadData.mValue[key]
-                self.encodePayload(payload, payloadData)
-            elif isinstance(aPayloadData.mValue[key], RecordOf):
-                payload     = getattr(aPayloadContent, key)
-                payloadData = aPayloadData.mValue[key]
-                for element in payloadData.mValue:
-                    tmpPayload = payload.add()
-                    self.encodePayload(tmpPayload, element)
-            else:
-                setattr(aPayloadContent, key, aPayloadData.mValue[key].value())
+    Attributes:
+        mValue: The value of the message.
+
+    """
+
+    def __init__(self, aValue):
+        """Initializes a TTCN3 message.
+
+        Arguments:
+            aValue: The value of the message.
+
+        """
+        if isinstance(aValue, TTCN3Type):
+            if not aValue.isMessageType():
+                raise NotAMessageType
+            self.mValue = aValue
+        else:
+            raise InvalidTTCN3TypeInCtor
+
+    def value(self):
+        """Returns the value of the message.
+
+        Returns:
+            The value of the message.
+
+        """
+        return self.mValue

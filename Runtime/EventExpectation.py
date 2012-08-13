@@ -27,39 +27,36 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Concept.TypeSystem import InvalidTTCN3TypeInCtor
-from Concept.TypeSystem import NotAMessageType
-from Concept.TypeSystem import TTCN3Type
+from Runtime.Event import ComponentDoneEvent
+from Runtime.Event import PortReceivedEvent
 
-# TODO: Return to the two-steps convention (construction + assignment).
+class EventExpectation(object):
+    pass
 
-class Message(object):
-    """Represents a TTCN3 message.
+class ComponentDoneExpectation:
+    def __init__(self, aComponent):
+        self.mComponent = aComponent
 
-    Attributes:
-        mValue: The value of the message.
+    def match(self, aEvent):
+        if isinstance(aEvent, ComponentDoneEvent):
+            if aEvent.mComponent == self.mComponent:
+                # TODO: Implement checking the component state.
+                return True
+        return False
 
-    """
+class PortReceiveExpectation(EventExpectation):
+    def __init__(self, aPort, aMessage = None, aSender = None):
+        self.mPort    = aPort
+        self.mMessage = aMessage
+        self.mSender  = aSender
 
-    def __init__(self, aValue):
-        """Initializes a TTCN3 message.
+    def match(self, aEvent):
+        if not isinstance(aEvent, PortReceivedEvent):
+            return False
+        return aEvent.mPort == self.mPort                                                and \
+               (self.mMessage is None or self.__doMatch(self.mMessage, aEvent.mMessage)) and \
+               (self.mSender  is None or self.mSender == aEvent.mSender)
 
-        Arguments:
-            aValue: The value of the message.
-
-        """
-        if isinstance(aValue, TTCN3Type):
-            if not aValue.isMessageType():
-                raise NotAMessageType
-            self.mValue = aValue
-        else:
-            raise InvalidTTCN3TypeInCtor
-
-    def value(self):
-        """Returns the value of the message.
-
-        Returns:
-            The value of the message.
-
-        """
-        return self.mValue
+    def __doMatch(self, aTemplate, aMessage):
+        # TODO: Delegate to the matcher.
+        return aTemplate == aMessage

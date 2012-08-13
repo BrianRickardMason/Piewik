@@ -29,10 +29,10 @@
 
 import unittest
 
-from Concept.Message                   import Message
-from Concept.Template                  import Template
-from Concept.TemplateMatchingMechanism import TemplateMatchingMechanism
-from Concept.TypeSystem                import *
+from Runtime.Message                   import Message
+from Runtime.Template                  import Template
+from Runtime.TemplateMatchingMechanism import TemplateMatchingMechanism
+from Runtime.TypeSystem                import *
 
 #
 # TODO: All types.

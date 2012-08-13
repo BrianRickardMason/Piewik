@@ -29,8 +29,8 @@
 
 import unittest
 
-from Concept.Template   import Template
-from Concept.TypeSystem import *
+from Runtime.Template   import Template
+from Runtime.TypeSystem import *
 
 class Template_Ctor(unittest.TestCase):
     #

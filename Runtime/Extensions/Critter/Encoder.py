@@ -27,15 +27,17 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.Encoder    import Encoder
-from Piewik.Runtime.TypeSystem import *
+from Piewik.Runtime.Encoder                                         import Encoder
+from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2       import Envelope
+from Piewik.Runtime.Extensions.Critter.Interface.TranslationHelpers import *
+from Piewik.Runtime.TypeSystem                                      import *
 
 class ProtobufEncoder(Encoder):
-    # TODO: Remove the aHeaderId.
-    def encode(self, aEnvelope, aHeaderId, aMessageName, aPayloadData):
-        envelope = aEnvelope()
-        envelope.header.id = aHeaderId
-        payload = aMessageName()
+    def encode(self, aPayloadData):
+        (headerId, messageName) = getHeaderIdAndMessageTypeByMessageName(aPayloadData.getField('messageName').value())
+        envelope = Envelope()
+        envelope.header.id = headerId
+        payload = messageName()
         self.encodePayload(aPayloadContent=payload,
                            aPayloadData=aPayloadData)
         envelope.payload.payload = payload.SerializeToString()

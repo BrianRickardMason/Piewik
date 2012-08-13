@@ -75,11 +75,7 @@ class Encoder_Encode(unittest.TestCase):
 
         encoder = ProtobufEncoder()
 
-        # TODO: Remove the hardcoded value of the header's id.
-        envelope = encoder.encode(aEnvelope=Envelope,
-                                  aHeaderId=10,
-                                  aMessageName=LoadGraphAndWorkResponse,
-                                  aPayloadData=loadGraphAndWorkResponse)
+        envelope = encoder.encode(aPayloadData=loadGraphAndWorkResponse)
 
         decoder = ProtobufDecoder()
 

@@ -29,10 +29,11 @@
 
 import unittest
 
-from Piewik.Runtime.Extensions.Critter.Encoder                import ProtobufEncoder
-from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2 import *
-from Piewik.Runtime.Extensions.Critter.Interface.Translation  import *
-from Piewik.Runtime.TypeSystem                                import *
+from Piewik.Runtime.Extensions.Critter.Encoder                 import ProtobufEncoder
+from Piewik.Runtime.Extensions.Critter.Interface.MessageCommon import *
+from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2  import *
+from Piewik.Runtime.Extensions.Critter.Interface.Translation   import *
+from Piewik.Runtime.TypeSystem                                 import *
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):
@@ -74,13 +75,9 @@ class Encoder_Encode(unittest.TestCase):
 
         encoder = ProtobufEncoder()
 
-        # TODO: Remove the hardcoded value of the header's id.
-        envelope = encoder.encode(aEnvelope=Envelope,
-                                  aHeaderId=1,
-                                  aMessageName=LoadGraphAndWorkResponse,
-                                  aPayloadData=loadGraphAndWorkResponse)
+        envelope = encoder.encode(aPayloadData=loadGraphAndWorkResponse)
 
-        self.assertEqual(envelope.header.id, 1)
+        self.assertEqual(envelope.header.id, LOAD_GRAPH_AND_WORK_RESPONSE)
 
         payload = LoadGraphAndWorkResponse()
         payload.ParseFromString(envelope.payload.payload)

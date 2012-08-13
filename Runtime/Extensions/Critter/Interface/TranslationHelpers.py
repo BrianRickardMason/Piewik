@@ -27,13 +27,30 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from MessageCommon import *
-from Messages_pb2  import *
-from Translation   import *
+from Piewik.Runtime.Extensions.Critter.Interface.MessageCommon import *
+from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2  import *
+from Piewik.Runtime.Extensions.Critter.Interface.Translation   import *
 
 #
 # NOTE: Header, Payload and Envelope are not translated.
 #
+
+def getHeaderIdAndMessageTypeByMessageName(aMessageName):
+    if   aMessageName == 'CommandWorkExecutionAnnouncement': return (COMMAND_WORK_EXECUTION_ANNOUNCEMENT, CommandWorkExecutionAnnouncement)
+    elif aMessageName == 'DetermineGraphCycleRequest':       return (DETERMINE_GRAPH_CYCLE_REQUEST,       DetermineGraphCycleRequest)
+    elif aMessageName == 'DetermineGraphCycleResponse':      return (DETERMINE_GRAPH_CYCLE_RESPONSE,      DetermineGraphCycleResponse)
+    elif aMessageName == 'DetermineWorkCycleRequest':        return (DETERMINE_WORK_CYCLE_REQUEST,        DetermineWorkCycleRequest)
+    elif aMessageName == 'DetermineWorkCycleResponse':       return (DETERMINE_WORK_CYCLE_RESPONSE,       DetermineWorkCycleResponse)
+    elif aMessageName == 'ExecuteGraphAnnouncement':         return (EXECUTE_GRAPH_ANNOUNCEMENT,          ExecuteGraphAnnouncement)
+    elif aMessageName == 'ExecuteWorkAnnouncement':          return (EXECUTE_WORK_ANNOUNCEMENT,           ExecuteWorkAnnouncement)
+    elif aMessageName == 'HeartbeatAnnouncement':            return (HEARTBEAT_ANNOUNCEMENT,              HeartbeatAnnouncement)
+    elif aMessageName == 'LoadGraphAndWorkRequest':          return (LOAD_GRAPH_AND_WORK_REQUEST,         LoadGraphAndWorkRequest)
+    elif aMessageName == 'LoadGraphAndWorkResponse':         return (LOAD_GRAPH_AND_WORK_RESPONSE,        LoadGraphAndWorkResponse)
+    elif aMessageName == 'PokeAnnouncement':                 return (POKE_ANNOUNCEMENT,                   PokeAnnouncement)
+    elif aMessageName == 'PresentYourselfRequest':           return (PRESENT_YOURSELF_REQUEST,            PresentYourselfRequest)
+    elif aMessageName == 'PresentYourselfResponse':          return (PRESENT_YOURSELF_RESPONSE,           PresentYourselfResponse)
+    elif aMessageName == 'ReportFinishedWorkAnnouncement':   return (REPORT_FINISHED_WORK_ANNOUNCEMENT,   ReportFinishedWorkAnnouncement)
+    else: raise
 
 def getMessageByHeaderId(aId):
     if   aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()

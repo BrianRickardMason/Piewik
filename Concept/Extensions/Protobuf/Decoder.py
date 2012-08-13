@@ -131,35 +131,27 @@ class ProtobufDecoder(Decoder):
                 dictionary[field[0].name] = PiewikCritterData().assign(self.encodeDictionary(field[1]))
             if type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?
-                if type(field[1][0]) is GraphData:
-                    recordOf = RecordOf(PiewikGraphData)
-                    list = []
-                    for fifi in field[1]:
-                        list.append(PiewikGraphData().assign(self.encodeDictionary(fifi)))
-                        self.encodeDictionary(fifi)
-                    recordOf.assign(list)
-                    dictionary[field[0].name] = recordOf
-                if type(field[1][0]) is WorkData:
-                    recordOf = RecordOf(PiewikWorkData)
-                    list = []
-                    for fifi in field[1]:
-                        list.append(PiewikWorkData().assign(self.encodeDictionary(fifi)))
-                        self.encodeDictionary(fifi)
-                    recordOf.assign(list)
-                    dictionary[field[0].name] = recordOf
-                if type(field[1][0]) is WorkPredecessorData:
-                    recordOf = RecordOf(PiewikWorkPredecessorData)
-                    list = []
-                    for fifi in field[1]:
-                        list.append(PiewikWorkPredecessorData().assign(self.encodeDictionary(fifi)))
-                        self.encodeDictionary(fifi)
-                    recordOf.assign(list)
-                    dictionary[field[0].name] = recordOf
+                piewikType = getCorrespondingPiewikType(field[1][0])
+                recordOf = RecordOf(piewikType)
+                list = []
+                for element in field[1]:
+                    list.append(piewikType().assign(self.encodeDictionary(element)))
+                    self.encodeDictionary(element)
+                recordOf.assign(list)
+                dictionary[field[0].name] = recordOf
 
         return dictionary
 
 def getCorrespondingPiewikType(aProtobufType):
     # TODO: All types.
-    if type(aProtobufType) is LoadGraphAndWorkResponse: return PiewikLoadGraphAndWorkResponse
+    # Messages.
+    if   type(aProtobufType) is LoadGraphAndWorkResponse: return PiewikLoadGraphAndWorkResponse
+
+    # Structures.
+    elif type(aProtobufType) is GraphData:                return PiewikGraphData
+    elif type(aProtobufType) is WorkData:                 return PiewikWorkData
+    elif type(aProtobufType) is WorkPredecessorData:      return PiewikWorkPredecessorData
+
     # TODO: A meaningful exception.
-    else:                                               raise
+    # Not found.
+    else:                                                 raise

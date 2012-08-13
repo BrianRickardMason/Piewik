@@ -27,8 +27,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.TypeSystem import InvalidTTCN3TypeInCtor
-from Piewik.Runtime.TypeSystem import TTCN3Type
+from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
+from Runtime.TypeSystem import TTCN3Type
 
 class Template(object):
     """Represents a TTCN3 template.

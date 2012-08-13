@@ -29,7 +29,7 @@
 
 import unittest
 
-from Piewik.Runtime.TypeSystem import *
+from Runtime.TypeSystem import *
 
 class TypeSystem_Construction(unittest.TestCase):
     #

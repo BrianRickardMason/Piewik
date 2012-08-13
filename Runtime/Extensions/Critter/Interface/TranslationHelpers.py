@@ -27,9 +27,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.Extensions.Critter.Interface.MessageCommon import *
-from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2  import *
-from Piewik.Runtime.Extensions.Critter.Interface.Translation   import *
+from Runtime.Extensions.Critter.Interface.MessageCommon import *
+from Runtime.Extensions.Critter.Interface.Messages_pb2  import *
+from Runtime.Extensions.Critter.Interface.Translation   import *
 
 #
 # NOTE: Header, Payload and Envelope are not translated.

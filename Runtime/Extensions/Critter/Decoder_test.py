@@ -29,11 +29,11 @@
 
 import unittest
 
-from Piewik.Runtime.Extensions.Critter.Decoder                import ProtobufDecoder
-from Piewik.Runtime.Extensions.Critter.Encoder                import ProtobufEncoder
-from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2 import *
-from Piewik.Runtime.Extensions.Critter.Interface.Translation  import *
-from Piewik.Runtime.TypeSystem                                import *
+from Runtime.Extensions.Critter.Decoder                import ProtobufDecoder
+from Runtime.Extensions.Critter.Encoder                import ProtobufEncoder
+from Runtime.Extensions.Critter.Interface.Messages_pb2 import *
+from Runtime.Extensions.Critter.Interface.Translation  import *
+from Runtime.TypeSystem                                import *
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):

@@ -27,10 +27,10 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.Encoder                                         import Encoder
-from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2       import Envelope
-from Piewik.Runtime.Extensions.Critter.Interface.TranslationHelpers import *
-from Piewik.Runtime.TypeSystem                                      import *
+from Runtime.Encoder                                         import Encoder
+from Runtime.Extensions.Critter.Interface.Messages_pb2       import Envelope
+from Runtime.Extensions.Critter.Interface.TranslationHelpers import *
+from Runtime.TypeSystem                                      import *
 
 class ProtobufEncoder(Encoder):
     def encode(self, aPayloadData):

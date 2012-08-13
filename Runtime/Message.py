@@ -27,9 +27,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Piewik.Runtime.TypeSystem import InvalidTTCN3TypeInCtor
-from Piewik.Runtime.TypeSystem import NotAMessageType
-from Piewik.Runtime.TypeSystem import TTCN3Type
+from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
+from Runtime.TypeSystem import NotAMessageType
+from Runtime.TypeSystem import TTCN3Type
 
 # TODO: Return to the two-steps convention (construction + assignment).
 

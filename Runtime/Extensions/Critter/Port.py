@@ -29,9 +29,9 @@
 
 import zmq
 
-from Piewik.Runtime.Extensions.Critter import Decoder
-from Piewik.Runtime.Extensions.Critter import Encoder
-from Piewik.Runtime.Port               import MessagePort
+from Runtime.Extensions.Critter import Decoder
+from Runtime.Extensions.Critter import Encoder
+from Runtime.Port               import MessagePort
 
 class PiewikPort(MessagePort):
     def __init__(self, aAddress=None, aMapParam=None, aUnmapParam=None, aIn=[], aOut=[], aInOut=[]):

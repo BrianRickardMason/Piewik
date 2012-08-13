@@ -77,9 +77,12 @@ class ProtobufDecoder(Decoder):
             if type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.
                 dictionary[field[0].name] = Charstring().assign(str(field[1]))
+
+            # Only CritterData possible for now.
             if type(field[1]) is CritterData:
-                # TODO: Mapping needed here! (Piewik -> protobuf).
-                dictionary[field[0].name] = PiewikCritterData().assign(self.encodeDictionary(field[1]))
+                piewikType = getCorrespondingPiewikType(field[1])
+                dictionary[field[0].name] = piewikType().assign(self.encodeDictionary(field[1]))
+
             if type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?
                 piewikType = getCorrespondingPiewikType(field[1][0])

@@ -113,8 +113,7 @@ class ProtobufDecoder(Decoder):
         return self.encodeInternally(message)
 
     def encodeInternally(self, aData):
-        # TODO: Guess the field.
-        aHook = PiewikLoadGraphAndWorkResponse()
+        aHook = getCorrespondingPiewikType(aData)()
         dictionary = self.encodeDictionary(aData)
         aHook.assign(dictionary)
         return aHook
@@ -158,3 +157,9 @@ class ProtobufDecoder(Decoder):
                     dictionary[field[0].name] = recordOf
 
         return dictionary
+
+def getCorrespondingPiewikType(aProtobufType):
+    # TODO: All types.
+    if type(aProtobufType) is LoadGraphAndWorkResponse: return PiewikLoadGraphAndWorkResponse
+    # TODO: A meaningful exception.
+    else:                                               raise

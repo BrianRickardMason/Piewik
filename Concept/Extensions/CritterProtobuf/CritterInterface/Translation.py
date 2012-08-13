@@ -29,53 +29,146 @@
 
 from Concept.TypeSystem import *
 
+#
+# NOTE: Header, Payload and Envelope are not translated.
+#
+
 class PiewikCritterData(Record):
     def __init__(self):
-        Record.__init__(self, {'type': Charstring,
-                               'nick': Charstring})
+        Record.__init__(self,
+                        {'type': Charstring,
+                         'nick': Charstring})
 
 class PiewikHeartbeatAnnouncement(Record):
     def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'timestamp':   Float})
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'timestamp':   Float})
 
 class PiewikPresentYourselfRequest(Record):
     def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'receiver':    PiewikCritterData})
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData})
 
 class PiewikPresentYourselfResponse(Record):
     def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'receiver':    PiewikCritterData})
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData})
+
+class PiewikPokeAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData})
+
+class PiewikExecuteGraphAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'graphName':   Charstring})
 
 class PiewikGraphData(Record):
     def __init__(self):
-        Record.__init__(self, {'graphName': Charstring})
+        Record.__init__(self,
+                        {'graphName': Charstring})
 
 class PiewikWorkData(Record):
     def __init__(self):
-        Record.__init__(self, {'graphName': Charstring,
-                               'workName': Charstring})
+        Record.__init__(self,
+                        {'graphName': Charstring,
+                         'workName':  Charstring})
 
 class PiewikWorkPredecessorData(Record):
     def __init__(self):
-        Record.__init__(self, {'workName': Charstring,
-                               'predecessorWorkName': Charstring})
+        Record.__init__(self,
+                        {'workName':           Charstring,
+                        'predecessorWorkName': Charstring})
 
 class PiewikLoadGraphAndWorkRequest(Record):
     def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData})
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData})
 
 class PiewikLoadGraphAndWorkResponse(Record):
     def __init__(self):
-        Record.__init__(self, {'messageName':      Charstring,
-                               'sender':           PiewikCritterData,
-                               'receiver':         PiewikCritterData,
-                               'graphs':           RecordOf,
-                               'works':            RecordOf,
-                               'workPredecessors': RecordOf})
+        Record.__init__(self,
+                        {'messageName':      Charstring,
+                         'sender':           PiewikCritterData,
+                         'receiver':         PiewikCritterData,
+                         'graphs':           RecordOf,
+                         'works':            RecordOf,
+                         'workPredecessors': RecordOf})
+
+class PiewikDetermineGraphCycleRequest(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'graphName':   Charstring})
+
+class PiewikDetermineGraphCycleResponse(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer})
+
+class PiewikCommandWorkExecutionAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring})
+
+class PiewikExecuteWorkAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring})
+
+class PiewikDetermineWorkCycleRequest(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring})
+
+class PiewikDetermineWorkCycleResponse(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring,
+                         'workCycle':   Integer})
+
+class PiewikReportFinishedWorkAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring,
+                         'workCycle':   Integer,
+                         'result':      Boolean})
+

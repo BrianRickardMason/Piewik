@@ -30,57 +30,9 @@
 import unittest
 
 from Concept.Extensions.CritterProtobuf.CritterInterface.Messages_pb2 import *
+from Concept.Extensions.CritterProtobuf.CritterInterface.Translation  import *
 from Concept.Extensions.CritterProtobuf.Encoder                       import ProtobufEncoder
 from Concept.TypeSystem                                               import *
-
-class PiewikCritterData(Record):
-    def __init__(self):
-        Record.__init__(self, {'type': Charstring,
-                               'nick': Charstring})
-
-class PiewikHeartbeatAnnouncement(Record):
-    def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'timestamp':   Float})
-
-class PiewikPresentYourselfRequest(Record):
-    def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'receiver':    PiewikCritterData})
-
-class PiewikPresentYourselfResponse(Record):
-    def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData,
-                               'receiver':    PiewikCritterData})
-
-class PiewikGraphData(Record):
-    def __init__(self):
-        Record.__init__(self, {'graphName': Charstring})
-
-class PiewikWorkData(Record):
-    def __init__(self):
-        Record.__init__(self, {'graphName': Charstring, 'workName': Charstring})
-
-class PiewikWorkPredecessorData(Record):
-    def __init__(self):
-        Record.__init__(self, {'workName': Charstring, 'predecessorWorkName': Charstring})
-
-class PiewikLoadGraphAndWorkRequest(Record):
-    def __init__(self):
-        Record.__init__(self, {'messageName': Charstring,
-                               'sender':      PiewikCritterData})
-
-class PiewikLoadGraphAndWorkResponse(Record):
-    def __init__(self):
-        Record.__init__(self, {'messageName':      Charstring,
-                               'sender':           PiewikCritterData,
-                               'receiver':         PiewikCritterData,
-                               'graphs':           RecordOf,
-                               'works':            RecordOf,
-                               'workPredecessors': RecordOf})
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):

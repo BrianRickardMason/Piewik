@@ -31,11 +31,11 @@ from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
 from google.protobuf.message             import Message
 
 from Piewik.Runtime.Decoder                                                        import Decoder
-from Piewik.Runtime.Extensions.Critter.CritterInterface.MessageCommon      import *
-from Piewik.Runtime.Extensions.Critter.CritterInterface.Messages_pb2       import *
-from Piewik.Runtime.Extensions.Critter.CritterInterface.Translation        import *
-from Piewik.Runtime.Extensions.Critter.CritterInterface.TranslationHelpers import *
-from Piewik.Runtime.TypeSystem                                             import *
+from Piewik.Runtime.Extensions.Critter.Interface.MessageCommon      import *
+from Piewik.Runtime.Extensions.Critter.Interface.Messages_pb2       import *
+from Piewik.Runtime.Extensions.Critter.Interface.Translation        import *
+from Piewik.Runtime.Extensions.Critter.Interface.TranslationHelpers import *
+from Piewik.Runtime.TypeSystem                                      import *
 
 class ProtobufDecoder(Decoder):
     def decode(self, aBytesRead):

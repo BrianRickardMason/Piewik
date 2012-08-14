@@ -27,15 +27,24 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+import threading
 import zmq
 
 from Runtime.Extensions.Critter.Decoder import ProtobufDecoder
 from Runtime.Extensions.Critter.Encoder import ProtobufEncoder
+from Runtime.Event                      import PortReceivedEvent
 from Runtime.Port                       import MessagePort
 
 class PiewikPort(MessagePort):
-    def __init__(self, aAddress=None, aMapParam=None, aUnmapParam=None, aIn=[], aOut=[], aInOut=[]):
-        MessagePort.__init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut)
+    def __init__(self, aEventQueue):
+        MessagePort.__init__(self,
+                             aAddress=None,
+                             aMapParam=None,
+                             aUnmapParam=None,
+                             aIn=[],
+                             aOut=[],
+                             aInOut=[])
+        self.mEventQueue = aEventQueue
 
         self.mCtx = zmq.Context()
 
@@ -51,6 +60,10 @@ class PiewikPort(MessagePort):
 
         self.mDecoder = ProtobufDecoder()
         self.mEncoder = ProtobufEncoder()
+
+        self.mPortReceiver = PiewikPortReceiver(self)
+        self.mPortReceiver.setDaemon(True)
+        self.mPortReceiver.start()
 
     def send(self, aPiewikMessage):
         """Sends a message (a valid Piewik type).
@@ -70,18 +83,22 @@ class PiewikPort(MessagePort):
             raise
 
     def receive(self):
-        """Receives bytes and translates them on the fly into a valie Piewik type.
-
-        Returns:
-            A valid Piewik type representing the received bytes.
-
-        """
+        """Receives bytes, translates them on the fly into a valid Piewik type, and puts them into the queue."""
         bytesRead = self.mReceiveSocket.recv()
 
         piewikMessage = self.mDecoder.decode(bytesRead)
 
         if piewikMessage:
-            return piewikMessage
+            self.mEventQueue.put(PortReceivedEvent(self, piewikMessage, None))
         else:
             # TODO: Raise a meaningful exception.
             raise
+
+class PiewikPortReceiver(threading.Thread):
+    def __init__(self, aPort):
+        self.mPort = aPort
+        threading.Thread.__init__(self, name='PiewikPortReceiver')
+
+    def run(self):
+        while True:
+            self.mPort.receive()

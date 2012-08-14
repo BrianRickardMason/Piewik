@@ -29,9 +29,9 @@
 
 import zmq
 
-from Runtime.Extensions.Critter import Decoder
-from Runtime.Extensions.Critter import Encoder
-from Runtime.Port               import MessagePort
+from Runtime.Extensions.Critter.Decoder import ProtobufDecoder
+from Runtime.Extensions.Critter.Encoder import ProtobufEncoder
+from Runtime.Port                       import MessagePort
 
 class PiewikPort(MessagePort):
     def __init__(self, aAddress=None, aMapParam=None, aUnmapParam=None, aIn=[], aOut=[], aInOut=[]):
@@ -49,8 +49,8 @@ class PiewikPort(MessagePort):
         self.mReceiveSocket.connect('tcp://127.0.0.1:4444')
         self.mReceiveSocket.setsockopt(zmq.SUBSCRIBE, '')
 
-        self.mDecoder = Decoder()
-        self.mEncoder = Encoder()
+        self.mDecoder = ProtobufDecoder()
+        self.mEncoder = ProtobufEncoder()
 
     def send(self, aPiewikMessage):
         """Sends a message (a valid Piewik type).

@@ -462,14 +462,15 @@ class TTCN3SpecialSymbolType(TTCN3TemplateType):
 # Special symbols used instead of values.
 #
 class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
-    pass
+    def __init__(self):
+        TTCN3SpecialSymbolType.__init__(self)
 
 class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
     pass
 
 class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
     def __init__(self):
-        TTCN3SpecialSymbolType.__init__(self)
+        TTCN3SpecialSymbolUsedInsteadOfAValueType.__init__(self)
 
     def __eq__(self, aOther):
         if isinstance(aOther, TTCN3Type):

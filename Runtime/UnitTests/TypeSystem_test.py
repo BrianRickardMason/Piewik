@@ -361,6 +361,15 @@ class TypeSystem_Record(unittest.TestCase):
         self.assertEqual(myRecordInstance.getField('field1').value(), 1)
         self.assertEqual(myRecordInstance.getField('field2').value(), "QUARK")
 
+    def test_AssignmentOfAProperValue_SpecialSymbolUsedInsideAValue_AnySingleElement(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        myRecordInstance.assign({'field1': AnySingleElement(),
+                                 'field2': AnySingleElement()})
+
     #
     # Unsuccessful assignments.
     #

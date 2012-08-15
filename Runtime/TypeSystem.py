@@ -127,6 +127,8 @@ class Boolean(TTCN3SimpleType):
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
             return aOther == self
+        elif isinstance(aOther, AnySingleElement):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -147,6 +149,8 @@ class Integer(TTCN3SimpleType):
         if isinstance(aOther, Integer):
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
+            return aOther == self
+        elif isinstance(aOther, AnySingleElement):
             return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
@@ -169,6 +173,8 @@ class Float(TTCN3SimpleType):
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
             return aOther == self
+        elif isinstance(aOther, AnySingleElement):
+            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -189,6 +195,8 @@ class Charstring(TTCN3SimpleType):
         if isinstance(aOther, Charstring):
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
+            return aOther == self
+        elif isinstance(aOther, AnySingleElement):
             return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
@@ -239,6 +247,9 @@ class Record(TTCN3StructuredType):
             return True
         elif isinstance(aOther, AnyOrNone):
             return aOther == self
+        # TODO: Should it be possible?
+        # elif isinstance(aOther, AnySingleElement):
+        #     return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -310,6 +321,9 @@ class RecordOf(TTCN3StructuredType):
             return True
         elif isinstance(aOther, AnyOrNone):
             return aOther == self
+        # TODO: Should it be possible?
+        # elif isinstance(aOther, AnySingleElement):
+        #     return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -504,10 +518,19 @@ class Pattern(TTCN3SpecialSymbolUsedInsteadOfAValueType):
 # Special symbols used inside values.
 #
 class TTCN3SpecialSymbolUsedInsideAValueType(TTCN3SpecialSymbolType):
-    pass
+    def __init__(self):
+        TTCN3SpecialSymbolType.__init__(self)
 
 class AnySingleElement(TTCN3SpecialSymbolUsedInsideAValueType):
-    pass
+    def __init__(self):
+        TTCN3SpecialSymbolUsedInsideAValueType.__init__(self)
+
+    def __eq__(self, aOther):
+        # TODO: What to compare it with?
+        if isinstance(aOther, TTCN3Type):
+            return True
+        else:
+            raise InvalidTTCN3TypeInComparison
 
 class AnyNumberOfElements(TTCN3SpecialSymbolUsedInsideAValueType):
     pass

@@ -99,6 +99,9 @@ class TypeSystem_Boolean(unittest.TestCase):
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Boolean().assign(True), AnyOrNone())
 
+    def test_ComparisonReturnsTrue_AnySingleElement(self):
+        self.assertTrue(Boolean().assign(True), AnySingleElement())
+
 
 class TypeSystem_Integer(unittest.TestCase):
     #
@@ -168,6 +171,9 @@ class TypeSystem_Integer(unittest.TestCase):
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Integer().assign(1), AnyOrNone())
 
+    def test_ComparisonReturnsTrue_AnySingleElement(self):
+        self.assertTrue(Integer().assign(1), AnySingleElement())
+
 class TypeSystem_Float(unittest.TestCase):
     #
     # Constructions.
@@ -236,6 +242,9 @@ class TypeSystem_Float(unittest.TestCase):
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Float().assign(1.0), AnyOrNone())
 
+    def test_ComparisonReturnsTrue_AnySingleElement(self):
+        self.assertTrue(Float().assign(1.0), AnySingleElement())
+
 class TypeSystem_Charstring(unittest.TestCase):
     #
     # Constructions.
@@ -303,6 +312,9 @@ class TypeSystem_Charstring(unittest.TestCase):
     #
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Charstring().assign("WAX"), AnyOrNone())
+
+    def test_ComparisonReturnsTrue_AnySingleElement(self):
+        self.assertTrue(Charstring().assign("WAX"), AnySingleElement())
 
 class TypeSystem_Record(unittest.TestCase):
     #
@@ -448,6 +460,8 @@ class TypeSystem_Record(unittest.TestCase):
             myRecordInstance.assign({'field2': Integer().assign(1),
                                      'field1': AnyOrNone()})
 
+    # TODO: Comparison with AnyOrNone, AnySingleElement.
+
 class TypeSystem_RecordOf(unittest.TestCase):
     #
     # Successful constructions.
@@ -576,6 +590,8 @@ class TypeSystem_RecordOf(unittest.TestCase):
     #
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(RecordOf(Integer).assign([Integer().assign(1)]), AnyOrNone())
+
+    # TODO: Comparison with AnySingleElement?
 
 class MySubtypedInteger(Integer):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):
@@ -970,6 +986,53 @@ class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase)
     def test_ComparisonRaisesAnException_InvalidType(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             AnyOrNone() == True
+
+class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnySingleElement(unittest.TestCase):
+    #
+    # Constructions.
+    #
+    def test_Ctor(self):
+        try:
+            AnySingleElement()
+        except:
+            self.fail()
+
+    #
+    # Successful matching: simple types.
+    #
+    def test_MatchingReturnsTrue_Self(self):
+        # TODO: Define whether this should be allowed. Why to compare a template with another template?
+        self.assertTrue(AnySingleElement() == AnySingleElement())
+
+    #
+    # Simple types.
+    #
+    # TODO: All types
+    #
+    def test_MatchingReturnsTrue_Boolean(self):
+        self.assertTrue(AnySingleElement(), Boolean().assign(True))
+
+    def test_MatchingReturnsTrue_Integer(self):
+        self.assertTrue(AnySingleElement(), Integer().assign(1))
+
+    def test_MatchingReturnsTrue_Float(self):
+        self.assertTrue(AnySingleElement(), Float().assign(1.0))
+
+    def test_MatchingReturnsTrue_Charstring(self):
+        self.assertTrue(AnySingleElement(), Charstring().assign("WAX"))
+
+    #
+    # Successful matching: structured types.
+    #
+    # TODO: All types
+    #
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonRaisesAnException_InvalidType(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            AnySingleElement() == True
 
 if __name__ == '__main__':
     unittest.main()

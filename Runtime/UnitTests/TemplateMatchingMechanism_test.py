@@ -220,5 +220,63 @@ class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Float(unittest.Te
 class TemplateMatchingMechanism_SimpleTypes_WithSpecialSymbols_Charstring(unittest.TestCase):
     pass
 
+class TemplateMatchingMechanism_StructuredTypes_WithSpecialSymbols_Record_Record(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ReturnsTrueOnTheSameValues_NonEmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Boolean})
+        myRecordInstance1 = MyRecord()
+        myRecordInstance1.assign({'foo': Boolean().assign(True)})
+        myRecordInstance2 = MyRecord()
+        myRecordInstance2.assign({'foo': AnySingleElement()})
+        message  = Message (myRecordInstance1)
+        template = Template(myRecordInstance2)
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
+
+    def test_ReturnsTrueOnTheSameValues_NestedRecord(self):
+        class MyInnerRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Charstring})
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer,
+                                       'bar': Float,
+                                       'baz': MyInnerRecord})
+        myInnerRecordInstance1 = MyInnerRecord()
+        myInnerRecordInstance1.assign({'foo': Charstring().assign("WAX")})
+        myRecordInstance1 = MyRecord()
+        myRecordInstance1.assign({'foo': Integer().assign(1),
+                                  'bar': Float().assign(123.4),
+                                  'baz': myInnerRecordInstance1})
+        myInnerRecordInstance2 = MyInnerRecord()
+        myInnerRecordInstance2.assign({'foo': AnySingleElement()})
+        myRecordInstance2 = MyRecord()
+        myRecordInstance2.assign({'foo': Integer().assign(1),
+                                  'bar': Float().assign(123.4),
+                                  'baz': myInnerRecordInstance2})
+        message  = Message (myRecordInstance1)
+        template = Template(myRecordInstance2)
+        self.assertTrue(TemplateMatchingMechanism(message, template)())
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ReturnsFalseOnDifferentValues_EmptyRecord_NonEmptyRecord(self):
+        class MyRecordEmpty(Record):
+            def __init__(self):
+                Record.__init__(self)
+        class MyRecordNonEmpty(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Boolean})
+        myRecordInstance1 = MyRecordEmpty()
+        myRecordInstance2 = MyRecordNonEmpty()
+        myRecordInstance2.assign({'foo': AnySingleElement()})
+        message  = Message (myRecordInstance1)
+        template = Template(myRecordInstance2)
+        self.assertFalse(TemplateMatchingMechanism(message, template)())
+
 if __name__ == '__main__':
     unittest.main()

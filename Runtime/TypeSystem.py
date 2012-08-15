@@ -219,8 +219,9 @@ class Record(TTCN3StructuredType):
 
         # Values must be subtypes of TTCN3Type.
         for typeName in aDictionary.values():
-            # TODO: Disallow putting inside the Record special symbols used instead of values.
             if not issubclass(typeName, TTCN3Type):
+                raise InvalidTTCN3TypeInCtor
+            if issubclass(typeName, TTCN3SpecialSymbolUsedInsteadOfAValueType):
                 raise InvalidTTCN3TypeInCtor
 
         self.mDictionary = aDictionary

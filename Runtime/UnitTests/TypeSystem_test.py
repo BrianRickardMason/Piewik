@@ -304,6 +304,42 @@ class TypeSystem_Charstring(unittest.TestCase):
     def test_ComparisonReturnsTrue_AnyOrNone(self):
         self.assertTrue(Charstring().assign("WAX"), AnyOrNone())
 
+class TypeSystem_Record(unittest.TestCase):
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariableAndSetsProperValue_EmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        myRecordInstance = myRecord()
+
+    def test_CtorConstructsAProperVariableAndSetsProperValue_NonEmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer, 'field2': Charstring})
+        myRecordInstance = myRecord()
+
+    #
+    # Unsuccessful constructions.
+    #
+    def test_CtorRaisesAnExceptionForInvalidValue_NonTTCN3Type(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': int})
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            myRecordInstance = myRecord()
+
+    #
+    # TODO: All types.
+    #
+    def test_CtorRaisesAnExceptionForInvalidValue_SpecialSymbolUsedInsteadOfValue(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': AnyOrNone})
+        with self.assertRaises(InvalidTTCN3TypeInCtor):
+            myRecordInstance = myRecord()
+
 class TypeSystem_RecordOf(unittest.TestCase):
     #
     # Successful constructions.

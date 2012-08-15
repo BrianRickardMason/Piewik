@@ -246,7 +246,25 @@ class Record(TTCN3StructuredType):
         if type(aValue) is not dict:
             raise InvalidTTCN3TypeInAssignment
 
-        # TODO: Implement the verification of the assignment.
+        for key in self.mDictionary:
+            if not key in aValue:
+                raise InvalidTTCN3TypeInAssignment
+        for key in aValue:
+            if not key in self.mDictionary:
+                raise InvalidTTCN3TypeInAssignment
+
+        for value in aValue.values():
+            if isinstance(value, TTCN3SpecialSymbolUsedInsteadOfAValueType):
+                raise InvalidTTCN3TypeInAssignment
+
+        # TODO: For now only AnySingleElement can be assigned to the record. Should it stay so?
+        for key in self.mDictionary:
+            if not ( \
+                   isinstance(aValue[key], self.mDictionary[key]) or \
+                   isinstance(aValue[key], AnySingleElement     )    \
+               ) :
+                raise InvalidTTCN3TypeInAssignment
+
         self.mValue = aValue
         return self
 

@@ -54,7 +54,7 @@ class Template_Ctor(unittest.TestCase):
             def __init__(self):
                 Record.__init__(self, {'field1': Integer, 'field2': Charstring})
         myRecordInstance = myRecord()
-        myRecordInstance.assign({'field1': AnyOrNone(), 'field2': AnyOrNone()})
+        myRecordInstance.assign({'field1': AnySingleElement(), 'field2': AnySingleElement()})
         Template(myRecordInstance)
 
     def test_Success_StructuredType_Record_MessageTypeAndTemplateType(self):
@@ -62,7 +62,7 @@ class Template_Ctor(unittest.TestCase):
             def __init__(self):
                 Record.__init__(self, {'field1': Integer, 'field2': Charstring})
         myRecordInstance = myRecord()
-        myRecordInstance.assign({'field1': Integer().assign(1), 'field2': AnyOrNone()})
+        myRecordInstance.assign({'field1': Integer().assign(1), 'field2': AnySingleElement()})
         Template(myRecordInstance)
 
     #

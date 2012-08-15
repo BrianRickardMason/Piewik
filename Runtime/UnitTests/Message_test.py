@@ -66,7 +66,8 @@ class Message_Ctor(unittest.TestCase):
                 def __init__(self):
                     Record.__init__(self, {'field1': Integer, 'field2': Charstring})
             myRecordInstance = myRecord()
-            myRecordInstance.assign({'field1': Integer().assign(1), 'field2': AnyOrNone()})
+            # TODO: AnySingleElement to be implemented!
+            myRecordInstance.assign({'field1': Integer().assign(1), 'field2': AnySingleElement()})
             Message(myRecordInstance)
 
 if __name__ == '__main__':

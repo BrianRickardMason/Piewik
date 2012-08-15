@@ -340,6 +340,105 @@ class TypeSystem_Record(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInCtor):
             myRecordInstance = myRecord()
 
+    #
+    # Successful assignments.
+    #
+    def test_AssignmentOfAProperValue_EmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        myRecordInstance = myRecord()
+        myRecordInstance.assign({})
+
+    def test_AssignmentOfAProperValue_NonEmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        myRecordInstance.assign({'field1': Integer().assign(1),
+                                 'field2': Charstring().assign("QUARK")})
+        self.assertEqual(myRecordInstance.getField('field1').value(), 1)
+        self.assertEqual(myRecordInstance.getField('field2').value(), "QUARK")
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningNotADictionary(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign(Integer().assign(1))
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningNonEmptyRecordToAnEmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field1': Integer().assign(1)})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningAnEmptyRecordToANonEmptyRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_MissingFieldsOfTheRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field1': Integer().assign(1)})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_ExtraneousFieldsOfTheRecord(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field1': Integer().assign(1),
+                                     'field2': Charstring().assign("QUARK"),
+                                     'field3': Integer().assign(3)})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_InvalidTypeOfTheRecordField(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field1': Integer().assign(1),
+                                     'field2': Integer().assign(2)})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_ChangedTypesOfTheRecordField(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field2': Integer().assign(1),
+                                     'field1': Charstring().assign("QUARK")})
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_SpecialSymbolUsedInsteadOfAValueUsed(self):
+        class myRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'field1': Integer,
+                                       'field2': Charstring})
+        myRecordInstance = myRecord()
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            myRecordInstance.assign({'field2': Integer().assign(1),
+                                     'field1': AnyOrNone()})
+
 class TypeSystem_RecordOf(unittest.TestCase):
     #
     # Successful constructions.
@@ -846,14 +945,14 @@ class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase)
     # Successful matching: structured types.
     #
     # TODO: All types
-    # FIXME: This assignment should not be possible! Only special symbols used inside values are allowed.
     #
     def test_Record(self):
         class myRecord(Record):
             def __init__(self):
                 Record.__init__(self, {'field1': Integer, 'field2': Charstring})
         myRecordInstance = myRecord()
-        myRecordInstance.assign({})
+        myRecordInstance.assign({'field1': Integer().assign(1),
+                                 'field2': Charstring().assign("QUARK")})
         self.assertTrue(AnyOrNone(), myRecordInstance)
 
     #

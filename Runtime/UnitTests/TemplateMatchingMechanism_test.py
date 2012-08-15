@@ -172,18 +172,6 @@ class TemplateMatchingMechanism_StructuredTypes_Record_Record(unittest.TestCase)
         template = Template(myRecordInstance2)
         self.assertFalse(TemplateMatchingMechanism(message, template)())
 
-    def test_ReturnsFalseOnDifferentValues_NonEmptyRecord_DifferentKey(self):
-        class MyRecord(Record):
-            def __init__(self):
-                Record.__init__(self, {'foo': Boolean})
-        myRecordInstance1 = MyRecord()
-        myRecordInstance1.assign({'foo': Boolean().assign(True)})
-        myRecordInstance2 = MyRecord()
-        myRecordInstance2.assign({'foO': Boolean().assign(True)})
-        message  = Message (myRecordInstance1)
-        template = Template(myRecordInstance2)
-        self.assertFalse(TemplateMatchingMechanism(message, template)())
-
     def test_ReturnsFalseOnDifferentValues_NestedRecord_DifferentValue(self):
         class MyInnerRecord(Record):
             def __init__(self):
@@ -201,31 +189,6 @@ class TemplateMatchingMechanism_StructuredTypes_Record_Record(unittest.TestCase)
                                   'baz': myInnerRecordInstance1})
         myInnerRecordInstance2 = MyInnerRecord()
         myInnerRecordInstance2.assign({'foo': Charstring().assign("WAX")})
-        myRecordInstance2 = MyRecord()
-        myRecordInstance2.assign({'foo': Integer().assign(1),
-                                  'bar': Float().assign(123.3),
-                                  'baz': myInnerRecordInstance2})
-        message  = Message (myRecordInstance1)
-        template = Template(myRecordInstance2)
-        self.assertFalse(TemplateMatchingMechanism(message, template)())
-
-    def test_ReturnsFalseOnDifferentValues_NestedRecord_DifferentKey(self):
-        class MyInnerRecord(Record):
-            def __init__(self):
-                Record.__init__(self, {'foo': Charstring})
-        class MyRecord(Record):
-            def __init__(self):
-                Record.__init__(self, {'foo': Integer,
-                                       'bar': Float,
-                                       'baz': MyInnerRecord})
-        myInnerRecordInstance1 = MyInnerRecord()
-        myInnerRecordInstance1.assign({'foo': Charstring().assign("WAX")})
-        myRecordInstance1 = MyRecord()
-        myRecordInstance1.assign({'foo': Integer().assign(1),
-                                  'bar': Float().assign(123.4),
-                                  'baz': myInnerRecordInstance1})
-        myInnerRecordInstance2 = MyInnerRecord()
-        myInnerRecordInstance2.assign({'fos': Charstring().assign("WAX")})
         myRecordInstance2 = MyRecord()
         myRecordInstance2.assign({'foo': Integer().assign(1),
                                   'bar': Float().assign(123.3),

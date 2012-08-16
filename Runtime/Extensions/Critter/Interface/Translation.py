@@ -106,6 +106,26 @@ class PiewikLoadGraphAndWorkResponse(Record):
                          'works':            RecordOf,
                          'workPredecessors': RecordOf})
 
+class PiewikWorkDetailsData(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'workName': Charstring,
+                         'dummy':    Integer})
+
+class PiewikLoadWorkDetailsRequest(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData})
+
+class PiewikLoadWorkDetailsResponse(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData,
+                         'details':     RecordOf})
+
 class PiewikDetermineGraphCycleRequest(Record):
     def __init__(self):
         Record.__init__(self,

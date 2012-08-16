@@ -46,6 +46,8 @@ def getHeaderIdAndMessageTypeByMessageName(aMessageName):
     elif aMessageName == 'HeartbeatAnnouncement':            return (HEARTBEAT_ANNOUNCEMENT,              HeartbeatAnnouncement)
     elif aMessageName == 'LoadGraphAndWorkRequest':          return (LOAD_GRAPH_AND_WORK_REQUEST,         LoadGraphAndWorkRequest)
     elif aMessageName == 'LoadGraphAndWorkResponse':         return (LOAD_GRAPH_AND_WORK_RESPONSE,        LoadGraphAndWorkResponse)
+    elif aMessageName == 'LoadWorkDetailsRequest':           return (LOAD_WORK_DETAILS_REQUEST,           LoadWorkDetailsRequest)
+    elif aMessageName == 'LoadWorkDetailsResponse':          return (LOAD_WORK_DETAILS_RESPONSE,          LoadWorkDetailsResponse)
     elif aMessageName == 'PokeAnnouncement':                 return (POKE_ANNOUNCEMENT,                   PokeAnnouncement)
     elif aMessageName == 'PresentYourselfRequest':           return (PRESENT_YOURSELF_REQUEST,            PresentYourselfRequest)
     elif aMessageName == 'PresentYourselfResponse':          return (PRESENT_YOURSELF_RESPONSE,           PresentYourselfResponse)
@@ -65,6 +67,8 @@ def getMessageByHeaderId(aId):
     elif aId == HEARTBEAT_ANNOUNCEMENT:              return HeartbeatAnnouncement()
     elif aId == LOAD_GRAPH_AND_WORK_REQUEST:         return LoadGraphAndWorkRequest()
     elif aId == LOAD_GRAPH_AND_WORK_RESPONSE:        return LoadGraphAndWorkResponse()
+    elif aId == LOAD_WORK_DETAILS_REQUEST:           return LoadWorkDetailsRequest()
+    elif aId == LOAD_WORK_DETAILS_RESPONSE:          return LoadWorkDetailsResponse()
     elif aId == POKE_ANNOUNCEMENT:                   return PokeAnnouncement()
     elif aId == PRESENT_YOURSELF_REQUEST:            return PresentYourselfRequest()
     elif aId == PRESENT_YOURSELF_RESPONSE:           return PresentYourselfResponse()
@@ -78,6 +82,7 @@ def getCorrespondingPiewikType(aProtobufType):
     if   type(aProtobufType) is CritterData:                      return PiewikCritterData
     elif type(aProtobufType) is GraphData:                        return PiewikGraphData
     elif type(aProtobufType) is WorkData:                         return PiewikWorkData
+    elif type(aProtobufType) is WorkDetailsData:                  return PiewikWorkDetailsData
     elif type(aProtobufType) is WorkPredecessorData:              return PiewikWorkPredecessorData
     # Messages.
     elif type(aProtobufType) is HeartbeatAnnouncement:            return PiewikHeartbeatAnnouncement
@@ -87,6 +92,8 @@ def getCorrespondingPiewikType(aProtobufType):
     elif type(aProtobufType) is ExecuteGraphAnnouncement:         return PiewikExecuteGraphAnnouncement
     elif type(aProtobufType) is LoadGraphAndWorkRequest:          return PiewikLoadGraphAndWorkRequest
     elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadGraphAndWorkResponse
+    elif type(aProtobufType) is LoadWorkDetailsRequest:           return PiewikLoadWorkDetailsRequest
+    elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadWorkDetailsResponse
     elif type(aProtobufType) is DetermineGraphCycleRequest:       return PiewikDetermineGraphCycleRequest
     elif type(aProtobufType) is DetermineGraphCycleResponse:      return PiewikDetermineGraphCycleResponse
     elif type(aProtobufType) is CommandWorkExecutionAnnouncement: return PiewikCommandWorkExecutionAnnouncement

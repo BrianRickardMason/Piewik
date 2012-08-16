@@ -167,7 +167,7 @@ class PiewikReportFinishedWorkAnnouncement(Record):
                         {'messageName': Charstring,
                          'sender':      PiewikCritterData,
                          'graphName':   Charstring,
-                         'cycle':       Integer,
+                         'graphCycle':  Integer,
                          'workName':    Charstring,
                          'workCycle':   Integer,
                          'result':      Boolean})

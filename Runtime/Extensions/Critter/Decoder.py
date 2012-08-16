@@ -46,24 +46,25 @@ class ProtobufDecoder(Decoder):
         message.ParseFromString(envelope.payload.payload)
 
         # Translation of the python representation of protobuf to the Piewik representation.
-        return self.encodeInternally(message)
+        return self.decodeInternally(message)
 
-    def encodeInternally(self, aData):
+    def decodeInternally(self, aData):
         aHook = getCorrespondingPiewikType(aData)()
-        dictionary = self.encodeDictionary(aData)
+        dictionary = self.decodeDictionary(aData)
         aHook.assign(dictionary)
         return aHook
 
-    def encodeDictionary(self, aData):
+    def decodeDictionary(self, aData):
         dictionary = {}
 
         for field in aData.ListFields():
-            # TODO: Integer, float...
+            # TODO: Boolean, Integer...
             # Built-in types.
-            if type(field[1]) in (str, unicode):
+            if type(field[1]) is float:
+                dictionary[field[0].name] = Float().assign(field[1])
+            elif type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.
                 dictionary[field[0].name] = Charstring().assign(str(field[1]))
-
             # Composite fields.
             elif type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?
@@ -71,14 +72,13 @@ class ProtobufDecoder(Decoder):
                 recordOf = RecordOf(piewikType)
                 list = []
                 for element in field[1]:
-                    list.append(piewikType().assign(self.encodeDictionary(element)))
-                    self.encodeDictionary(element)
+                    list.append(piewikType().assign(self.decodeDictionary(element)))
+                    self.decodeDictionary(element)
                 recordOf.assign(list)
                 dictionary[field[0].name] = recordOf
-
             # Other protobuf types (structured).
             elif isinstance(field[1], Message):
                 piewikType = getCorrespondingPiewikType(field[1])
-                dictionary[field[0].name] = piewikType().assign(self.encodeDictionary(field[1]))
+                dictionary[field[0].name] = piewikType().assign(self.decodeDictionary(field[1]))
 
         return dictionary

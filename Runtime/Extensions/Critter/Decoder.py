@@ -58,9 +58,12 @@ class ProtobufDecoder(Decoder):
         dictionary = {}
 
         for field in aData.ListFields():
-            # TODO: Boolean, Integer...
             # Built-in types.
-            if type(field[1]) is float:
+            if type(field[1]) is bool:
+                dictionary[field[0].name] = Boolean().assign(field[1])
+            elif type(field[1]) is int:
+                dictionary[field[0].name] = Integer().assign(field[1])
+            elif type(field[1]) is float:
                 dictionary[field[0].name] = Float().assign(field[1])
             elif type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.

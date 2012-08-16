@@ -93,7 +93,7 @@ def getCorrespondingPiewikType(aProtobufType):
     elif type(aProtobufType) is LoadGraphAndWorkRequest:          return PiewikLoadGraphAndWorkRequest
     elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadGraphAndWorkResponse
     elif type(aProtobufType) is LoadWorkDetailsRequest:           return PiewikLoadWorkDetailsRequest
-    elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadWorkDetailsResponse
+    elif type(aProtobufType) is LoadWorkDetailsResponse:          return PiewikLoadWorkDetailsResponse
     elif type(aProtobufType) is DetermineGraphCycleRequest:       return PiewikDetermineGraphCycleRequest
     elif type(aProtobufType) is DetermineGraphCycleResponse:      return PiewikDetermineGraphCycleResponse
     elif type(aProtobufType) is CommandWorkExecutionAnnouncement: return PiewikCommandWorkExecutionAnnouncement

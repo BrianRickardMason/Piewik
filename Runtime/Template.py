@@ -31,30 +31,8 @@ from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
 from Runtime.TypeSystem import TTCN3Type
 
 class Template(object):
-    """Represents a TTCN3 template.
-
-    Attributes:
-        mValue: The value of the template.
-
-    """
-
-    def __init__(self, aValue):
-        """Initializes a TTCN3 template.
-
-        Arguments:
-            aValue: The value of the template.
-
-        """
-        if isinstance(aValue, TTCN3Type):
-            self.mValue = aValue
-        else:
+    def __init__(self, aType):
+        if not issubclass(aType, TTCN3Type):
             raise InvalidTTCN3TypeInCtor
 
-    def value(self):
-        """Returns the value of the template.
-
-        Returns:
-            The value of the template.
-
-        """
-        return self.mValue
+        self.mType = aType

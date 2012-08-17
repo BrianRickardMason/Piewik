@@ -137,6 +137,9 @@ message CantExecuteWorkNowAnnouncement
     optional string      messageName = 1;
     optional CritterData sender      = 2;
     optional CritterData receiver    = 3;
+    optional string      graphName   = 4;
+    optional uint32      cycle       = 5;
+    optional string      workName    = 6;
 }
 
 // DetermineWorkCycleRequest/Response: Worker -> Cribrarian -> Worker.

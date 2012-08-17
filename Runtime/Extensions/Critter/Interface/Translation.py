@@ -197,4 +197,7 @@ class PiewikCantExecuteWorkNowAnnouncement(Record):
         Record.__init__(self,
                         {'messageName': Charstring,
                          'sender':      PiewikCritterData,
-                         'receiver':    PiewikCritterData})
+                         'receiver':    PiewikCritterData,
+                         'graphName':   Charstring,
+                         'cycle':       Integer,
+                         'workName':    Charstring})

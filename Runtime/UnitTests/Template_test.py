@@ -39,44 +39,28 @@ class Template_Ctor(unittest.TestCase):
     # TODO: All types.
     #
     def test_CtorConstructsAProperVariable_Boolean(self):
-        try:
-            template = Template(Boolean)
-        except:
-            self.fail()
+        template = Template(Boolean)
 
     def test_CtorConstructsAProperVariable_Integer(self):
-        try:
-            template = Template(Integer)
-        except:
-            self.fail()
+        template = Template(Integer)
 
     def test_CtorConstructsAProperVariable_Float(self):
-        try:
-            template = Template(Float)
-        except:
-            self.fail()
+        template = Template(Float)
 
     def test_CtorConstructsAProperVariable_Charstring(self):
-        try:
-            template = Template(Charstring)
-        except:
-            self.fail()
+        template = Template(Charstring)
 
     def test_CtorConstructsAProperVariable_Record(self):
-        try:
-            class MyRecord(Record):
-                def __init__(self):
-                    Record.__init__(self, {})
-            template = Template(MyRecord)
-        except:
-            self.fail()
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        template = Template(MyRecord)
 
     def test_CtorConstructsAProperVariable_RecordOf(self):
-        try:
-            # TODO: RecordOf has to be subtyped!
-            template = Template(RecordOf)
-        except:
-            self.fail()
+        class MyRecordOf(Record):
+            def __init__(self):
+                Record.__init__(self, Integer)
+        template = Template(MyRecordOf)
 
     #
     # Unsuccessful constructions.

@@ -306,7 +306,7 @@ class RecordOf(TTCN3StructuredType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not list:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
         for element in aValue:
             if type(element) != self.mType:

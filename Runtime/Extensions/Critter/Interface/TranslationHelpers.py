@@ -36,7 +36,8 @@ from Runtime.Extensions.Critter.Interface.Translation   import *
 #
 
 def getHeaderIdAndMessageTypeByMessageName(aMessageName):
-    if   aMessageName == 'CommandWorkExecutionAnnouncement': return (COMMAND_WORK_EXECUTION_ANNOUNCEMENT, CommandWorkExecutionAnnouncement)
+    if   aMessageName == 'CantExecuteWorkNowAnnouncement':   return (CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT,  CantExecuteWorkNowAnnouncement)
+    elif aMessageName == 'CommandWorkExecutionAnnouncement': return (COMMAND_WORK_EXECUTION_ANNOUNCEMENT, CommandWorkExecutionAnnouncement)
     elif aMessageName == 'DetermineGraphCycleRequest':       return (DETERMINE_GRAPH_CYCLE_REQUEST,       DetermineGraphCycleRequest)
     elif aMessageName == 'DetermineGraphCycleResponse':      return (DETERMINE_GRAPH_CYCLE_RESPONSE,      DetermineGraphCycleResponse)
     elif aMessageName == 'DetermineWorkCycleRequest':        return (DETERMINE_WORK_CYCLE_REQUEST,        DetermineWorkCycleRequest)
@@ -57,7 +58,8 @@ def getHeaderIdAndMessageTypeByMessageName(aMessageName):
     else:                                                    raise
 
 def getMessageByHeaderId(aId):
-    if   aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()
+    if   aId == CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT:  return CantExecuteWorkNowAnnouncement()
+    elif aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()
     elif aId == DETERMINE_GRAPH_CYCLE_REQUEST:       return DetermineGraphCycleRequest()
     elif aId == DETERMINE_GRAPH_CYCLE_RESPONSE:      return DetermineGraphCycleResponse()
     elif aId == DETERMINE_WORK_CYCLE_REQUEST:        return DetermineWorkCycleRequest()
@@ -85,6 +87,7 @@ def getCorrespondingPiewikType(aProtobufType):
     elif type(aProtobufType) is WorkDetailsData:                  return PiewikWorkDetailsData
     elif type(aProtobufType) is WorkPredecessorData:              return PiewikWorkPredecessorData
     # Messages.
+    elif type(aProtobufType) is CantExecuteWorkNowAnnouncement:   return PiewikCantExecuteWorkNowAnnouncement
     elif type(aProtobufType) is HeartbeatAnnouncement:            return PiewikHeartbeatAnnouncement
     elif type(aProtobufType) is PresentYourselfRequest:           return PiewikPresentYourselfRequest
     elif type(aProtobufType) is PresentYourselfResponse:          return PiewikPresentYourselfResponse

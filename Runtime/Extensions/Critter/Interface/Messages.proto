@@ -130,6 +130,15 @@ message ExecuteWorkAnnouncement
     optional string      workName    = 6;
 }
 
+// CantExecuteWorkNow: Worker -> Balancer.
+
+message CantExecuteWorkNowAnnouncement
+{
+    optional string      messageName = 1;
+    optional CritterData sender      = 2;
+    optional CritterData receiver    = 3;
+}
+
 // DetermineWorkCycleRequest/Response: Worker -> Cribrarian -> Worker.
 
 message DetermineWorkCycleRequest

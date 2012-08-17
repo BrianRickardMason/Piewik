@@ -192,3 +192,9 @@ class PiewikReportFinishedWorkAnnouncement(Record):
                          'workCycle':   Integer,
                          'result':      Boolean})
 
+class PiewikCantExecuteWorkNowAnnouncement(Record):
+    def __init__(self):
+        Record.__init__(self,
+                        {'messageName': Charstring,
+                         'sender':      PiewikCritterData,
+                         'receiver':    PiewikCritterData})

@@ -286,6 +286,7 @@ class RecordOf(TTCN3StructuredType):
 
     def __eq__(self, aOther):
         if isinstance(aOther, RecordOf):
+            # TODO: Check the types correctly!
             if len(self.mValue) != len(aOther.mValue):
                 return False
             for element in self.mValue:

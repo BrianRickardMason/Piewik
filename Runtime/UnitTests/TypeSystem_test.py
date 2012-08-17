@@ -462,13 +462,45 @@ class TypeSystem_Record(unittest.TestCase):
 
     # TODO: Comparison with AnyOrNone, AnySingleElement.
 
-class TypeSystem_RecordOf(unittest.TestCase):
+class TypeSystem_RecordOf_Ctor(unittest.TestCase):
     #
     # Successful constructions.
     #
-    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
+    # TODO: All types.
+    #
+    def test_CtorConstructsAProperVariable_Boolean(self):
         try:
-            self.assertEqual(RecordOf(Integer).value(), [])
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Boolean)
+            recordOf = MyRecordOf()
+        except:
+            self.fail()
+
+    def test_CtorConstructsAProperVariable_Integer(self):
+        try:
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            recordOf = MyRecordOf()
+        except:
+            self.fail()
+
+    def test_CtorConstructsAProperVariable_Float(self):
+        try:
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Float)
+            recordOf = MyRecordOf()
+        except:
+            self.fail()
+
+    def test_CtorConstructsAProperVariable_Charstring(self):
+        try:
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Charstring)
+            recordOf = MyRecordOf()
         except:
             self.fail()
 
@@ -477,16 +509,28 @@ class TypeSystem_RecordOf(unittest.TestCase):
     #
     def test_CtorRaisesAnExceptionForInvalidValue(self):
         with self.assertRaises(InvalidTTCN3TypeInCtor):
-            RecordOf(int)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, int)
+            recordOf = MyRecordOf()
 
+class TypeSystem_RecordOf_Assign(unittest.TestCase):
     #
     # Successful assignments.
     #
     def test_AssignementOfProperValue_EmptyList(self):
-        self.assertEqual(RecordOf(Integer).assign([]).value(), [])
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Boolean)
+        myRecordOf = MyRecordOf()
+        self.assertEqual(myRecordOf.assign([]).value(), [])
 
-    def test_AssignementOfProperValue_NonEmptyList(self):
-        self.assertEqual(RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2)]).value(),
+    def test_AssignementOfProperValue_EmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf = MyRecordOf()
+        self.assertEqual(myRecordOf.assign([Integer().assign(1), Integer().assign(2)]).value(),
                          [Integer().assign(1), Integer().assign(2)])
 
     #
@@ -494,94 +538,206 @@ class TypeSystem_RecordOf(unittest.TestCase):
     #
     # TODO: All types.
     #
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_NotATTCN3Type(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign(True)
+
     def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            RecordOf(Boolean).assign(True)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign(Boolean().assign(True))
 
     def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            RecordOf(Boolean).assign(1)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign(Integer().assign(1))
 
     def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            RecordOf(Boolean).assign(1.0)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign(Float().assign(1.0))
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign(Charstring().assign("WAX"))
 
     def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneElement(self):
         with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            RecordOf(Integer).assign([Float().assign(1.0)])
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Float().assign(1.0)])
 
     def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneOfElements(self):
         with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            RecordOf(Integer).assign([Integer().assign(1), Float().assign(1.0), Integer().assign(2)])
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Integer().assign(1), Float().assign(1.0), Integer().assign(2)])
 
+class TypeSystem_RecordOf_GetField(unittest.TestCase):
     #
     # Getting a field.
     #
     def test_GetFieldReturnsTheValueOfTheField(self):
-        myRecord = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        self.assertEqual(myRecord.getField(1), Integer().assign(2))
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf = MyRecordOf()
+        myRecordOf.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        self.assertEqual(myRecordOf.getField(1), Integer().assign(2))
 
 
     def test_GetFieldRaisesAnExceptionForMissingField(self):
         with self.assertRaises(LookupErrorMissingField):
-            myRecord = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-            myRecord.getField(4)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+            myRecordOf.getField(4)
 
+class TypeSystem_RecordOf_Eq(unittest.TestCase):
     #
     # Successful matching.
     #
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_EmptyRecordsOf(self):
-        myRecord1 = RecordOf(Integer)
-        myRecord2 = RecordOf(Integer)
-        self.assertTrue(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        self.assertTrue(myRecordOf1 == myRecordOf2)
+        self.assertTrue(myRecordOf2 == myRecordOf1)
 
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_OneElement(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(1)])
-        self.assertTrue(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1)])
+        myRecordOf2.assign([Integer().assign(1)])
+        self.assertTrue(myRecordOf1 == myRecordOf2)
+        self.assertTrue(myRecordOf2 == myRecordOf1)
 
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_ManyElements(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        self.assertTrue(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecordOf2.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        self.assertTrue(myRecordOf1 == myRecordOf2)
+        self.assertTrue(myRecordOf2 == myRecordOf1)
 
     #
     # Unsuccessful matching.
     #
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(2)])
-        self.assertFalse(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1)])
+        myRecordOf2.assign([Integer().assign(2)])
+        self.assertFalse(myRecordOf1 == myRecordOf2)
+        self.assertFalse(myRecordOf2 == myRecordOf1)
 
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement_DifferentLength(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2)])
-        self.assertFalse(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1)])
+        myRecordOf2.assign([Integer().assign(1), Integer().assign(2)])
+        self.assertFalse(myRecordOf1 == myRecordOf2)
+        self.assertFalse(myRecordOf2 == myRecordOf1)
+
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement_DifferentLength_OneEmpty(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([])
+        myRecordOf2.assign([Integer().assign(1), Integer().assign(2)])
+        self.assertFalse(myRecordOf1 == myRecordOf2)
+        self.assertFalse(myRecordOf2 == myRecordOf1)
 
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(4)])
-        self.assertFalse(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecordOf2.assign([Integer().assign(1), Integer().assign(2), Integer().assign(4)])
+        self.assertFalse(myRecordOf1 == myRecordOf2)
+        self.assertFalse(myRecordOf2 == myRecordOf1)
 
     def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements_SequenceMatters(self):
-        myRecord1 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecord2 = RecordOf(Integer).assign([Integer().assign(1), Integer().assign(3), Integer().assign(2)])
-        self.assertFalse(myRecord1 == myRecord2)
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf1 = MyRecordOf()
+        myRecordOf2 = MyRecordOf()
+        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
+        myRecordOf2.assign([Integer().assign(1), Integer().assign(3), Integer().assign(2)])
+        self.assertFalse(myRecordOf1 == myRecordOf2)
+        self.assertFalse(myRecordOf2 == myRecordOf1)
 
     #
     # TODO: All types.
     #
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            RecordOf(Integer).assign([Integer().assign(1)]) == Boolean().assign(True)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Integer().assign(1)])
+            RecordOf(myRecordOf == Boolean().assign(True))
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            RecordOf(Integer).assign([Integer().assign(1)]) == Integer().assign(1)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Integer().assign(1)])
+            RecordOf(myRecordOf == Integer().assign(1))
 
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
-            RecordOf(Integer).assign([Integer().assign(1)]) == Float().assign(1.0)
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, Integer)
+            myRecordOf = MyRecordOf()
+            myRecordOf.assign([Integer().assign(1)])
+            RecordOf(myRecordOf == Float().assign(1.0))
 
     #
     # Successful matching - special symbols.
@@ -589,7 +745,12 @@ class TypeSystem_RecordOf(unittest.TestCase):
     # TODO: All types.
     #
     def test_ComparisonReturnsTrue_AnyOrNone(self):
-        self.assertTrue(RecordOf(Integer).assign([Integer().assign(1)]), AnyOrNone())
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer)
+        myRecordOf = MyRecordOf()
+        myRecordOf.assign([Integer().assign(1)])
+        self.assertTrue(myRecordOf, AnyOrNone())
 
     # TODO: Comparison with AnySingleElement?
 

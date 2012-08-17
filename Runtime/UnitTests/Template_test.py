@@ -39,35 +39,109 @@ class Template_Ctor(unittest.TestCase):
     # TODO: All types.
     #
     def test_CtorConstructsAProperVariable_Boolean(self):
-        template = Template(Boolean)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Boolean)
+        template = MyTemplate()
 
     def test_CtorConstructsAProperVariable_Integer(self):
-        template = Template(Integer)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Integer)
+        template = MyTemplate()
 
     def test_CtorConstructsAProperVariable_Float(self):
-        template = Template(Float)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Float)
+        template = MyTemplate()
 
     def test_CtorConstructsAProperVariable_Charstring(self):
-        template = Template(Charstring)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Charstring)
+        template = MyTemplate()
 
     def test_CtorConstructsAProperVariable_Record(self):
         class MyRecord(Record):
             def __init__(self):
                 Record.__init__(self, {})
-        template = Template(MyRecord)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, MyRecord)
+        template = MyTemplate()
 
     def test_CtorConstructsAProperVariable_RecordOf(self):
         class MyRecordOf(Record):
             def __init__(self):
                 Record.__init__(self, Integer)
-        template = Template(MyRecordOf)
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, MyRecordOf)
+        template = MyTemplate()
 
     #
     # Unsuccessful constructions.
     #
     def test_CtorRaisesAnExceptionForInvalidType(self):
         with self.assertRaises(InvalidTTCN3TypeInCtor):
-            template = Template(int)
+            class MyTemplate(Template):
+                def __init__(self):
+                    Template.__init__(self, int)
+            template = MyTemplate()
+
+class Template_Assign(unittest.TestCase):
+    #
+    # Successful assignments.
+    #
+    # TODO: All types.
+    #
+    def test_AssignmantOfAValidValue_Boolean(self):
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Boolean)
+        template = MyTemplate()
+        template.assign(Boolean().assign(True))
+
+    def test_AssignmantOfAValidValue_Integer(self):
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Integer)
+        template = MyTemplate()
+        template.assign(Integer().assign(1))
+
+    def test_AssignmantOfAValidValue_Float(self):
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Float)
+        template = MyTemplate()
+        template.assign(Float().assign(1.0))
+
+    def test_AssignmantOfAValidValue_Charstring(self):
+        class MyTemplate(Template):
+            def __init__(self):
+                Template.__init__(self, Charstring)
+        template = MyTemplate()
+        template.assign(Charstring().assign("WAX"))
+
+    #
+    # Unsuccessful assignments.
+    #
+    def test_AssignmentRaisesAnExceptionForInvalidValue_NotATTCN3Type(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            class MyTemplate(Template):
+                def __init__(self):
+                    Template.__init__(self, Integer)
+            template = MyTemplate()
+            template.assign(int)
+
+    def test_AssignmentRaisesAnExceptionForInvalidValue_NotADeclaredType(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            class MyTemplate(Template):
+                def __init__(self):
+                    Template.__init__(self, Integer)
+            template = MyTemplate()
+            template.assign(Float().assign(1.0))
 
 if __name__ == '__main__':
     unittest.main()

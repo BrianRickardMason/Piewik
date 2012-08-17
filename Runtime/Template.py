@@ -27,6 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+from Runtime.TypeSystem import InvalidTTCN3TypeInAssignment
 from Runtime.TypeSystem import InvalidTTCN3TypeInCtor
 from Runtime.TypeSystem import TTCN3Type
 
@@ -34,5 +35,15 @@ class Template(object):
     def __init__(self, aType):
         if not issubclass(aType, TTCN3Type):
             raise InvalidTTCN3TypeInCtor
-
         self.mType = aType
+        self.mValue = None
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTTCN3TypeInAssignment
+        self.mValue = aValue
+        return self
+
+    def accept(self, aValue):
+        # TODO: Allow for assignment of special types.
+        return type(aValue) is self.mType

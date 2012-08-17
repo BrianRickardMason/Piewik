@@ -116,7 +116,7 @@ class Boolean(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not bool:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
@@ -139,7 +139,7 @@ class Integer(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not int:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
@@ -162,7 +162,7 @@ class Float(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not float:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
@@ -185,7 +185,7 @@ class Charstring(TTCN3SimpleType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not str:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
         self.mValue = aValue
         return self
@@ -237,7 +237,7 @@ class Record(TTCN3StructuredType):
             raise InvalidTTCN3TypeInComparison
 
     def assign(self, aValue):
-        if type(aValue) is not dict:
+        if not self.accept(aValue):
             raise InvalidTTCN3TypeInAssignment
 
         for key in self.mDictionary:

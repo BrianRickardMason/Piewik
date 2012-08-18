@@ -131,10 +131,6 @@ class Integer(TTCN3SimpleType):
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
             return self.mValue == aOther.mValue
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        elif isinstance(aOther, AnySingleElement):
-            return aOther == self
         else:
             raise InvalidTTCN3TypeInComparison
 
@@ -322,6 +318,40 @@ class RecordOf(TTCN3StructuredType):
             return self.mValue[aIndex]
         except:
             raise LookupErrorMissingField
+
+#
+# Decorated types.
+#
+class TemplateInteger(Integer):
+    def __init__(self):
+        Integer.__init__(self)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, Integer):
+            # Both values are special symbols.
+            if isinstance(self.mValue,   TTCN3SpecialSymbolUsedInsteadOfAValueType) and \
+               isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
+                return self.mValue == aOther.mValue
+            # The self value is a special symbol.
+            if     isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
+               not isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
+                return self.mValue == aOther
+            # The other value is a special symbol.
+            if not isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
+                   isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
+                return self == aOther.mValue
+            # None of values is a special symbol.
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyOrNone):
+            return aOther == self
+        elif isinstance(aOther, AnySingleElement):
+            return aOther == self
+        else:
+            raise InvalidTTCN3TypeInComparison
+
+    def accept(self, aValue):
+        return type(aValue) is int       or \
+               type(aValue) is AnyOrNone
 
 #
 # Part: Subtypes.

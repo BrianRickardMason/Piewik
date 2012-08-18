@@ -91,18 +91,6 @@ class TypeSystem_Boolean(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Boolean().assign(True) == Charstring().assign("WAX")
 
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyOrNone(self):
-        self.assertTrue(Boolean().assign(True) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnySingleElement(self):
-        self.assertTrue(Boolean().assign(True) == AnySingleElement())
-
-
 class TypeSystem_Integer(unittest.TestCase):
     #
     # Constructions.
@@ -231,17 +219,6 @@ class TypeSystem_Float(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Float().assign(1.0) == Charstring().assign("WAX")
 
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyOrNone(self):
-        self.assertTrue(Float().assign(1.0) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnySingleElement(self):
-        self.assertTrue(Float().assign(1.0) == AnySingleElement())
-
 class TypeSystem_Charstring(unittest.TestCase):
     #
     # Constructions.
@@ -301,17 +278,6 @@ class TypeSystem_Charstring(unittest.TestCase):
     def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             Charstring().assign("WAX") == Float().assign(1.0)
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyOrNone(self):
-        self.assertTrue(Charstring().assign("WAX") == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnySingleElement(self):
-        self.assertTrue(Charstring().assign("WAX") == AnySingleElement())
 
 class TypeSystem_Record(unittest.TestCase):
     #
@@ -751,6 +717,120 @@ class TypeSystem_RecordOf_Eq(unittest.TestCase):
 
     # TODO: Comparison with AnySingleElement?
 
+class TypeSystem_TemplateBoolean_Ctor(unittest.TestCase):
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariable_Boolean(self):
+        TemplateBoolean()
+
+class TypeSystem_TemplateBoolean_Assign(unittest.TestCase):
+    #
+    # Successful assignments.
+    #
+    def test_AssignementOfProperValue_Boolean(self):
+        self.assertEqual(TemplateBoolean().assign(True).value(), True)
+
+    def test_AssignementOfProperValue_AnyOrNone(self):
+        self.assertEqual(TemplateBoolean().assign(AnyOrNone()).value(), AnyOrNone())
+
+    #
+    # Unsuccessful assignments.
+    #
+    # TODO: All types.
+    #
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateBoolean().assign(1)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateBoolean().assign(1.0)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateBoolean().assign("WAX")
+
+class TypeSystem_TemplateBoolean_Boolean_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Boolean(self):
+        self.assertTrue(TemplateBoolean().assign(True) == TemplateBoolean().assign(True))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateBoolean().assign(True) == TemplateBoolean().assign(AnyOrNone()))
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_Boolean_AnyOrNone(self):
+        self.assertTrue(TemplateBoolean().assign(True) == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_Boolean_AnySingleElement(self):
+        self.assertTrue(TemplateBoolean().assign(True) == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
+        self.assertFalse(TemplateBoolean().assign(True) == TemplateBoolean().assign(False))
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(True) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(True) == Float().assign(1.0)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(True) == Charstring().assign("WAX")
+
+class TypeSystem_TemplateBoolean_AnyOrNone_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Boolean(self):
+        self.assertTrue(TemplateBoolean().assign(AnyOrNone()) == TemplateBoolean().assign(True))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateBoolean().assign(AnyOrNone()) == TemplateBoolean().assign(AnyOrNone()))
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone_AnyOrNone(self):
+        self.assertTrue(TemplateBoolean().assign(AnyOrNone()) == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_AnyOrNone_AnySingleElement(self):
+        self.assertTrue(TemplateBoolean().assign(AnyOrNone()) == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(AnyOrNone()) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(AnyOrNone()) == Float().assign(1.0)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateBoolean().assign(AnyOrNone()) == Charstring().assign("WAX")
+
 class TypeSystem_TemplateInteger_Ctor(unittest.TestCase):
     #
     # Successful constructions.
@@ -801,10 +881,10 @@ class TypeSystem_TemplateInteger_Integer_Eq(unittest.TestCase):
     # TODO: All types.
     #
     def test_ComparisonReturnsTrue_Integer_AnyOrNone(self):
-        self.assertTrue(TemplateInteger().assign(1), AnyOrNone())
+        self.assertTrue(TemplateInteger().assign(1) == AnyOrNone())
 
     def test_ComparisonReturnsTrue_Integer_AnySingleElement(self):
-        self.assertTrue(TemplateInteger().assign(1), AnySingleElement())
+        self.assertTrue(TemplateInteger().assign(1) == AnySingleElement())
 
     #
     # Unsuccessful matching.
@@ -831,11 +911,22 @@ class TypeSystem_TemplateInteger_AnyOrNone_Eq(unittest.TestCase):
     #
     # Successful matching.
     #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Integer(self):
+        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == TemplateInteger().assign(1))
+
     def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
         self.assertTrue(TemplateInteger().assign(AnyOrNone()) == TemplateInteger().assign(AnyOrNone()))
 
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Integer(self):
-        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == TemplateInteger().assign(1))
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone_AnyOrNone(self):
+        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_AnyOrNone_AnySingleElement(self):
+        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == AnySingleElement())
 
     #
     # Unsuccessful matching.
@@ -854,16 +945,233 @@ class TypeSystem_TemplateInteger_AnyOrNone_Eq(unittest.TestCase):
         with self.assertRaises(InvalidTTCN3TypeInComparison):
             TemplateInteger().assign(AnyOrNone()) == Charstring().assign("WAX")
 
+class TypeSystem_TemplateFloat_Ctor(unittest.TestCase):
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariable_Float(self):
+        TemplateFloat()
+
+class TypeSystem_TemplateFloat_Assign(unittest.TestCase):
+    #
+    # Successful assignments.
+    #
+    def test_AssignementOfProperValue_Float(self):
+        self.assertEqual(TemplateFloat().assign(1.0).value(), 1)
+
+    def test_AssignementOfProperValue_AnyOrNone(self):
+        self.assertEqual(TemplateFloat().assign(AnyOrNone()).value(), AnyOrNone())
+
+    #
+    # Unsuccessful assignments.
+    #
+    # TODO: All types.
+    #
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateFloat().assign(True)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateFloat().assign(1)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateFloat().assign("WAX")
+
+class TypeSystem_TemplateFloat_Float_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Float(self):
+        self.assertTrue(TemplateFloat().assign(1.0) == TemplateFloat().assign(1.0))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateFloat().assign(1.0) == TemplateFloat().assign(AnyOrNone()))
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_Float_AnyOrNone(self):
+        self.assertTrue(TemplateFloat().assign(1.0) == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_Float_AnySingleElement(self):
+        self.assertTrue(TemplateFloat().assign(1.0) == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
+        self.assertFalse(TemplateFloat().assign(1.0) == TemplateFloat().assign(2.0))
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(1.0) == Boolean().assign(True)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(1.0) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(1.0) == Charstring().assign("WAX")
+
+class TypeSystem_TemplateFloat_AnyOrNone_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Float(self):
+        self.assertTrue(TemplateFloat().assign(AnyOrNone()) == TemplateFloat().assign(1.0))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateFloat().assign(AnyOrNone()) == TemplateFloat().assign(AnyOrNone()))
+
     #
     # Successful matching - special symbols.
     #
     # TODO: All types.
     #
     def test_ComparisonReturnsTrue_AnyOrNone_AnyOrNone(self):
-        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == AnyOrNone())
+        self.assertTrue(TemplateFloat().assign(AnyOrNone()) == AnyOrNone())
 
     def test_ComparisonReturnsTrue_AnyOrNone_AnySingleElement(self):
-        self.assertTrue(TemplateInteger().assign(AnyOrNone()) == AnySingleElement())
+        self.assertTrue(TemplateFloat().assign(AnyOrNone()) == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(AnyOrNone()) == Boolean().assign(True)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(AnyOrNone()) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateFloat().assign(AnyOrNone()) == Charstring().assign("WAX")
+
+class TypeSystem_TemplateCharstring_Ctor(unittest.TestCase):
+    #
+    # Successful constructions.
+    #
+    def test_CtorConstructsAProperVariable_Charstring(self):
+        TemplateCharstring()
+
+class TypeSystem_TemplateCharstring_Assign(unittest.TestCase):
+    #
+    # Successful assignments.
+    #
+    def test_AssignementOfProperValue_Charstring(self):
+        self.assertEqual(TemplateCharstring().assign("WAX").value(), "WAX")
+
+    def test_AssignementOfProperValue_AnyOrNone(self):
+        self.assertEqual(TemplateCharstring().assign(AnyOrNone()).value(), AnyOrNone())
+
+    #
+    # Unsuccessful assignments.
+    #
+    # TODO: All types.
+    #
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateCharstring().assign(True)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateCharstring().assign(1)
+
+    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInAssignment):
+            TemplateCharstring().assign(1.0)
+
+class TypeSystem_TemplateCharstring_Charstring_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Charstring(self):
+        self.assertTrue(TemplateCharstring().assign("WAX") == TemplateCharstring().assign("WAX"))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateCharstring().assign("WAX") == TemplateCharstring().assign(AnyOrNone()))
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_Charstring_AnyOrNone(self):
+        self.assertTrue(TemplateCharstring().assign("WAX") == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_Charstring_AnySingleElement(self):
+        self.assertTrue(TemplateCharstring().assign("WAX") == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
+        self.assertFalse(TemplateCharstring().assign("WAX") == TemplateCharstring().assign("XAW"))
+
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign("WAX") == Boolean().assign(True)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign("WAX") == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign("WAX") == Float().assign(1.0)
+
+class TypeSystem_TemplateCharstring_AnyOrNone_Eq(unittest.TestCase):
+    #
+    # Successful matching.
+    #
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Charstring(self):
+        self.assertTrue(TemplateCharstring().assign(AnyOrNone()) == TemplateCharstring().assign("WAX"))
+
+    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyOrNone(self):
+        self.assertTrue(TemplateCharstring().assign(AnyOrNone()) == TemplateCharstring().assign(AnyOrNone()))
+
+    #
+    # Successful matching - special symbols.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonReturnsTrue_AnyOrNone_AnyOrNone(self):
+        self.assertTrue(TemplateCharstring().assign(AnyOrNone()) == AnyOrNone())
+
+    def test_ComparisonReturnsTrue_AnyOrNone_AnySingleElement(self):
+        self.assertTrue(TemplateCharstring().assign(AnyOrNone()) == AnySingleElement())
+
+    #
+    # Unsuccessful matching.
+    #
+    # TODO: All types.
+    #
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign(AnyOrNone()) == Boolean().assign(True)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign(AnyOrNone()) == Integer().assign(1)
+
+    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
+        with self.assertRaises(InvalidTTCN3TypeInComparison):
+            TemplateCharstring().assign(AnyOrNone()) == Float().assign(1.0)
 
 class MySubtypedInteger(Integer):
     def __init__(self, aSubtypeOfSimpleTypeConstraints):

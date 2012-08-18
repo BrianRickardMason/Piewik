@@ -316,18 +316,12 @@ class TemplateBoolean(Boolean):
 
     def __eq__(self, aOther):
         if isinstance(aOther, Boolean):
-            # Both values are special symbols.
-            if isinstance(self.mValue,   TTCN3SpecialSymbolUsedInsteadOfAValueType) and \
-               isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther.mValue
-            # The self value is a special symbol.
-            if     isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-               not isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther
             # The other value is a special symbol.
-            if not isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-                   isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self == aOther.mValue
+            if not isinstance(self.mValue,   TTCN3Value) and \
+                   isinstance(aOther.mValue, TTCN3Value)     :
+                return aOther.mValue == self.mValue
+            # The self value is a special symbol.
+            # Both values are special symbols.
             # None of values is a special symbol.
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
@@ -338,8 +332,8 @@ class TemplateBoolean(Boolean):
             raise InvalidTTCN3TypeInComparison
 
     def accept(self, aValue):
-        return type(aValue) is bool      or \
-               type(aValue) is AnyOrNone
+        return type(aValue) is bool     or \
+               type(aValue) is AnyValue
 
 class TemplateInteger(Integer):
     def __init__(self):
@@ -347,18 +341,12 @@ class TemplateInteger(Integer):
 
     def __eq__(self, aOther):
         if isinstance(aOther, Integer):
-            # Both values are special symbols.
-            if isinstance(self.mValue,   TTCN3SpecialSymbolUsedInsteadOfAValueType) and \
-               isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther.mValue
-            # The self value is a special symbol.
-            if     isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-               not isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther
             # The other value is a special symbol.
-            if not isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-                   isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self == aOther.mValue
+            if not isinstance(self.mValue,   TTCN3Value) and \
+                   isinstance(aOther.mValue, TTCN3Value)     :
+                return aOther.mValue == self.mValue
+            # The self value is a special symbol.
+            # Both values are special symbols.
             # None of values is a special symbol.
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
@@ -369,8 +357,9 @@ class TemplateInteger(Integer):
             raise InvalidTTCN3TypeInComparison
 
     def accept(self, aValue):
-        return type(aValue) is int       or \
-               type(aValue) is AnyOrNone
+        # TODO: isinstance().
+        return type(aValue) is int      or \
+               type(aValue) is AnyValue
 
 class TemplateFloat(Float):
     def __init__(self):
@@ -378,18 +367,12 @@ class TemplateFloat(Float):
 
     def __eq__(self, aOther):
         if isinstance(aOther, Float):
-            # Both values are special symbols.
-            if isinstance(self.mValue,   TTCN3SpecialSymbolUsedInsteadOfAValueType) and \
-               isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther.mValue
-            # The self value is a special symbol.
-            if     isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-               not isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther
             # The other value is a special symbol.
-            if not isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-                   isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self == aOther.mValue
+            if not isinstance(self.mValue,   TTCN3Value) and \
+                   isinstance(aOther.mValue, TTCN3Value)     :
+                return aOther.mValue == self.mValue
+            # The self value is a special symbol.
+            # Both values are special symbols.
             # None of values is a special symbol.
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
@@ -400,8 +383,8 @@ class TemplateFloat(Float):
             raise InvalidTTCN3TypeInComparison
 
     def accept(self, aValue):
-        return type(aValue) is float     or \
-               type(aValue) is AnyOrNone
+        return type(aValue) is float    or \
+               type(aValue) is AnyValue
 
 class TemplateCharstring(Charstring):
     def __init__(self):
@@ -409,18 +392,12 @@ class TemplateCharstring(Charstring):
 
     def __eq__(self, aOther):
         if isinstance(aOther, Charstring):
-            # Both values are special symbols.
-            if isinstance(self.mValue,   TTCN3SpecialSymbolUsedInsteadOfAValueType) and \
-               isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther.mValue
-            # The self value is a special symbol.
-            if     isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-               not isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self.mValue == aOther
             # The other value is a special symbol.
-            if not isinstance(self.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)   and \
-                   isinstance(aOther.mValue, TTCN3SpecialSymbolUsedInsteadOfAValueType)     :
-                return self == aOther.mValue
+            if not isinstance(self.mValue,   TTCN3Value) and \
+                   isinstance(aOther.mValue, TTCN3Value)     :
+                return aOther.mValue == self.mValue
+            # The self value is a special symbol.
+            # Both values are special symbols.
             # None of values is a special symbol.
             return self.mValue == aOther.mValue
         elif isinstance(aOther, AnyOrNone):
@@ -431,8 +408,8 @@ class TemplateCharstring(Charstring):
             raise InvalidTTCN3TypeInComparison
 
     def accept(self, aValue):
-        return type(aValue) is str       or \
-               type(aValue) is AnyOrNone
+        return type(aValue) is str      or \
+               type(aValue) is AnyValue
 
 #
 # Part: Subtypes.
@@ -633,3 +610,15 @@ class SpecialSymbolLength(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
 
 class Present(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
     pass
+
+#
+# Values.
+#
+class TTCN3Value(object):
+    pass
+
+class AnyValue(TTCN3Value):
+    def __eq__(self, aOther):
+        if isinstance(aOther, AnyValue):
+            return True
+        return True

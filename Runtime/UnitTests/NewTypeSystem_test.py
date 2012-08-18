@@ -31,6 +31,94 @@ import unittest
 
 from Runtime.NewTypeSystem import *
 
+class NewTypeSystem_Boolean_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Boolean(SimpleType())
+
+class NewTypeSystem_Boolean_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = Boolean(SimpleType())
+        for value in [BooleanValue(True), BooleanValue(False)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue(self):
+        type = Boolean(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Boolean_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Boolean(SimpleType())
+        for value in [BooleanValue(True), BooleanValue(False)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Boolean(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Boolean_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        self.assertTrue(   Boolean(SimpleType()).assign(BooleanValue(True))
+                        == Boolean(SimpleType()).assign(BooleanValue(True)))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(   Boolean(SimpleType()).assign(BooleanValue(True))
+                         == Boolean(SimpleType()).assign(BooleanValue(False)))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(1))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class NewTypeSystem_Boolean_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Boolean(SimpleType()))
+
+class NewTypeSystem_Boolean_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [BooleanValue(True), BooleanValue(False), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Boolean_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [BooleanValue(True), BooleanValue(False), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Boolean_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        for values in [(BooleanValue(True), BooleanValue(True)),
+                       (BooleanValue(True), AnyValue()),
+                       (AnyValue(), BooleanValue(True)),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Boolean(SimpleType())).assign(values[0])
+                            == TemplateType(Boolean(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(   TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+                         == TemplateType(Boolean(SimpleType())).assign(BooleanValue(False)))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
 class NewTypeSystem_Integer_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Integer(SimpleType())
@@ -111,12 +199,14 @@ class NewTypeSystem_Integer_BoundedType_Assign(unittest.TestCase):
 
 class NewTypeSystem_Integer_BoundedType_Eq(unittest.TestCase):
     def test_EqReturnsTrueForSameValues(self):
-        self.assertTrue(   BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
-                        == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1)))
+        self.assertTrue(
+               BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+            == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1)))
 
     def test_EqReturnsFalseForDifferentValues(self):
-        self.assertFalse(   BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
-                         == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(2)))
+        self.assertFalse(
+               BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+            == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(2)))
 
     def test_EqRaisesAnExceptionForAnInvalidType(self):
         type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))

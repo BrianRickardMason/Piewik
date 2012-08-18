@@ -41,11 +41,38 @@ class InvalidTypeInComparison(TypeSystemException):
     pass
 
 #
-# The values are needed to overload __eq__ in a clean way.
+# The values are needed to overload __eq__, etc... in a clean way.
 #
 class Value(object):
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
     def __ne__(self, aOther):
         return not self.__eq__(aOther)
+
+    def __gt__(self, aOther):
+        raise NotImplementedError
+
+    def __ge__(self, aOther):
+        raise NotImplementedError
+
+    def __lt__(self, aOther):
+        raise NotImplementedError
+
+    def __le__(self, aOther):
+        raise NotImplementedError
+
+class BooleanValue(Value):
+    def __init__(self, aValue):
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, BooleanValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
 
 class IntegerValue(Value):
     def __init__(self, aValue):
@@ -137,6 +164,31 @@ class SimpleType(IType):
 
     def value(self):
         raise NotImplementedError
+
+class Boolean(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, TypeDecorator):
+            return self.mValue == aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __ne__(self, aOther):
+        return not self.__eq__(aOther)
+
+    def accept(self, aValue):
+        return type(aValue) is BooleanValue
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mValue
 
 class Integer(TypeDecorator):
     def __init__(self, aDecoratedType):

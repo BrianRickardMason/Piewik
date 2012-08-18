@@ -114,7 +114,7 @@ class AnyValue(Value):
     def __eq__(self, aOther):
         return True
 
-class IType(object):
+class Type(object):
     def __eq__(self, aOther):
         raise NotImplementedError
 
@@ -130,7 +130,23 @@ class IType(object):
     def value(self):
         raise NotImplementedError
 
-class TypeDecorator(IType):
+class SimpleType(Type):
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
+    def __ne__(self, aOther):
+        raise NotImplementedError
+
+    def accept(self, aValue):
+        raise NotImplementedError
+
+    def assign(self, aValue):
+        raise NotImplementedError
+
+    def value(self):
+        raise NotImplementedError
+
+class TypeDecorator(Type):
     def __init__(self, aDecoratedType):
         self.mDecoratedType = aDecoratedType
 
@@ -154,22 +170,6 @@ class TypeDecorator(IType):
 
     def value(self):
         return self.mValue
-
-class SimpleType(IType):
-    def __eq__(self, aOther):
-        raise NotImplementedError
-
-    def __ne__(self, aOther):
-        raise NotImplementedError
-
-    def accept(self, aValue):
-        raise NotImplementedError
-
-    def assign(self, aValue):
-        raise NotImplementedError
-
-    def value(self):
-        raise NotImplementedError
 
 class Boolean(TypeDecorator):
     def __init__(self, aDecoratedType):

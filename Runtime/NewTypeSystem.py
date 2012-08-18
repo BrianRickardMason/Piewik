@@ -135,19 +135,25 @@ class TypeDecorator(IType):
         self.mDecoratedType = aDecoratedType
 
     def __eq__(self, aOther):
-        raise NotImplementedError
+        if isinstance(aOther, TypeDecorator):
+            return self.mValue == aOther.mValue
+        else:
+            raise InvalidTypeInComparison
 
     def __ne__(self, aOther):
-        raise NotImplementedError
+        return not self.__eq__(aOther)
 
     def accept(self, aValue):
         raise NotImplementedError
 
     def assign(self, aValue):
-        raise NotImplementedError
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mValue = aValue
+        return self
 
     def value(self):
-        raise NotImplementedError
+        return self.mValue
 
 class SimpleType(IType):
     def __eq__(self, aOther):
@@ -169,51 +175,15 @@ class Boolean(TypeDecorator):
     def __init__(self, aDecoratedType):
         TypeDecorator.__init__(self, aDecoratedType)
 
-    def __eq__(self, aOther):
-        if isinstance(aOther, TypeDecorator):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTypeInComparison
-
-    def __ne__(self, aOther):
-        return not self.__eq__(aOther)
-
     def accept(self, aValue):
         return type(aValue) is BooleanValue
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def value(self):
-        return self.mValue
 
 class Integer(TypeDecorator):
     def __init__(self, aDecoratedType):
         TypeDecorator.__init__(self, aDecoratedType)
 
-    def __eq__(self, aOther):
-        if isinstance(aOther, TypeDecorator):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTypeInComparison
-
-    def __ne__(self, aOther):
-        return not self.__eq__(aOther)
-
     def accept(self, aValue):
         return type(aValue) is IntegerValue
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def value(self):
-        return self.mValue
 
 class BoundedType(TypeDecorator):
     def __init__(self, aDecoratedType, aLowerBoundary, aUpperBoundary):

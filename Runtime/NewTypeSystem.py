@@ -191,51 +191,15 @@ class BoundedType(TypeDecorator):
         self.mLowerBoundary = aLowerBoundary
         self.mUpperBoundary = aUpperBoundary
 
-    def __eq__(self, aOther):
-        if isinstance(aOther, TypeDecorator):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTypeInComparison
-
-    def __ne__(self, aOther):
-        return not self.__eq__(aOther)
-
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue) and \
                aValue >= self.mLowerBoundary      and \
                aValue <= self.mUpperBoundary
 
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def value(self):
-        return self.mValue
-
 class TemplateType(TypeDecorator):
     def __init__(self, aDecoratedType):
         TypeDecorator.__init__(self, aDecoratedType)
 
-    def __eq__(self, aOther):
-        if isinstance(aOther, TypeDecorator):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTypeInComparison
-
-    def __ne__(self, aOther):
-        return not self.__eq__(aOther)
-
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue) or \
                type(aValue) is AnyValue
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def value(self):
-        return self.mValue

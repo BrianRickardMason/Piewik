@@ -106,16 +106,10 @@ class IntegerValue(Value):
             raise InvalidTypeInComparison
 
     def __lt__(self, aOther):
-        if isinstance(aOther, IntegerValue):
-            return not self.__ge__(aOther)
-        else:
-            raise InvalidTypeInComparison
+        return not self.__ge__(aOther)
 
     def __le__(self, aOther):
-        if isinstance(aOther, IntegerValue):
-            return not self.__gt__(aOther)
-        else:
-            raise InvalidTypeInComparison
+        return not self.__gt__(aOther)
 
 class FloatValue(Value):
     def __init__(self, aValue):
@@ -144,16 +138,10 @@ class FloatValue(Value):
             raise InvalidTypeInComparison
 
     def __lt__(self, aOther):
-        if isinstance(aOther, FloatValue):
-            return not self.__ge__(aOther)
-        else:
-            raise InvalidTypeInComparison
+        return not self.__ge__(aOther)
 
     def __le__(self, aOther):
-        if isinstance(aOther, FloatValue):
-            return not self.__gt__(aOther)
-        else:
-            raise InvalidTypeInComparison
+        return not self.__gt__(aOther)
 
 class CharstringValue(Value):
     def __init__(self, aValue):

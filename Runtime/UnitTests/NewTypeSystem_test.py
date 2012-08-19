@@ -37,6 +37,19 @@ import unittest
 
 from Runtime.NewTypeSystem import *
 
+class NewTypeSystem_TypeDecorator_IsOfType(unittest.TestCase):
+    def test_IsOfTypeReturnsTrueForAValidType(self):
+        type = Boolean(SimpleType())
+        self.assertFalse(type.isOfType(TemplateType))
+        self.assertTrue(type.isOfType(Boolean))
+        self.assertTrue(type.isOfType(SimpleType))
+        self.assertFalse(type.isOfType(Integer))
+        type = TemplateType(Boolean(SimpleType()))
+        self.assertTrue(type.isOfType(TemplateType))
+        self.assertTrue(type.isOfType(Boolean))
+        self.assertTrue(type.isOfType(SimpleType))
+        self.assertFalse(type.isOfType(Integer))
+
 class NewTypeSystem_Boolean_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Boolean(SimpleType())
@@ -574,20 +587,20 @@ class NewTypeSystem_Record_Ctor(unittest.TestCase):
     def test_Ctor_WithDictionary_Empty(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {})
         type = MyRecord()
 
     def test_Ctor_WithDictionary_NonEmpty(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidKey(self):
         with self.assertRaises(InvalidTypeInCtor):
             class MyRecord(Record):
                 def __init__(self):
-                    Record.__init__(self, SimpleType(), {1: Integer, 'bar': Charstring})
+                    Record.__init__(self, SimpleType(), {1: Integer(SimpleType()), 'bar': Charstring(SimpleType())})
             type = MyRecord()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
@@ -618,21 +631,22 @@ class NewTypeSystem_Record_Ctor(unittest.TestCase):
         with self.assertRaises(InvalidTypeInCtor):
             class MyRecord(Record):
                 def __init__(self):
-                    Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': AnyValue})
+                    Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': AnyValue()})
             type = MyRecord()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_AnyOfNestedTypesIsATemplateLikeType(self):
         with self.assertRaises(InvalidTypeInCtor):
             class MyRecord(Record):
                 def __init__(self):
-                    Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': TemplateType})
+                    Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()),
+                                                         'bar': TemplateType(Integer(SimpleType()))})
             type = MyRecord()
 
 class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -642,7 +656,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
         self.skipTest("Not implemented yet.")
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': BoundedType(
                             Integer(SimpleType()),
@@ -655,22 +669,21 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_NestedRecords(self):
         class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
-        valueInternal = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord = InternalRecord().assign(valueInternal)
-        valueExternal = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                         'bar': internalRecord}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                         'bar': internalValue}
         externalRecord = ExternalRecord()
-        self.assertTrue(externalRecord.accept(valueExternal))
+        self.assertTrue(externalRecord.accept(externalValue))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
             self.assertFalse(type.accept(value))
@@ -678,7 +691,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': AnyValue()}
@@ -687,7 +700,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_AnyOfNestedTypesIsATemplateLikeType(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': TemplateType(Charstring(SimpleType)).assign(AnyValue())}
@@ -696,14 +709,14 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         self.assertFalse(type.accept({}))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
         self.assertFalse(type.accept(value))
@@ -711,7 +724,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
@@ -721,7 +734,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -730,30 +743,17 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
                  'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         self.assertFalse(type.accept(value))
 
-    def test_AcceptReturnsFalseOnAnInvalidValue_NotInitializedNestedRecord(self):
-        class InternalRecord(Record):
-            def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
-        class ExternalRecord(Record):
-            def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
-        internalRecord = InternalRecord()
-        valueExternal = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                         'bar': internalRecord}
-        externalRecord = ExternalRecord()
-        self.assertFalse(externalRecord.accept(valueExternal))
-
 class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignAssignsOnAValidValue_TheSameTypes(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -763,7 +763,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
         self.skipTest("Not implemented yet.")
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': BoundedType(
                             Integer(SimpleType()),
@@ -776,22 +776,21 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_NestedRecords(self):
         class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
-        valueInternal = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord = InternalRecord().assign(valueInternal)
-        valueExternal = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                         'bar': internalRecord}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                         'bar': internalValue}
         externalRecord = ExternalRecord()
-        externalRecord.assign(valueExternal)
+        externalRecord.assign(externalValue)
 
     def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
             with self.assertRaises(InvalidTypeInAssignment):
@@ -800,7 +799,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': AnyValue()}
@@ -810,7 +809,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         with self.assertRaises(InvalidTypeInAssignment):
             type.assign({})
@@ -818,7 +817,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
         with self.assertRaises(InvalidTypeInAssignment):
@@ -827,7 +826,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
@@ -838,7 +837,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -848,7 +847,7 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
                  'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -858,16 +857,16 @@ class NewTypeSystem_Record_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_NotInitializedNestedRecord(self):
         class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
         internalRecord = InternalRecord()
-        valueExternal = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
                          'bar': internalRecord}
         externalRecord = ExternalRecord()
         with self.assertRaises(InvalidTypeInAssignment):
-            externalRecord.assign(valueExternal)
+            externalRecord.assign(externalValue)
 
 class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_EmptyRecord(self):
@@ -881,7 +880,7 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_NonEmptyRecord(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record1 = MyRecord().assign(value)
@@ -891,25 +890,24 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_NestedRecords(self):
         class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
-        valueInternal = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord = InternalRecord().assign(valueInternal)
-        valueExternal = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                         'bar': internalRecord}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                         'bar': internalValue}
         externalRecord1 = ExternalRecord()
         externalRecord2 = ExternalRecord()
-        externalRecord1.assign(valueExternal)
-        externalRecord2.assign(valueExternal)
+        externalRecord1.assign(externalValue)
+        externalRecord2.assign(externalValue)
         self.assertTrue(externalRecord1 == externalRecord2)
 
     def test_EqReturnsFalseOnDifferentValues_NonEmptyRecord(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
@@ -921,30 +919,28 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_NestedRecords(self):
         class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': InternalRecord})
-        valueInternal1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                           'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        valueInternal2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+        internalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
                           'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord1 = InternalRecord().assign(valueInternal1)
-        internalRecord2 = InternalRecord().assign(valueInternal2)
-        valueExternal1 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                          'bar': internalRecord1}
-        valueExternal2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                          'bar': internalRecord2}
+        externalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue1}
+        externalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue2}
         externalRecord1 = ExternalRecord()
         externalRecord2 = ExternalRecord()
-        externalRecord1.assign(valueExternal1)
-        externalRecord2.assign(valueExternal2)
+        externalRecord1.assign(externalValue1)
+        externalRecord2.assign(externalValue2)
         self.assertFalse(externalRecord1 == externalRecord2)
 
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
@@ -955,7 +951,7 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
@@ -966,7 +962,7 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
@@ -977,10 +973,10 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
         class MyRecord1(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         class MyRecord2(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
@@ -991,7 +987,7 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
             record1 == record2
 
     def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondEmpty(self):
-        record1 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring})
+        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         record2 = Record(SimpleType(), {})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
@@ -1001,8 +997,8 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
             record1 == record2
 
     def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondTooSmall(self):
-        record1 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring})
-        record2 = Record(SimpleType(), {'foo': Integer})
+        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        record2 = Record(SimpleType(), {'foo': Integer(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
@@ -1012,8 +1008,10 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
             record1 == record2
 
     def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondTooBig(self):
-        record1 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring})
-        record2 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring, 'baz': Integer})
+        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        record2 = Record(SimpleType(), {'foo': Integer(SimpleType()),
+                                        'bar': Charstring(SimpleType()),
+                                        'baz': Integer(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
@@ -1025,8 +1023,8 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
             record1 == record2
 
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
-        record1 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring})
-        record2 = Record(SimpleType(), {'foo': Integer, 'baz': Charstring})
+        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        record2 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'baz': Charstring(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
@@ -1037,8 +1035,8 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
             record1 == record2
 
     def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
-        record1 = Record(SimpleType(), {'foo': Integer, 'bar': Charstring})
-        record2 = Record(SimpleType(), {'bar': Integer, 'foo': Charstring})
+        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        record2 = Record(SimpleType(), {'bar': Integer(SimpleType()), 'foo': Charstring(SimpleType())})
         value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         value2 = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
@@ -1052,7 +1050,7 @@ class NewTypeSystem_Record_GetField(unittest.TestCase):
     def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
@@ -1062,7 +1060,7 @@ class NewTypeSystem_Record_GetField(unittest.TestCase):
     def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
         class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, SimpleType(), {'foo': Integer, 'bar': Charstring})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
@@ -1099,7 +1097,7 @@ class NewTypeSystem_RecordOf_Ctor(unittest.TestCase):
                     def __init__(self):
                         RecordOf.__init__(self, SimpleType(), type)
                 type = MyRecordOf()
-#
+
 class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnEmptyList(self):
         class MyRecordOf(RecordOf):

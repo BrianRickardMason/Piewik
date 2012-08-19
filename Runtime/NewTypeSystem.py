@@ -224,8 +224,19 @@ class TypeDecorator(Type):
     def value(self):
         return self.mValue
 
+    def isOfType(self, aType):
+        if isinstance(self, aType):
+            return True
+        elif isinstance(self.mDecoratedType, aType):
+            return True
+        elif isinstance(self.mDecoratedType, SimpleType):
+            return False
+        else:
+            return self.mDecoratedType.isOfType(aType)
+
 class Boolean(TypeDecorator):
     def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -233,6 +244,7 @@ class Boolean(TypeDecorator):
 
 class Integer(TypeDecorator):
     def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -240,6 +252,7 @@ class Integer(TypeDecorator):
 
 class Float(TypeDecorator):
     def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -247,6 +260,7 @@ class Float(TypeDecorator):
 
 class Charstring(TypeDecorator):
     def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -254,6 +268,7 @@ class Charstring(TypeDecorator):
 
 class Record(TypeDecorator):
     def __init__(self, aDecoratedType, aDictionary={}):
+        # TODO: Add checking of what can be decorated with this decorator.
         if type(aDictionary) is not dict:
             raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
@@ -261,9 +276,9 @@ class Record(TypeDecorator):
             if type(key) is not str:
                 raise InvalidTypeInCtor
         for typeName in aDictionary.values():
-            if not issubclass(typeName, TypeDecorator):
+            if not isinstance(typeName, TypeDecorator):
                 raise InvalidTypeInCtor
-            if issubclass(typeName, TemplateType):
+            if isinstance(typeName, TemplateType):
                 raise InvalidTypeInCtor
         self.mDictionary = aDictionary
         self.mValue = None
@@ -299,7 +314,7 @@ class Record(TypeDecorator):
                 raise InvalidTypeInComparison
         # ...and which's values underneath keys are the same as mine...
         for key in self.mValue:
-            if not isinstance(aOther.mValue[key], self.mDictionary[key]):
+            if not isinstance(aOther.mValue[key], type(self.mDictionary[key])):
                 raise InvalidTypeInComparison
         # ...and then compare...
         for key in self.mValue:
@@ -318,19 +333,30 @@ class Record(TypeDecorator):
         for key in aValue:
             if not key in self.mDictionary:
                 return False
-        for value in aValue.values():
-            if not isinstance(value, TypeDecorator):
-                return False
-            if isinstance(value, TemplateType):
-                return False
         for key in self.mDictionary:
-            if not isinstance(aValue[key], self.mDictionary[key]):
-                return False
-        for key in self.mDictionary:
-            if issubclass(self.mDictionary[key], Record):
-                if aValue[key].mValue == None:
+            if isinstance(self.mDictionary[key], Record):
+                if not self.mDictionary[key].accept(aValue[key]):
+                    return False
+            else:
+                if not isinstance(aValue[key], TypeDecorator):
+                    return False
+                if isinstance(aValue[key], TemplateType):
+                    return False
+                if not isinstance(aValue[key], type(self.mDictionary[key])):
                     return False
         return True
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        tmpValue = {}
+        for key in aValue:
+            if isinstance(self.mDictionary[key], Record):
+                tmpValue[key] = type(self.mDictionary[key])().assign(aValue[key])
+            else:
+                tmpValue[key] = aValue[key]
+        self.mValue = tmpValue
+        return self
 
     def getField(self, aName):
         if aName in self.mValue:
@@ -340,6 +366,7 @@ class Record(TypeDecorator):
 
 class RecordOf(TypeDecorator):
     def __init__(self, aDecoratedType, aType):
+        # TODO: Add checking of what can be decorated with this decorator.
         # Make sure the type is TypeDecorator...
         if not issubclass(aType, TypeDecorator):
             raise InvalidTypeInCtor
@@ -430,6 +457,7 @@ class RecordOf(TypeDecorator):
 
 class BoundedType(TypeDecorator):
     def __init__(self, aDecoratedType, aLowerBoundary, aUpperBoundary):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
         self.mLowerBoundary = aLowerBoundary
         self.mUpperBoundary = aUpperBoundary
@@ -441,6 +469,7 @@ class BoundedType(TypeDecorator):
 
 class TemplateType(TypeDecorator):
     def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):

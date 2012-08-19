@@ -68,7 +68,7 @@ class NewTypeSystem_Boolean_Eq(unittest.TestCase):
                          == Boolean(SimpleType()).assign(BooleanValue(False)))
 
     def test_EqRaisesAnExceptionForAnInvalidType(self):
-        type = Boolean(SimpleType()).assign(BooleanValue(1))
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
         for value in [True, 1.0, "WAX"]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
@@ -257,6 +257,148 @@ class NewTypeSystem_Integer_TemplateType_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionForAnInvalidType(self):
         type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class NewTypeSystem_Float_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Float(SimpleType())
+
+class NewTypeSystem_Float_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = Float(SimpleType())
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(1.0)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue(self):
+        type = Float(SimpleType())
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Float_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Float(SimpleType())
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(1.0)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Float(SimpleType())
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Float_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        self.assertTrue(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(1.0)))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class NewTypeSystem_Float_BoundedType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0))
+
+class NewTypeSystem_Float_BoundedType_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(0.0), FloatValue(1.0), FloatValue(1.0)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue_InvalidType(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(-1.0), FloatValue(11.0)]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Float_BoundedType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(0.0), FloatValue(1.0), FloatValue(1.0)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(-1.0), FloatValue(11.0)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Float_BoundedType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        self.assertTrue(
+               BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+            == BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0)))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(
+               BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+            == BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class NewTypeSystem_Float_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Float(SimpleType()))
+
+class NewTypeSystem_Float_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(10.0), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Float_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(10.0), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Float_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        for values in [(FloatValue(1.0), FloatValue(1.0)),
+                       (FloatValue(1.0), AnyValue()),
+                       (AnyValue(), FloatValue(1.0)),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Float(SimpleType())).assign(values[0])
+                            == TemplateType(Float(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(   TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+                         == TemplateType(Float(SimpleType())).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 

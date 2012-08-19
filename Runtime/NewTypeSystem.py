@@ -37,6 +37,9 @@ class TypeSystemException(Exception):
 class InvalidTypeInAssignment(TypeSystemException):
     pass
 
+class InvalidTypeInValueAssignment(TypeSystemException):
+    pass
+
 class InvalidTypeInComparison(TypeSystemException):
     pass
 
@@ -64,6 +67,8 @@ class Value(object):
 
 class BooleanValue(Value):
     def __init__(self, aValue):
+        if not type(aValue) is bool:
+            raise InvalidTypeInValueAssignment
         self.mValue = aValue
 
     def __eq__(self, aOther):
@@ -76,6 +81,8 @@ class BooleanValue(Value):
 
 class IntegerValue(Value):
     def __init__(self, aValue):
+        if not type(aValue) is int:
+            raise InvalidTypeInValueAssignment
         self.mValue = aValue
 
     def __eq__(self, aOther):
@@ -107,6 +114,58 @@ class IntegerValue(Value):
     def __le__(self, aOther):
         if isinstance(aOther, IntegerValue):
             return not self.__gt__(aOther)
+        else:
+            raise InvalidTypeInComparison
+
+class FloatValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is float:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
+
+    def __gt__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue > aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __ge__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue >= aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __lt__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return not self.__ge__(aOther)
+        else:
+            raise InvalidTypeInComparison
+
+    def __le__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return not self.__gt__(aOther)
+        else:
+            raise InvalidTypeInComparison
+
+class CharstringValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is str:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, CharstringValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
         else:
             raise InvalidTypeInComparison
 
@@ -184,6 +243,20 @@ class Integer(TypeDecorator):
 
     def accept(self, aValue):
         return type(aValue) is IntegerValue
+
+class Float(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def accept(self, aValue):
+        return type(aValue) is FloatValue
+
+class Charstring(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def accept(self, aValue):
+        return type(aValue) is CharstringValue
 
 class BoundedType(TypeDecorator):
     def __init__(self, aDecoratedType, aLowerBoundary, aUpperBoundary):

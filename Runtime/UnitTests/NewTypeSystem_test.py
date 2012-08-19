@@ -402,5 +402,96 @@ class NewTypeSystem_Float_TemplateType_Eq(unittest.TestCase):
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
+class NewTypeSystem_Charstring_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Charstring(SimpleType())
+
+class NewTypeSystem_Charstring_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = Charstring(SimpleType())
+        for value in [CharstringValue(""), CharstringValue("WAX")]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue(self):
+        type = Charstring(SimpleType())
+        for value in [True, 1, 1.0]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Charstring_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Charstring(SimpleType())
+        for value in [CharstringValue(""), CharstringValue("WAX")]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Charstring(SimpleType())
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Charstring_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        for values in [(CharstringValue(""), CharstringValue("")),
+                       (CharstringValue("WAX"), CharstringValue("WAX"))]:
+            self.assertTrue(   TemplateType(Charstring(SimpleType())).assign(values[0])
+                            == TemplateType(Charstring(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(   Charstring(SimpleType()).assign(CharstringValue("WAX"))
+                         == Charstring(SimpleType()).assign(CharstringValue("WAS")))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class NewTypeSystem_Charstring_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Charstring(SimpleType()))
+
+class NewTypeSystem_Charstring_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptRetursTrueOnAValidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [CharstringValue(""), CharstringValue("WAX"), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptRetursFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [True, 1, 1.0]:
+            self.assertFalse(type.accept(value))
+
+class NewTypeSystem_Charstring_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [CharstringValue(""), CharstringValue("WAX"), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class NewTypeSystem_Charstring_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueForSameValues(self):
+        for values in [(CharstringValue(""), CharstringValue("")),
+                       (CharstringValue("WAX"), CharstringValue("WAX")),
+                       (CharstringValue("WAX"), AnyValue()),
+                       (AnyValue(), CharstringValue("WAX")),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Charstring(SimpleType())).assign(values[0])
+                            == TemplateType(Charstring(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseForDifferentValues(self):
+        self.assertFalse(   TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+                         == TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAS")))
+
+    def test_EqRaisesAnExceptionForAnInvalidType(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
 if __name__ == '__main__':
     unittest.main()

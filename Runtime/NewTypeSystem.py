@@ -338,6 +338,96 @@ class Record(TypeDecorator):
         else:
             raise LookupErrorMissingField
 
+class RecordOf(TypeDecorator):
+    def __init__(self, aDecoratedType, aType):
+        # Make sure the type is TypeDecorator...
+        if not issubclass(aType, TypeDecorator):
+            raise InvalidTypeInCtor
+        # ...and the type is not any TemplateType...
+        # TODO: (this should be done recursively for all decorated types to be 100% bullet proof)...
+        if issubclass(aType, TemplateType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+        self.mType = aType
+        self.mValue = None
+
+#    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
+#    #       All other checks should be redundant.
+    def __eq__(self, aOther):
+        # Make sure you compare only with a RecordOf...
+        if not isinstance(aOther, RecordOf):
+            raise InvalidTypeInComparison
+        # ...that is of the same type...
+        if not type(self) is type(aOther):
+            raise InvalidTypeInComparison
+        # TODO: Remove me once TemplateRecord is introduced.
+        #       This "for" statement is redundant (first condition checks it well enough).
+        for value in aOther.mValue:
+            # ...and has only TypeDecorator values...
+            if not isinstance(value, TypeDecorator):
+                raise InvalidTypeInComparison
+            # ...and has not any TemplateType values...
+            if isinstance(value, TemplateType):
+                raise InvalidTypeInComparison
+            # ...and the value is of a specified type...
+            if not isinstance(value, self.mType):
+                raise InvalidTypeInComparison
+            # ...and if is a Record then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, Record):
+                if value.mValue == None:
+                    raise InvalidTypeInComparison
+            # ...and if is a RecordOf then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, RecordOf):
+                if value.mValue == None:
+                    raise InvalidTypeInComparison
+        # ...and then compare...
+        # ...the length...
+        if len(self.mValue) != len(aOther.mValue):
+            return False
+        # ...and the content...
+        for element in self.mValue:
+            index = self.mValue.index(element)
+            try:
+                if self.mValue[index] != aOther.mValue[index]:
+                    return False
+            except:
+                return False
+        return True
+
+    def accept(self, aValue):
+        # Make sure the value is a list...
+        if type(aValue) is not list:
+            return False
+        for value in aValue:
+            # ...and has only TypeDecorator values...
+            if not isinstance(value, TypeDecorator):
+                return False
+            # ...and has not any TemplateType values...
+            if isinstance(value, TemplateType):
+                return False
+            # ...and the value is of a specified type...
+            if not isinstance(value, self.mType):
+                return False
+            # ...and if is a Record then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, Record):
+                if value.mValue == None:
+                    return False
+            # ...and if is a RecordOf then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, RecordOf):
+                if value.mValue == None:
+                    return False
+        return True
+
+    def getField(self, aIndex):
+        try:
+            return self.mValue[aIndex]
+        except:
+            raise LookupErrorMissingField
+
 class BoundedType(TypeDecorator):
     def __init__(self, aDecoratedType, aLowerBoundary, aUpperBoundary):
         TypeDecorator.__init__(self, aDecoratedType)

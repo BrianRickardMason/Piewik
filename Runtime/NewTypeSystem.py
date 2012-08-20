@@ -28,7 +28,9 @@
 # SUCH DAMAGE.
 
 #
-# NOTE: The types are not initialized with a default value.
+# NOTES:
+#
+# The types are not initialized with a default value.
 #
 
 class TypeSystemException(Exception):
@@ -225,6 +227,8 @@ class TypeDecorator(Type):
         return self.mValue
 
     def isOfType(self, aType):
+        if isinstance(self, SimpleType):
+            return False
         if isinstance(self, aType):
             return True
         elif isinstance(self.mDecoratedType, aType):
@@ -475,3 +479,74 @@ class TemplateType(TypeDecorator):
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue) or \
                type(aValue) is AnyValue
+
+class TemplateRecord(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, Record):
+            raise InvalidTypeInCtor
+        if isinstance(aDecoratedType, TemplateRecord):
+            raise InvalidTypeInCtor
+        # ...enforce the decoration of all types...
+        for key in aDecoratedType.mDictionary:
+            if aDecoratedType.mDictionary[key].isOfType(Record):
+                aDecoratedType.mDictionary[key] = TemplateRecord(aDecoratedType.mDictionary[key])
+            elif aDecoratedType.mDictionary[key].isOfType(Boolean   ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Integer   ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Float     ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Charstring)    :
+                aDecoratedType.mDictionary[key] = TemplateType(aDecoratedType.mDictionary[key])
+            else:
+                # TODO: A meaningful exception.
+                raise Exception
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
+    #       All other checks should be redundant.
+    def __eq__(self, aOther):
+        # Make sure you compare only with a Record or a TemplateRecord...
+        if not (isinstance(aOther, Record) or \
+                isinstance(aOther, TemplateRecord)):
+            raise InvalidTypeInComparison
+        # ...that is of the same type or directly decorated type...
+        if not (type(self) is type(aOther) or \
+                type(self.mDecoratedType) is type(aOther)):
+            raise InvalidTypeInComparison
+        # ...and then compare...
+        for key in self.mValue:
+            if not self.mValue[key] == aOther.mValue[key]:
+                return False
+        return True
+
+    def accept(self, aValue):
+        if type(aValue) is not dict:
+            return False
+        if len(self.mDecoratedType.mDictionary) != len(aValue):
+            return False
+        for key in self.mDecoratedType.mDictionary:
+            if not key in aValue:
+                return False
+        for key in aValue:
+            if not key in self.mDecoratedType.mDictionary:
+                return False
+        for value in aValue.values():
+            if not (isinstance(value, TypeDecorator) or \
+                    type(value) is dict):
+                return False
+        for key in self.mDecoratedType.mDictionary:
+            if self.mDecoratedType.mDictionary[key].isOfType(Record):
+                pass
+            else:
+                if not (aValue[key].isOfType(type(self.mDecoratedType.mDictionary[key]))  or \
+                        self.mDecoratedType.mDictionary[key].isOfType(type(aValue[key])))    :
+                    return False
+        for key in self.mDecoratedType.mDictionary:
+            if isinstance(self.mDecoratedType.mDictionary[key], Record):
+                if aValue[key].mValue == None:
+                    return False
+        return True
+
+    def getField(self, aName):
+        if aName in self.mValue:
+            return self.mValue[aName]
+        else:
+            raise LookupErrorMissingField

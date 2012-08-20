@@ -37,41 +37,38 @@ from Runtime.TypeSystem                                 import *
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
-        receiver = PiewikCritterData()
-        receiver.assign({'type': Charstring().assign("HelloCritty"),
-                         'nick': Charstring().assign("Receiver")})
+        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
 
-        graphs = RecordOf(PiewikGraphData)
-        graphs.assign([
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph1")}),
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph2")})
-        ])
+        graphsData = [
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph2"))}
+        ]
 
-        works = RecordOf(PiewikWorkData)
-        works.assign([
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work1")}),
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work2")})
-        ])
+        worksData =[
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work2"))}
+        ]
 
-        workPredecessors = RecordOf(PiewikWorkPredecessorData)
-        workPredecessors.assign([
-            PiewikWorkPredecessorData().assign({'workName':            Charstring().assign("Work2"),
-                                                'predecessorWorkName': Charstring().assign("Work1")})
-        ])
+        workPredecessorsData = [
+            {'workName':            Charstring(SimpleType()).assign(CharstringValue("Work2")),
+             'predecessorWorkName': Charstring(SimpleType()).assign(CharstringValue("Work1"))}
+        ]
 
         loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
-        loadGraphAndWorkResponse.assign({'messageName':      Charstring().assign("LoadGraphAndWorkResponse"),
-                                         'sender':           sender,
-                                         'receiver':         receiver,
-                                         'graphs':           graphs,
-                                         'works':            works,
-                                         'workPredecessors': workPredecessors})
+        loadGraphAndWorkResponse.assign({
+            'messageName':      Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkResponse")),
+            'sender':           senderData,
+            'receiver':         receiverData,
+            'graphs':           graphsData,
+            'works':            worksData,
+            'workPredecessors': workPredecessorsData
+        })
 
         encoder = ProtobufEncoder()
 
@@ -101,14 +98,15 @@ class Encoder_Encode(unittest.TestCase):
 
 class Encoder_EncodePayload(unittest.TestCase):
     def test_HeartbeatAnnouncement(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("TYPE"),
-                       'nick': Charstring().assign("NICK")})
+        critterData = {'type': Charstring(SimpleType()).assign(CharstringValue("TYPE")),
+                       'nick': Charstring(SimpleType()).assign(CharstringValue("NICK"))}
 
         heartbeatAnnouncement = PiewikHeartbeatAnnouncement()
-        heartbeatAnnouncement.assign({'messageName': Charstring().assign("HeartbeatAnnouncement"),
-                                      'sender':      sender,
-                                      'timestamp':   Float().assign(1234.5678)})
+        heartbeatAnnouncement.assign({
+            'messageName': Charstring(SimpleType()).assign(CharstringValue("HeartbeatAnnouncement")),
+            'sender':      critterData,
+            'timestamp':   Float(SimpleType()).assign(FloatValue(1234.5678))
+        })
 
         encoder = ProtobufEncoder()
 
@@ -123,18 +121,18 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.timestamp,   1234.5678)
 
     def test_PresentYourselfRequest(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
-        receiver = PiewikCritterData()
-        receiver.assign({'type': Charstring().assign("HelloCritty"),
-                         'nick': Charstring().assign("Receiver")})
+        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
 
         presentYourselfRequest = PiewikPresentYourselfRequest()
-        presentYourselfRequest.assign({'messageName': Charstring().assign("PresentYourselfRequest"),
-                                       'sender':      sender,
-                                       'receiver':    receiver})
+        presentYourselfRequest.assign({
+            'messageName': Charstring(SimpleType()).assign(CharstringValue("PresentYourselfRequest")),
+            'sender':      senderData,
+            'receiver':    receiverData
+        })
 
         encoder = ProtobufEncoder()
 
@@ -150,18 +148,18 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.receiver.nick, "Receiver")
 
     def test_PresentYourselfResponse(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
-        receiver = PiewikCritterData()
-        receiver.assign({'type': Charstring().assign("HelloCritty"),
-                         'nick': Charstring().assign("Receiver")})
+        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
 
         presentYourselfResponse = PiewikPresentYourselfResponse()
-        presentYourselfResponse.assign({'messageName': Charstring().assign("PresentYourselfResponse"),
-                                        'sender':      sender,
-                                        'receiver':    receiver})
+        presentYourselfResponse.assign({
+            'messageName': Charstring(SimpleType()).assign(CharstringValue("PresentYourselfResponse")),
+            'sender':      senderData,
+            'receiver':    receiverData
+        })
 
         encoder = ProtobufEncoder()
 
@@ -177,13 +175,14 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.receiver.nick, "Receiver")
 
     def test_LoadGraphAndWorkReqeust(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
         loadGraphAndWorkRequest = PiewikLoadGraphAndWorkRequest()
-        loadGraphAndWorkRequest.assign({'messageName': Charstring().assign("LoadGraphAndWorkRequest"),
-                                        'sender':      sender})
+        loadGraphAndWorkRequest.assign({
+            'messageName': Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkRequest")),
+            'sender':      senderData
+        })
 
         encoder = ProtobufEncoder()
 
@@ -197,41 +196,38 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.sender.nick, "Sender")
 
     def test_LoadGraphAndWorkResponse(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
-        receiver = PiewikCritterData()
-        receiver.assign({'type': Charstring().assign("HelloCritty"),
-                         'nick': Charstring().assign("Receiver")})
+        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
 
-        graphs = RecordOf(PiewikGraphData)
-        graphs.assign([
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph1")}),
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph2")})
-        ])
+        graphsData = [
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph2"))}
+        ]
 
-        works = RecordOf(PiewikWorkData)
-        works.assign([
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work1")}),
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work2")})
-        ])
+        worksData =[
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work2"))}
+        ]
 
-        workPredecessors = RecordOf(PiewikWorkPredecessorData)
-        workPredecessors.assign([
-            PiewikWorkPredecessorData().assign({'workName':            Charstring().assign("Work2"),
-                                                'predecessorWorkName': Charstring().assign("Work1")})
-        ])
+        workPredecessorsData = [
+            {'workName':            Charstring(SimpleType()).assign(CharstringValue("Work2")),
+             'predecessorWorkName': Charstring(SimpleType()).assign(CharstringValue("Work1"))}
+        ]
 
         loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
-        loadGraphAndWorkResponse.assign({'messageName':      Charstring().assign("LoadGraphAndWorkResponse"),
-                                         'sender':           sender,
-                                         'receiver':         receiver,
-                                         'graphs':           graphs,
-                                         'works':            works,
-                                         'workPredecessors': workPredecessors})
+        loadGraphAndWorkResponse.assign({
+            'messageName':      Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkResponse")),
+            'sender':           senderData,
+            'receiver':         receiverData,
+            'graphs':           graphsData,
+            'works':            worksData,
+            'workPredecessors': workPredecessorsData
+        })
 
         encoder = ProtobufEncoder()
 

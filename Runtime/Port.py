@@ -27,7 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.TypeSystem import TTCN3Type
+from Runtime.TypeSystem import TypeDecorator
 
 class Port(object):
     def __init__(self, aAddress, aMapParam, aUnmapParam, aIn, aOut, aInOut):
@@ -74,13 +74,13 @@ class Port(object):
         if type(aInOut) is not list:
             raise Exception
         for messageType in aIn:
-            if not issubclass(messageType, TTCN3Type):
+            if not issubclass(messageType, TypeDecorator):
                 raise Exception
         for messageType in aOut:
-            if not issubclass(messageType, TTCN3Type):
+            if not issubclass(messageType, TypeDecorator):
                 raise Exception
         for messageType in aInOut:
-            if not issubclass(messageType, TTCN3Type):
+            if not issubclass(messageType, TypeDecorator):
                 raise Exception
 
 class MessagePort(Port):

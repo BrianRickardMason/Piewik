@@ -27,1592 +27,2764 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+#
+# TODO: Tests for RecordOf of RecordOf.
+# TODO: More tests for RecordOf of Record.
+# TODO: More tests for Record of RecordOf.
+# TODO: Add exemplary module showing examples of anything that needs calling: class Foo(Bar):...
+#       Example: calling class MyInteger(Integer):... to get a type alias.
+#
+
 import unittest
 
 from Runtime.TypeSystem import *
 
-class TypeSystem_Boolean(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
-        try:
-            self.assertEqual(Boolean().value(), False)
-        except:
-            self.fail()
-
-    #
-    # Successful assignments.
-    #
-    def test_AssignAssignsProperValue_Boolean(self):
-        self.assertEqual(Boolean().assign(True).value(), True)
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Boolean().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Boolean().assign(1.0)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Boolean().assign("WAX")
-
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Boolean().assign(True) == Boolean().assign(True))
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Boolean().assign(True) == Boolean().assign(False))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean().assign(True) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean().assign(True) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Boolean().assign(True) == Charstring().assign("WAX")
-
-class TypeSystem_Integer(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
-        try:
-            self.assertEqual(Integer().value(), 0)
-        except:
-            self.fail()
-
-    #
-    # Successful assignments.
-    #
-    def test_AssignAssignsProperValue_Integer(self):
-        self.assertEqual(Integer().assign(1).value(), 1)
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Integer().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Integer().assign(1.0)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Integer().assign("WAX")
-
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Integer().assign(1) == Integer().assign(1))
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Integer().assign(1) == Integer().assign(2))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer().assign(1) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer().assign(1) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Integer().assign(1) == Charstring().assign("WAX")
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_AnyOrNone(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            self.assertTrue(Integer().assign(1) == AnyOrNone())
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_AnySingleElement(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            self.assertTrue(Integer().assign(1) == AnySingleElement())
-
-class TypeSystem_Float(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
-        try:
-            self.assertEqual(Float().value(), 0.0)
-        except:
-            self.fail()
-
-    #
-    # Successful assignments.
-    #
-    def test_AssignAssignsProperValue(self):
-        self.assertEqual(Float().assign(1.0).value(), 1.0)
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Float().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Float().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Float().assign("WAX")
-
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Float().assign(1.0) == Float().assign(1.0))
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Float().assign(1.0) == Float().assign(2.0))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float().assign(1.0) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float().assign(1.0) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Float().assign(1.0) == Charstring().assign("WAX")
-
-class TypeSystem_Charstring(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_CtorConstructsAProperVariableAndSetsProperDefaultValue(self):
-        try:
-            self.assertEqual(Charstring().value(), "")
-        except:
-            self.fail()
-
-    #
-    # Successful assignments.
-    #
-    def test_AssignAssignsProperValue_Charstring(self):
-        self.assertEqual(Charstring().assign("WAX").value(), "WAX")
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Charstring().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Charstring().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            Charstring().assign(1.0)
-
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue(self):
-        self.assertTrue(Charstring().assign("WAX") == Charstring().assign("WAX"))
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(Charstring().assign("WAX") == Charstring().assign("XAW"))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring().assign("WAX") == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring().assign("WAX") == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            Charstring().assign("WAX") == Float().assign(1.0)
-
-class TypeSystem_Record(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    def test_CtorConstructsAProperVariableAndSetsProperValue_EmptyRecord(self):
-        class myRecord(Record):
+class TypeSystem_TypeDecorator_IsOfType(unittest.TestCase):
+    def test_IsOfTypeReturnsTrueForAValidType(self):
+        instance = Boolean(SimpleType())
+        self.assertFalse(instance.isOfType(TemplateType))
+        self.assertTrue(instance.isOfType(Boolean))
+        self.assertTrue(instance.isOfType(SimpleType))
+        self.assertFalse(instance.isOfType(Integer))
+        instance = TemplateType(Boolean(SimpleType()))
+        self.assertTrue(instance.isOfType(TemplateType))
+        self.assertTrue(instance.isOfType(Boolean))
+        self.assertTrue(instance.isOfType(SimpleType))
+        self.assertFalse(instance.isOfType(Integer))
+        class MyRecord1(Record):
             def __init__(self):
-                Record.__init__(self, {})
-        myRecordInstance = myRecord()
-
-    def test_CtorConstructsAProperVariableAndSetsProperValue_NonEmptyRecord(self):
-        class myRecord(Record):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        instance = MyRecord1()
+        self.assertTrue(instance.isOfType(MyRecord1))
+        self.assertTrue(instance.isOfType(Record))
+        self.assertTrue(instance.isOfType(SimpleType))
+        class MyRecord2(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer, 'field2': Charstring})
-        myRecordInstance = myRecord()
-
-    #
-    # Unsuccessful constructions.
-    #
-    def test_CtorRaisesAnExceptionForInvalidValue_NonTTCN3Type(self):
-        class myRecord(Record):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyWrappedRecord(MyRecord2):
             def __init__(self):
-                Record.__init__(self, {'field1': int})
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            myRecordInstance = myRecord()
+                MyRecord2.__init__(self)
+        instance = MyWrappedRecord()
+        self.assertTrue(instance.isOfType(MyWrappedRecord))
+        self.assertTrue(instance.isOfType(MyRecord2))
+        self.assertTrue(instance.isOfType(Record))
+        self.assertTrue(instance.isOfType(SimpleType))
 
-    #
-    # TODO: All types.
-    #
-    def test_CtorRaisesAnExceptionForInvalidValue_SpecialSymbolUsedInsteadOfValue(self):
-        class myRecord(Record):
+class TypeSystem_Boolean_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Boolean(SimpleType())
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for instance in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(instance)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for instance in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(instance)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for instance in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(instance)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for instance in [TemplateType(Boolean(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(instance)
+
+class TypeSystem_Boolean_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        instance = Boolean(SimpleType())
+        for value in [BooleanValue(True), BooleanValue(False)]:
+            self.assertTrue(instance.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        instance = Boolean(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(instance.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_Special(self):
+        instance = Boolean(SimpleType())
+        for value in [AnyValue()]:
+            self.assertFalse(instance.accept(value))
+
+class TypeSystem_Boolean_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        instance = Boolean(SimpleType())
+        for value in [BooleanValue(True), BooleanValue(False)]:
+            self.assertEqual(instance.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        instance = Boolean(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                instance.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_Special(self):
+        instance = Boolean(SimpleType())
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                instance.assign(value)
+
+class TypeSystem_Boolean_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        self.assertTrue(   Boolean(SimpleType()).assign(BooleanValue(True))
+                        == Boolean(SimpleType()).assign(BooleanValue(True)))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        ]:
+            self.assertTrue(type == value)
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   Boolean(SimpleType()).assign(BooleanValue(True))
+                         == Boolean(SimpleType()).assign(BooleanValue(False)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Boolean_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Boolean(SimpleType()))
+
+class TypeSystem_Boolean_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [BooleanValue(True), BooleanValue(False), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Boolean_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [BooleanValue(True), BooleanValue(False), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Boolean(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Boolean_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        for values in [(BooleanValue(True), BooleanValue(True)),
+                       (BooleanValue(True), AnyValue()),
+                       (AnyValue(), BooleanValue(True)),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Boolean(SimpleType())).assign(values[0])
+                            == TemplateType(Boolean(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+                         == TemplateType(Boolean(SimpleType())).assign(BooleanValue(False)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Integer_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Integer(SimpleType())
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Integer(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+class TypeSystem_Integer_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = Integer(SimpleType())
+        for value in [IntegerValue(-1), IntegerValue(0), IntegerValue(1)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        type = Integer(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_Special(self):
+        type = Integer(SimpleType())
+        for value in [AnyValue()]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Integer_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Integer(SimpleType())
+        for value in [IntegerValue(-1), IntegerValue(0), IntegerValue(1)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Integer(SimpleType())
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_Special(self):
+        type = Integer(SimpleType())
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Integer_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        self.assertTrue(Integer(SimpleType()).assign(IntegerValue(1)) == Integer(SimpleType()).assign(IntegerValue(1)))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        ]:
+            self.assertTrue(type == value)
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(Integer(SimpleType()).assign(IntegerValue(1)) == Integer(SimpleType()).assign(IntegerValue(2)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Integer_BoundedType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+
+class TypeSystem_Integer_BoundedType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [IntegerValue(0), IntegerValue(1), IntegerValue(10)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [AnyValue()]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [IntegerValue(-1), IntegerValue(11)]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Integer_BoundedType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [IntegerValue(0), IntegerValue(1), IntegerValue(10)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10))
+        for value in [IntegerValue(-1), IntegerValue(11)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Integer_BoundedType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        self.assertTrue(
+               BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+            == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1)))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(
+               BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+            == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(2)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Integer_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Integer(SimpleType()))
+
+class TypeSystem_Integer_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = TemplateType(Integer(SimpleType()))
+        for value in [IntegerValue(-1), IntegerValue(0), IntegerValue(10), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Integer(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Integer_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Integer(SimpleType()))
+        for value in [IntegerValue(-1), IntegerValue(0), IntegerValue(10), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Integer(SimpleType()))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Integer_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        for values in [(IntegerValue(1), IntegerValue(1)),
+                       (IntegerValue(1), AnyValue()),
+                       (AnyValue(), IntegerValue(1)),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Integer(SimpleType())).assign(values[0])
+                            == TemplateType(Integer(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+                         == TemplateType(Integer(SimpleType())).assign(IntegerValue(2)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Float_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Float(SimpleType())
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Float(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+class TypeSystem_Float_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = Float(SimpleType())
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(1.0)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        type = Float(SimpleType())
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_Special(self):
+        type = Float(SimpleType())
+        for value in [AnyValue()]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Float_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Float(SimpleType())
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(1.0)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Float(SimpleType())
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_Special(self):
+        type = Float(SimpleType())
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Float_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        self.assertTrue(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(1.0)))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
+            self.assertTrue(type == value)
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Float_BoundedType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0))
+
+class TypeSystem_Float_BoundedType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(0.0), FloatValue(1.0), FloatValue(1.0)]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(-1.0), FloatValue(11.0)]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Float_BoundedType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(0.0), FloatValue(1.0), FloatValue(1.0)]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidValue(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [FloatValue(-1.0), FloatValue(11.0)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Float_BoundedType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        self.assertTrue(
+               BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+            == BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0)))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(
+               BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+            == BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Float_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Float(SimpleType()))
+
+class TypeSystem_Float_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(10.0), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [True, 1, "WAX"]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Float_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [FloatValue(-1.0), FloatValue(0.0), FloatValue(10.0), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Float(SimpleType()))
+        for value in [True, 1, "WAX"]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Float_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        for values in [(FloatValue(1.0), FloatValue(1.0)),
+                       (FloatValue(1.0), AnyValue()),
+                       (AnyValue(), FloatValue(1.0)),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Float(SimpleType())).assign(values[0])
+                            == TemplateType(Float(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+                         == TemplateType(Float(SimpleType())).assign(FloatValue(2.0)))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Charstring_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        Charstring(SimpleType())
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Charstring(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+class TypeSystem_Charstring_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = Charstring(SimpleType())
+        for value in [CharstringValue(""), CharstringValue("WAX")]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        type = Charstring(SimpleType())
+        for value in [True, 1, 1.0]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_Special(self):
+        type = Charstring(SimpleType())
+        for value in [AnyValue()]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Charstring_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = Charstring(SimpleType())
+        for value in [CharstringValue(""), CharstringValue("WAX")]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        type = Charstring(SimpleType())
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_Special(self):
+        type = Charstring(SimpleType())
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Charstring_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        for values in [(CharstringValue(""), CharstringValue("")),
+                       (CharstringValue("WAX"), CharstringValue("WAX"))]:
+            self.assertTrue(   TemplateType(Charstring(SimpleType())).assign(values[0])
+                            == TemplateType(Charstring(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            self.assertTrue(type == value)
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   Charstring(SimpleType()).assign(CharstringValue("WAX"))
+                         == Charstring(SimpleType()).assign(CharstringValue("WAS")))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Charstring_TemplateType_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        TemplateType(Charstring(SimpleType()))
+
+class TypeSystem_Charstring_TemplateType_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [CharstringValue(""), CharstringValue("WAX"), AnyValue()]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [True, 1, 1.0]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_Charstring_TemplateType_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [CharstringValue(""), CharstringValue("WAX"), AnyValue()]:
+            self.assertEqual(type.assign(value).value(), value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue(self):
+        type = TemplateType(Charstring(SimpleType()))
+        for value in [True, 1, 1.0]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+class TypeSystem_Charstring_TemplateType_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues(self):
+        for values in [(CharstringValue(""), CharstringValue("")),
+                       (CharstringValue("WAX"), CharstringValue("WAX")),
+                       (CharstringValue("WAX"), AnyValue()),
+                       (AnyValue(), CharstringValue("WAX")),
+                       (AnyValue(), AnyValue())]:
+            self.assertTrue(   TemplateType(Charstring(SimpleType())).assign(values[0])
+                            == TemplateType(Charstring(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsFalseOnDifferentValues(self):
+        self.assertFalse(   TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+                         == TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAS")))
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+class TypeSystem_Record_Ctor(unittest.TestCase):
+    def test_Ctor_WithoutDictionary(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': AnyOrNone})
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            myRecordInstance = myRecord()
+                Record.__init__(self, SimpleType())
+        type = MyRecord()
 
-    #
-    # Successful assignments.
-    #
-    def test_AssignmentOfAProperValue_EmptyRecord(self):
-        class myRecord(Record):
+    def test_Ctor_WithDictionary_Empty(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {})
-        myRecordInstance = myRecord()
-        myRecordInstance.assign({})
+                Record.__init__(self, SimpleType(), {})
+        type = MyRecord()
 
-    def test_AssignmentOfAProperValue_NonEmptyRecord(self):
-        class myRecord(Record):
+    def test_Ctor_WithDictionary_NonEmpty(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        myRecordInstance.assign({'field1': Integer().assign(1),
-                                 'field2': Charstring().assign("QUARK")})
-        self.assertEqual(myRecordInstance.getField('field1').value(), 1)
-        self.assertEqual(myRecordInstance.getField('field2').value(), "QUARK")
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
 
-    def test_AssignmentOfAProperValue_SpecialSymbolUsedInsideAValue_AnySingleElement(self):
-        class myRecord(Record):
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidKey(self):
+        with self.assertRaises(InvalidTypeInCtor):
+            class MyRecord(Record):
+                def __init__(self):
+                    Record.__init__(self, SimpleType(), {1: Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+            type = MyRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecord(Record):
+                    def __init__(self):
+                        Record.__init__(self, SimpleType(), type)
+                type = MyRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecord(Record):
+                    def __init__(self):
+                        Record.__init__(self, SimpleType(), type)
+                type = MyRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        for type in [TemplateType(Integer(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecord(Record):
+                    def __init__(self):
+                        Record.__init__(self, SimpleType(), type)
+                type = MyRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_AnyOfNestedTypesIsASpecialType(self):
+        with self.assertRaises(InvalidTypeInCtor):
+            class MyRecord(Record):
+                def __init__(self):
+                    Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': AnyValue()})
+            type = MyRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_AnyOfNestedTypesIsATemplateLikeType(self):
+        with self.assertRaises(InvalidTypeInCtor):
+            class MyRecord(Record):
+                def __init__(self):
+                    Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()),
+                                                         'bar': TemplateType(Integer(SimpleType()))})
+            type = MyRecord()
+
+class TypeSystem_Record_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        myRecordInstance.assign({'field1': AnySingleElement(),
-                                 'field2': AnySingleElement()})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertTrue(type.accept(value))
 
-    #
-    # Unsuccessful assignments.
-    #
-    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningNotADictionary(self):
-        class myRecord(Record):
+    def test_AcceptReturnsTrueOnAValidValue_CompatibleTypes(self):
+        self.skipTest("Not implemented yet.")
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign(Integer().assign(1))
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': BoundedType(
+                            Integer(SimpleType()),
+                            IntegerValue(0),
+                            IntegerValue(10)
+                        ).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertTrue(type.accept(value))
 
-    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningNonEmptyRecordToAnEmptyRecord(self):
-        class myRecord(Record):
+    def test_AcceptReturnsTrueOnAValidValue_NestedRecords(self):
+        class InternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, {})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field1': Integer().assign(1)})
-
-    def test_AssignmentRaisesAnExceptionForInvalidValue_AssigningAnEmptyRecordToANonEmptyRecord(self):
-        class myRecord(Record):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                         'bar': internalValue}
+        externalRecord = ExternalRecord()
+        self.assertTrue(externalRecord.accept(externalValue))
 
-    def test_AssignmentRaisesAnExceptionForInvalidValue_MissingFieldsOfTheRecord(self):
-        class myRecord(Record):
+    def test_AcceptReturnsTrueOnAValidValue_RecordWithNestedRecordOf(self):
+        class MyRecordOf(RecordOf):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field1': Integer().assign(1)})
-
-    def test_AssignmentRaisesAnExceptionForInvalidValue_ExtraneousFieldsOfTheRecord(self):
-        class myRecord(Record):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field1': Integer().assign(1),
-                                     'field2': Charstring().assign("QUARK"),
-                                     'field3': Integer().assign(3)})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': MyRecordOf()})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]}
+        self.assertTrue(type.accept(value))
 
-    def test_AssignmentRaisesAnExceptionForInvalidValue_InvalidTypeOfTheRecordField(self):
-        class myRecord(Record):
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field1': Integer().assign(1),
-                                     'field2': Integer().assign(2)})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            self.assertFalse(type.accept(value))
 
-    def test_AssignmentRaisesAnExceptionForInvalidValue_ChangedTypesOfTheRecordField(self):
-        class myRecord(Record):
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field2': Integer().assign(1),
-                                     'field1': Charstring().assign("QUARK")})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': AnyValue()}
+        self.assertFalse(type.accept(value))
 
-    def test_AssignmentRaisesAnExceptionForInvalidValue_SpecialSymbolUsedInsteadOfAValueUsed(self):
-        class myRecord(Record):
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_AnyOfNestedTypesIsATemplateLikeType(self):
+        class MyRecord(Record):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer,
-                                       'field2': Charstring})
-        myRecordInstance = myRecord()
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            myRecordInstance.assign({'field2': Integer().assign(1),
-                                     'field1': AnyOrNone()})
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
+        self.assertFalse(type.accept(value))
 
-    # TODO: Comparison with AnyOrNone, AnySingleElement.
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        self.assertFalse(type.accept({}))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
+                 'baz': Integer(SimpleType()).assign(IntegerValue(2))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_NestedRecords_WithSpecialTypes(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': internalValue}
+        externalRecord = ExternalRecord()
+        self.assertFalse(externalRecord.accept(externalValue))
+
+class TypeSystem_Record_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue_TheSameTypes(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_CompatibleTypes(self):
+        self.skipTest("Not implemented yet.")
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': BoundedType(
+                            Integer(SimpleType()),
+                            IntegerValue(0),
+                            IntegerValue(10)
+                        ).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                         'bar': internalValue}
+        externalRecord = ExternalRecord()
+        externalRecord.assign(externalValue)
+
+    def test_AssignAssignsOnAValidValue_RecordWithNestedRecordOf(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': MyRecordOf()})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]}
+        type.assign(value)
+        self.assertTrue(type.getField('bar').getField(0) == Integer(SimpleType()).assign(IntegerValue(1)))
+        self.assertTrue(type.getField('bar').getField(1) == Integer(SimpleType()).assign(IntegerValue(2)))
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': AnyValue()}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign({})
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
+                 'baz': Integer(SimpleType()).assign(IntegerValue(2))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        type = MyRecord()
+        value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+class TypeSystem_Record_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_EmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {})
+        record1 = MyRecord().assign({})
+        record2 = MyRecord().assign({})
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_NonEmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyRecord().assign(value)
+        record2 = MyRecord().assign(value)
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue1}
+        externalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue2}
+        externalRecord1 = ExternalRecord()
+        externalRecord2 = ExternalRecord()
+        externalRecord1.assign(externalValue1)
+        externalRecord2.assign(externalValue2)
+        self.assertTrue(externalRecord1 == externalRecord2)
+
+    def test_EqReturnsFalseOnDifferentValues_NonEmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyRecord().assign(value1)
+        record2 = MyRecord().assign(value2)
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        internalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue1}
+        externalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue2}
+        externalRecord1 = ExternalRecord()
+        externalRecord2 = ExternalRecord()
+        externalRecord1.assign(externalValue1)
+        externalRecord2.assign(externalValue2)
+        self.assertFalse(externalRecord1 == externalRecord2)
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record = MyRecord().assign(value)
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record = MyRecord().assign(value)
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record = MyRecord().assign(value)
+        for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyRecord2(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyRecord1().assign(value1)
+        record2 = MyRecord2().assign(value2)
+        with self.assertRaises(InvalidTypeInComparison):
+            record1 == record2
+
+class TypeSystem_Record_GetField(unittest.TestCase):
+    def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record = MyRecord().assign(value)
+        self.assertEqual(record.getField('foo'), Integer(SimpleType()).assign(IntegerValue(1)))
+        self.assertEqual(record.getField('bar'), Charstring(SimpleType()).assign(CharstringValue("WAX")))
+
+    def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record = MyRecord().assign(value)
+        with self.assertRaises(LookupErrorMissingField):
+            record.getField('baz')
+
+class TypeSystem_Record_TemplateRecord_Ctor(unittest.TestCase):
+    def test_Ctor_WithoutDictionary(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType())
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+
+    def test_Ctor_WithDictionary(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_DoubleWrap(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord1(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        class MyTemplateRecord2(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyTemplateRecord1())
+        with self.assertRaises(InvalidTypeInCtor):
+            type = MyTemplateRecord2()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyTemplateRecord(TemplateRecord):
+                    def __init__(self):
+                        TemplateRecord.__init__(self, type)
+                type = MyTemplateRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyTemplateRecord(TemplateRecord):
+                    def __init__(self):
+                        TemplateRecord.__init__(self, type)
+                type = MyTemplateRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyTemplateRecord(TemplateRecord):
+                    def __init__(self):
+                        TemplateRecord.__init__(self, type)
+                type = MyTemplateRecord()
+
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        for type in [TemplateType(Integer(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyTemplateRecord(TemplateRecord):
+                    def __init__(self):
+                        TemplateRecord.__init__(self, type)
+                type = MyTemplateRecord()
+
+    def test_Ctor_ConvertsTypesToTemplateTypes_SimpleTypes(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        self.assertTrue(type.mDecoratedType.mDictionary['foo'].isOfType(Integer))
+        self.assertTrue(type.mDecoratedType.mDictionary['foo'].isOfType(TemplateType))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].isOfType(Charstring))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].isOfType(TemplateType))
+
+    def test_Ctor_ConvertsTypesToTemplateTypes_NestedRecord(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        type = MyTemplateRecord()
+        self.assertTrue(type.mDecoratedType.mDictionary['foo'].isOfType(Integer))
+        self.assertTrue(type.mDecoratedType.mDictionary['foo'].isOfType(TemplateType))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].isOfType(Record))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].isOfType(InternalRecord))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].isOfType(TemplateRecord))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['foo'].isOfType(Integer))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['foo'].isOfType(TemplateType))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['bar'].isOfType(Charstring))
+        self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['bar'].isOfType(TemplateType))
+
+class TypeSystem_Record_TemplateRecord_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_WithoutSpecial(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_WithSpecial(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_CompatibleTypes(self):
+        self.skipTest("Not implemented yet.")
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': BoundedType(
+                            Integer(SimpleType()),
+                            IntegerValue(0),
+                            IntegerValue(10)
+                        ).assign(IntegerValue(1)),
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalRecord = InternalRecord().assign(internalValue)
+        externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': internalRecord}
+        type = MyTemplateRecord()
+        self.assertTrue(type.accept(externalValue))
+
+    def test_AcceptReturnsTrueOnAValidValue_NestedRecords_Recursively(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': internalValue}
+        type = MyTemplateRecord()
+        self.assertTrue(type.accept(externalValue))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': AnyValue()}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        self.assertFalse(type.accept({}))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
+                 'baz': Integer(SimpleType()).assign(IntegerValue(2))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        self.assertFalse(type.accept(value))
+
+class TypeSystem_Record_TemplateRecord_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue_TheSameTypes_WithoutSpecial(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_TheSameTypes_WithSpecial(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_CompatibleTypes(self):
+        self.skipTest("Not implemented yet.")
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': BoundedType(
+                            Integer(SimpleType()),
+                            IntegerValue(0),
+                            IntegerValue(10)
+                        ).assign(IntegerValue(1)),
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalRecord = InternalRecord().assign(internalValue)
+        externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': internalRecord}
+        type = MyTemplateRecord()
+        type.assign(externalValue)
+
+    def test_AssignAssignsOnAValidValue_NestedRecords_Recursively(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': internalValue}
+        type = MyTemplateRecord()
+        type.assign(externalValue)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': AnyValue()}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign({})
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooSmall(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedTooBig(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
+                 'baz': Integer(SimpleType()).assign(IntegerValue(2))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+class TypeSystem_Record_TemplateRecord_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_EmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        record1 = MyTemplateRecord().assign({})
+        record2 = MyTemplateRecord().assign({})
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_NonEmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyTemplateRecord().assign(value)
+        record2 = MyTemplateRecord().assign(value)
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_NonEmptyRecord_WithSpecialValues(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        value2 = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyTemplateRecord().assign(value1)
+        record2 = MyTemplateRecord().assign(value2)
+        self.assertTrue(record1 == record2)
+
+    # TODO: Moar!
+
+    def test_EqReturnsTrueOnSameValues_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                         'bar': internalValue}
+        type1 = MyTemplateRecord()
+        type2 = MyTemplateRecord()
+        type1.assign(externalValue)
+        type2.assign(externalValue)
+        self.assertTrue(type1 == type2)
+
+    # TODO: Moar!
+
+    def test_EqReturnsFalseOnDifferentValues_NonEmptyRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        type = MyTemplateRecord()
+        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAS"))}
+        record1 = MyTemplateRecord().assign(value1)
+        record2 = MyTemplateRecord().assign(value2)
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_NestedRecords(self):
+        class InternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class ExternalRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, ExternalRecord())
+        internalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAS"))}
+        externalValue1 = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                          'bar': internalValue1}
+        externalValue2 = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                          'bar': internalValue2}
+        type1 = MyTemplateRecord()
+        type2 = MyTemplateRecord()
+        type1.assign(externalValue1)
+        type2.assign(externalValue2)
+        self.assertFalse(type1 == type2)
+
+class TypeSystem_Record_TemplateRecord_GetField(unittest.TestCase):
+    def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        type = MyTemplateRecord().assign(value)
+        self.assertEqual(type.getField('foo'), Integer(SimpleType()).assign(IntegerValue(1)))
+        self.assertEqual(type.getField('bar'), Charstring(SimpleType()).assign(CharstringValue("WAX")))
+
+    def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        type = MyTemplateRecord().assign(value)
+        with self.assertRaises(LookupErrorMissingField):
+            type.getField('baz')
 
 class TypeSystem_RecordOf_Ctor(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    # TODO: All types.
-    #
-    def test_CtorConstructsAProperVariable_Boolean(self):
-        try:
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Boolean)
-            recordOf = MyRecordOf()
-        except:
-            self.fail()
+    def test_Ctor(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
 
-    def test_CtorConstructsAProperVariable_Integer(self):
-        try:
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            recordOf = MyRecordOf()
-        except:
-            self.fail()
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        for type in [bool, int, float, str, dict, list, tuple]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                type = MyRecordOf()
 
-    def test_CtorConstructsAProperVariable_Float(self):
-        try:
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Float)
-            recordOf = MyRecordOf()
-        except:
-            self.fail()
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        for type in [AnyValue]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                type = MyRecordOf()
 
-    def test_CtorConstructsAProperVariable_Charstring(self):
-        try:
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Charstring)
-            recordOf = MyRecordOf()
-        except:
-            self.fail()
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        for type in [TemplateType]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                type = MyRecordOf()
 
-    #
-    # Unsuccessful constructions.
-    #
-    def test_CtorRaisesAnExceptionForInvalidValue(self):
-        with self.assertRaises(InvalidTTCN3TypeInCtor):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, int)
-            recordOf = MyRecordOf()
+class TypeSystem_RecordOf_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = []
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1))]
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[AnyValue()]]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[TemplateType(Integer(SimpleType()))]]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_OtherType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[Float(SimpleType())]]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)),
+                 TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
+        self.assertFalse(type.accept(value))
 
 class TypeSystem_RecordOf_Assign(unittest.TestCase):
-    #
-    # Successful assignments.
-    #
-    def test_AssignementOfProperValue_EmptyList(self):
+    def test_AssignAssignsOnAValidValue_TheSameTypes_AnEmptyList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, Boolean)
-        myRecordOf = MyRecordOf()
-        self.assertEqual(myRecordOf.assign([]).value(), [])
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = []
+        type.assign(value)
 
-    def test_AssignementOfProperValue_NonEmptyList(self):
+    def test_AssignAssignsOnAValidValue_TheSameTypes_ASingleElementList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf = MyRecordOf()
-        self.assertEqual(myRecordOf.assign([Integer().assign(1), Integer().assign(2)]).value(),
-                         [Integer().assign(1), Integer().assign(2)])
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1))]
+        type.assign(value)
 
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_NotATTCN3Type(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign(True)
+    def test_AssignAssignsOnAValidValue_TheSameTypes_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
+        type.assign(value)
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign(Boolean().assign(True))
+    def test_AssignAssignsOnAValidValue_RecordOfWithNestedRecord(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), MyRecord())
+        type = MyRecordOf()
+        value = [
+            {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+             'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))},
+            {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+             'bar': Charstring(SimpleType()).assign(CharstringValue("WAS"))}
+        ]
+        type.assign(value)
+        self.assertTrue(type.getField(0).getField('foo') == Integer(SimpleType()).assign(IntegerValue(1)))
+        self.assertTrue(type.getField(0).getField('bar') == Charstring(SimpleType()).assign(CharstringValue("WAX")))
+        self.assertTrue(type.getField(1).getField('foo') == Integer(SimpleType()).assign(IntegerValue(2)))
+        self.assertTrue(type.getField(1).getField('bar') == Charstring(SimpleType()).assign(CharstringValue("WAS")))
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign(Integer().assign(1))
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign(Float().assign(1.0))
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[AnyValue()]]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign(Charstring().assign("WAX"))
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[TemplateType(Integer(SimpleType()))]]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneElement(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Float().assign(1.0)])
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_OtherType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        for value in [[Float(SimpleType())]]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                type.assign(value)
 
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_ValidType_InvalidContent_OneOfElements(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Integer().assign(1), Float().assign(1.0), Integer().assign(2)])
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        type = MyRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)),
+                 TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
+        with self.assertRaises(InvalidTypeInAssignment):
+            type.assign(value)
+
+class TypeSystem_RecordOF_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_EmptyRecordOf(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([])
+        record2 = MyRecordOf().assign([])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_OneElement(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_ManyElements(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_OneElement(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_ManyElements(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(3)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_DiffentSize_SmallerBigger(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_DiffentSize_BiggerSmaller(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_SequenceMatters(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(2)),
+                                       Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                       Integer(SimpleType()).assign(IntegerValue(3)),
+                                       Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecordOf2(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record1 = MyRecordOf1().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyRecordOf2().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        with self.assertRaises(InvalidTypeInComparison):
+            record1 == record2
 
 class TypeSystem_RecordOf_GetField(unittest.TestCase):
-    #
-    # Getting a field.
-    #
-    def test_GetFieldReturnsTheValueOfTheField(self):
+    def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf = MyRecordOf()
-        myRecordOf.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        self.assertEqual(myRecordOf.getField(1), Integer().assign(2))
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                      Integer(SimpleType()).assign(IntegerValue(2)),
+                                      Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertEqual(record.getField(1), Integer(SimpleType()).assign(IntegerValue(2)))
 
-
-    def test_GetFieldRaisesAnExceptionForMissingField(self):
+    def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
         with self.assertRaises(LookupErrorMissingField):
             class MyRecordOf(RecordOf):
                 def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-            myRecordOf.getField(4)
+                    RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+            record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                          Integer(SimpleType()).assign(IntegerValue(2)),
+                                          Integer(SimpleType()).assign(IntegerValue(3))])
+            record.getField(4)
 
-class TypeSystem_RecordOf_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_EmptyRecordsOf(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        self.assertTrue(myRecordOf1 == myRecordOf2)
-        self.assertTrue(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_OneElement(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1)])
-        myRecordOf2.assign([Integer().assign(1)])
-        self.assertTrue(myRecordOf1 == myRecordOf2)
-        self.assertTrue(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_ManyElements(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecordOf2.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        self.assertTrue(myRecordOf1 == myRecordOf2)
-        self.assertTrue(myRecordOf2 == myRecordOf1)
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1)])
-        myRecordOf2.assign([Integer().assign(2)])
-        self.assertFalse(myRecordOf1 == myRecordOf2)
-        self.assertFalse(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement_DifferentLength(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1)])
-        myRecordOf2.assign([Integer().assign(1), Integer().assign(2)])
-        self.assertFalse(myRecordOf1 == myRecordOf2)
-        self.assertFalse(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_OneElement_DifferentLength_OneEmpty(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([])
-        myRecordOf2.assign([Integer().assign(1), Integer().assign(2)])
-        self.assertFalse(myRecordOf1 == myRecordOf2)
-        self.assertFalse(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecordOf2.assign([Integer().assign(1), Integer().assign(2), Integer().assign(4)])
-        self.assertFalse(myRecordOf1 == myRecordOf2)
-        self.assertFalse(myRecordOf2 == myRecordOf1)
-
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues_ManyElements_SequenceMatters(self):
-        class MyRecordOf(RecordOf):
-            def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf1 = MyRecordOf()
-        myRecordOf2 = MyRecordOf()
-        myRecordOf1.assign([Integer().assign(1), Integer().assign(2), Integer().assign(3)])
-        myRecordOf2.assign([Integer().assign(1), Integer().assign(3), Integer().assign(2)])
-        self.assertFalse(myRecordOf1 == myRecordOf2)
-        self.assertFalse(myRecordOf2 == myRecordOf1)
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
+class TypeSystem_RecordOf_TemplateRecordOf_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
             class MyRecordOf(RecordOf):
                 def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Integer().assign(1)])
-            RecordOf(myRecordOf == Boolean().assign(True))
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            class MyRecordOf(RecordOf):
+                    RecordOf.__init__(self, SimpleType(), type)
+            class MyTemplateRecordOf(TemplateRecordOf):
                 def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Integer().assign(1)])
-            RecordOf(myRecordOf == Integer().assign(1))
+                    TemplateRecordOf.__init__(self, MyRecordOf())
+            type = MyTemplateRecordOf()
 
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            class MyRecordOf(RecordOf):
-                def __init__(self):
-                    RecordOf.__init__(self, Integer)
-            myRecordOf = MyRecordOf()
-            myRecordOf.assign([Integer().assign(1)])
-            RecordOf(myRecordOf == Float().assign(1.0))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyOrNone(self):
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_DoubleWrap(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, Integer)
-        myRecordOf = MyRecordOf()
-        myRecordOf.assign([Integer().assign(1)])
-        self.assertTrue(myRecordOf == AnyOrNone())
-
-    # TODO: Comparison with AnySingleElement?
-
-class TypeSystem_TemplateBoolean_Ctor(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    def test_CtorConstructsAProperVariable_Boolean(self):
-        TemplateBoolean()
-
-class TypeSystem_TemplateBoolean_Assign(unittest.TestCase):
-    #
-    # Successful assignments.
-    #
-    def test_AssignementOfProperValue_Boolean(self):
-        self.assertEqual(TemplateBoolean().assign(True).value(), True)
-
-    def test_AssignementOfProperValue_AnyValue(self):
-        self.assertEqual(TemplateBoolean().assign(AnyValue()).value(), AnyValue())
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateBoolean().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateBoolean().assign(1.0)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateBoolean().assign("WAX")
-
-class TypeSystem_TemplateBoolean_Boolean_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Boolean(self):
-        self.assertTrue(TemplateBoolean().assign(True) == TemplateBoolean().assign(True))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateBoolean().assign(True) == TemplateBoolean().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_Boolean_AnyOrNone(self):
-        self.assertTrue(TemplateBoolean().assign(True) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_Boolean_AnySingleElement(self):
-        self.assertTrue(TemplateBoolean().assign(True) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(TemplateBoolean().assign(True) == TemplateBoolean().assign(False))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(True) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(True) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(True) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateBoolean_AnyValue_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Boolean(self):
-        self.assertTrue(TemplateBoolean().assign(AnyValue()) == TemplateBoolean().assign(True))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateBoolean().assign(AnyValue()) == TemplateBoolean().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyValue_AnyOrNone(self):
-        self.assertTrue(TemplateBoolean().assign(AnyValue()) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnyValue_AnySingleElement(self):
-        self.assertTrue(TemplateBoolean().assign(AnyValue()) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(AnyValue()) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(AnyValue()) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateBoolean().assign(AnyValue()) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateInteger_Ctor(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    def test_CtorConstructsAProperVariable_Integer(self):
-        TemplateInteger()
-
-class TypeSystem_TemplateInteger_Assign(unittest.TestCase):
-    #
-    # Successful assignments.
-    #
-    def test_AssignementOfProperValue_Integer(self):
-        self.assertEqual(TemplateInteger().assign(1).value(), 1)
-
-    def test_AssignementOfProperValue_AnyValue(self):
-        self.assertEqual(TemplateInteger().assign(AnyValue()).value(), AnyValue())
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateInteger().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateInteger().assign(1.0)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateInteger().assign("WAX")
-
-class TypeSystem_TemplateInteger_Integer_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Integer(self):
-        self.assertTrue(TemplateInteger().assign(1) == TemplateInteger().assign(1))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateInteger().assign(1) == TemplateInteger().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_Integer_AnyOrNone(self):
-        self.assertTrue(TemplateInteger().assign(1) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_Integer_AnySingleElement(self):
-        self.assertTrue(TemplateInteger().assign(1) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(TemplateInteger().assign(1) == TemplateInteger().assign(2))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(1) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(1) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(1) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateInteger_AnyValue_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Integer(self):
-        self.assertTrue(TemplateInteger().assign(AnyValue()) == TemplateInteger().assign(1))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateInteger().assign(AnyValue()) == TemplateInteger().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyValue_AnyOrNone(self):
-        self.assertTrue(TemplateInteger().assign(AnyValue()) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnyValue_AnySingleElement(self):
-        self.assertTrue(TemplateInteger().assign(AnyValue()) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(AnyValue()) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(AnyValue()) == Float().assign(1.0)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateInteger().assign(AnyValue()) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateFloat_Ctor(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    def test_CtorConstructsAProperVariable_Float(self):
-        TemplateFloat()
-
-class TypeSystem_TemplateFloat_Assign(unittest.TestCase):
-    #
-    # Successful assignments.
-    #
-    def test_AssignementOfProperValue_Float(self):
-        self.assertEqual(TemplateFloat().assign(1.0).value(), 1)
-
-    def test_AssignementOfProperValue_AnyValue(self):
-        self.assertEqual(TemplateFloat().assign(AnyValue()).value(), AnyValue())
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateFloat().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateFloat().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_String(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateFloat().assign("WAX")
-
-class TypeSystem_TemplateFloat_Float_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Float(self):
-        self.assertTrue(TemplateFloat().assign(1.0) == TemplateFloat().assign(1.0))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateFloat().assign(1.0) == TemplateFloat().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_Float_AnyOrNone(self):
-        self.assertTrue(TemplateFloat().assign(1.0) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_Float_AnySingleElement(self):
-        self.assertTrue(TemplateFloat().assign(1.0) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(TemplateFloat().assign(1.0) == TemplateFloat().assign(2.0))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(1.0) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(1.0) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(1.0) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateFloat_AnyValue_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Float(self):
-        self.assertTrue(TemplateFloat().assign(AnyValue()) == TemplateFloat().assign(1.0))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateFloat().assign(AnyValue()) == TemplateFloat().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyValue_AnyOrNone(self):
-        self.assertTrue(TemplateFloat().assign(AnyValue()) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnyValue_AnySingleElement(self):
-        self.assertTrue(TemplateFloat().assign(AnyValue()) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(AnyValue()) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(AnyValue()) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Charstring(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateFloat().assign(AnyValue()) == Charstring().assign("WAX")
-
-class TypeSystem_TemplateCharstring_Ctor(unittest.TestCase):
-    #
-    # Successful constructions.
-    #
-    def test_CtorConstructsAProperVariable_Charstring(self):
-        TemplateCharstring()
-
-class TypeSystem_TemplateCharstring_Assign(unittest.TestCase):
-    #
-    # Successful assignments.
-    #
-    def test_AssignementOfProperValue_Charstring(self):
-        self.assertEqual(TemplateCharstring().assign("WAX").value(), "WAX")
-
-    def test_AssignementOfProperValue_AnyValue(self):
-        self.assertEqual(TemplateCharstring().assign(AnyValue()).value(), AnyValue())
-
-    #
-    # Unsuccessful assignments.
-    #
-    # TODO: All types.
-    #
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateCharstring().assign(True)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateCharstring().assign(1)
-
-    def test_AssignRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInAssignment):
-            TemplateCharstring().assign(1.0)
-
-class TypeSystem_TemplateCharstring_Charstring_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Charstring(self):
-        self.assertTrue(TemplateCharstring().assign("WAX") == TemplateCharstring().assign("WAX"))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateCharstring().assign("WAX") == TemplateCharstring().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_Charstring_AnyOrNone(self):
-        self.assertTrue(TemplateCharstring().assign("WAX") == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_Charstring_AnySingleElement(self):
-        self.assertTrue(TemplateCharstring().assign("WAX") == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonReturnsFalseForTwoVariablesWithDifferentValues(self):
-        self.assertFalse(TemplateCharstring().assign("WAX") == TemplateCharstring().assign("XAW"))
-
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign("WAX") == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign("WAX") == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign("WAX") == Float().assign(1.0)
-
-class TypeSystem_TemplateCharstring_AnyValue_Eq(unittest.TestCase):
-    #
-    # Successful matching.
-    #
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_Charstring(self):
-        self.assertTrue(TemplateCharstring().assign(AnyValue()) == TemplateCharstring().assign("WAX"))
-
-    def test_ComparisonReturnsTrueForTwoVariablesWithTheSameValue_AnyValue(self):
-        self.assertTrue(TemplateCharstring().assign(AnyValue()) == TemplateCharstring().assign(AnyValue()))
-
-    #
-    # Successful matching - special symbols.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonReturnsTrue_AnyValue_AnyOrNone(self):
-        self.assertTrue(TemplateCharstring().assign(AnyValue()) == AnyOrNone())
-
-    def test_ComparisonReturnsTrue_AnyValue_AnySingleElement(self):
-        self.assertTrue(TemplateCharstring().assign(AnyValue()) == AnySingleElement())
-
-    #
-    # Unsuccessful matching.
-    #
-    # TODO: All types.
-    #
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Boolean(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign(AnyValue()) == Boolean().assign(True)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Integer(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign(AnyValue()) == Integer().assign(1)
-
-    def test_ComparisonRaisesAnExceptionIfCalledWithInvalidType_Float(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            TemplateCharstring().assign(AnyValue()) == Float().assign(1.0)
-
-class MySubtypedInteger(Integer):
-    def __init__(self, aSubtypeOfSimpleTypeConstraints):
-        if type(aSubtypeOfSimpleTypeConstraints) is not list:
-            raise InvalidTTCN3TypeInCtor
-        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
-        Integer.__init__(self)
-
-    def assign(self, aValue):
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.accept(aValue):
-                raise InvalidTTCN3TypeValueNotInConstraint
-        return Integer.assign(self, aValue)
-
-    def accept(self, aValue):
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if constraint.accept(aValue):
-                return True
-        return False
-
-class MySubtypedFloat(Float):
-    def __init__(self, aSubtypeOfSimpleTypeConstraints):
-        if type(aSubtypeOfSimpleTypeConstraints) is not list:
-            raise InvalidTTCN3TypeInCtor
-        self.mSubtypeOfSimpleTypeConstraints = aSubtypeOfSimpleTypeConstraints
-        Float.__init__(self)
-
-    def assign(self, aValue):
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if not constraint.accept(aValue):
-                raise InvalidTTCN3TypeValueNotInConstraint
-        return Float.assign(self, aValue)
-
-    def accept(self, aValue):
-        for constraint in self.mSubtypeOfSimpleTypeConstraints:
-            if constraint.accept(aValue):
-                return True
-        return False
-
-class TypeSystem_Subtyping_ListOfTemplates_Integer(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_OneItem(self):
-        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-        subtypedInteger.assign(1)
-
-    def test_SuccessfulAssignment_ManyItems(self):
-        subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
-        subtypedInteger.assign(2)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_OneItem(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-            subtypedInteger.assign(0)
-
-    def test_UnsuccessfulAssignment_ManyItems(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
-            subtypedInteger.assign(3)
-
-class TypeSystem_Subtyping_ListOfTemplates_Float(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_OneItem(self):
-        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-        subtypedFloat.assign(1.0)
-
-    def test_SuccessfulAssignment_ManyItems(self):
-        subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
-        subtypedFloat.assign(2.0)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_OneItem(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-            subtypedFloat.assign(0.0)
-
-    def test_UnsuccessfulAssignment_ManyItems(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
-            subtypedFloat.assign(3.0)
-
-class TypeSystem_Subtyping_ListOfTypes_Integer(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
-        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_OneItem(self):
-        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-        subtypedInteger2 = MySubtypedInteger([ListOfTypes([subtypedInteger1])])
-        subtypedInteger2.assign(1)
-
-    def test_SuccessfulAssignment_ManyItems(self):
-        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
-        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
-        subtypedInteger3.assign(1)
-        subtypedInteger3.assign(2)
-
-    def test_SuccessfulAssignment_ManyItems_Overlaping(self):
-        subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(2)])])
-        subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(1), Integer().assign(3)])])
-        subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
-        subtypedInteger3.assign(1)
-        subtypedInteger3.assign(2)
-        subtypedInteger3.assign(3)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_OneItem(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-            subtypedInteger2 = MySubtypedInteger([ListOfTypes([subtypedInteger1])])
-            subtypedInteger2.assign(0)
-
-    def test_UnsuccessfulAssignment_ManyItems(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger1 = MySubtypedInteger([ListOfTemplates([Integer().assign(1)])])
-            subtypedInteger2 = MySubtypedInteger([ListOfTemplates([Integer().assign(2)])])
-            subtypedInteger3 = MySubtypedInteger([ListOfTypes([subtypedInteger1, subtypedInteger2])])
-            subtypedInteger3.assign(3)
-
-class TypeSystem_Subtyping_ListOfTypes_Float(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
-        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_OneItem(self):
-        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-        subtypedFloat2 = MySubtypedFloat([ListOfTypes([subtypedFloat1])])
-        subtypedFloat2.assign(1.0)
-
-    def test_SuccessfulAssignment_ManyItems(self):
-        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
-        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
-        subtypedFloat3.assign(1.0)
-        subtypedFloat3.assign(2.0)
-
-    def test_SuccessfulAssignment_ManyItems_Overlaping(self):
-        subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(2.0)])])
-        subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0), Float().assign(3.0)])])
-        subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
-        subtypedFloat3.assign(1.0)
-        subtypedFloat3.assign(2.0)
-        subtypedFloat3.assign(3.0)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_OneItem(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-            subtypedFloat2 = MySubtypedFloat([ListOfTypes([subtypedFloat1])])
-            subtypedFloat2.assign(0.0)
-
-    def test_UnsuccessfulAssignment_ManyItems(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat1 = MySubtypedFloat([ListOfTemplates([Float().assign(1.0)])])
-            subtypedFloat2 = MySubtypedFloat([ListOfTemplates([Float().assign(2.0)])])
-            subtypedFloat3 = MySubtypedFloat([ListOfTypes([subtypedFloat1, subtypedFloat2])])
-            subtypedFloat3.assign(3.0)
-
-class TypeSystem_Subtyping_Range_ClosedBoundaries_Integer(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-        subtypedInteger.assign(1)
-
-    def test_SuccessfulAssignment_InRange(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-        subtypedInteger.assign(22)
-
-    def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-        subtypedInteger.assign(255)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-            subtypedInteger.assign(0)
-
-    def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, True), BoundaryInteger(255, True))])
-            subtypedInteger.assign(256)
-
-class TypeSystem_Subtyping_Range_ClosedBoundaries_Float(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-        subtypedFloat.assign(1.0)
-
-    def test_SuccessfulAssignment_InRange(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-        subtypedFloat.assign(22.0)
-
-    def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-        subtypedFloat.assign(255.0)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-            subtypedFloat.assign(0.0)
-
-    def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, True), BoundaryFloat(255.0, True))])
-            subtypedFloat.assign(256.0)
-
-class TypeSystem_Subtyping_Range_OpenBoundaries_Integer(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-        subtypedInteger.assign(2)
-
-    def test_SuccessfulAssignment_InRange(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-        subtypedInteger.assign(22)
-
-    def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-        subtypedInteger.assign(254)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_LowerBoundary(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-            subtypedInteger.assign(1)
-
-    def test_UnsuccessfulAssignment_UpperBoundary(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedInteger = MySubtypedInteger([Range(BoundaryInteger(1, False), BoundaryInteger(255, False))])
-            subtypedInteger.assign(255)
-
-class TypeSystem_Subtyping_Range_OpenBoundaries_Float(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-
-    #
-    # Successful assignments.
-    #
-    def test_SuccessfulAssignment_LowerBoundary(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-        subtypedFloat.assign(1.1)
-
-    def test_SuccessfulAssignment_InRange(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-        subtypedFloat.assign(22.0)
-
-    def test_SuccessfulAssignment_UpperBoundary(self):
-        subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-        subtypedFloat.assign(249.9)
-
-    #
-    # Unsuccessful assignments.
-    #
-    def test_UnsuccessfulAssignment_LowerBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-            subtypedFloat.assign(1.0)
-
-    def test_UnsuccessfulAssignment_UpperBoundaryExceeded(self):
-        with self.assertRaises(InvalidTTCN3TypeValueNotInConstraint):
-            subtypedFloat = MySubtypedFloat([Range(BoundaryFloat(1.0, False), BoundaryFloat(255.0, False))])
-            subtypedFloat.assign(255.0)
-#
-# TODO: All types
-#
-
-class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnyOrNone(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        try:
-            AnyOrNone()
-        except:
-            self.fail()
-
-    #
-    # Successful matching: simple types.
-    #
-    def test_MatchingReturnsTrue_Self(self):
-        # TODO: Define whether this should be allowed. Why to compare a template with another template?
-        self.assertTrue(AnyOrNone() == AnyOrNone())
-
-    #
-    # Simple types.
-    #
-    # TODO: All types
-    #
-    def test_MatchingReturnsTrue_Boolean(self):
-        self.assertTrue(AnyOrNone() == Boolean().assign(True))
-
-    def test_MatchingReturnsTrue_Integer(self):
-        self.assertTrue(AnyOrNone() == Integer().assign(1))
-
-    def test_MatchingReturnsTrue_Float(self):
-        self.assertTrue(AnyOrNone() == Float().assign(1.0))
-
-    def test_MatchingReturnsTrue_Charstring(self):
-        self.assertTrue(AnyOrNone() == Charstring().assign("WAX"))
-
-    #
-    # Successful matching: structured types.
-    #
-    # TODO: All types
-    #
-    def test_Record(self):
-        class myRecord(Record):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf1(TemplateRecordOf):
             def __init__(self):
-                Record.__init__(self, {'field1': Integer, 'field2': Charstring})
-        myRecordInstance = myRecord()
-        myRecordInstance.assign({'field1': Integer().assign(1),
-                                 'field2': Charstring().assign("QUARK")})
-        self.assertTrue(AnyOrNone() == myRecordInstance)
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        class MyTemplateRecordOf2(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyTemplateRecordOf1())
+        with self.assertRaises(InvalidTypeInCtor):
+            type = MyTemplateRecordOf2()
 
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonRaisesAnException_InvalidType(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            AnyOrNone() == True
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                class MyTemplateRecordOf(TemplateRecordOf):
+                    def __init__(self):
+                        TemplateRecordOf.__init__(self, MyRecordOf())
+                type = MyTemplateRecordOf()
 
-class TypeSystem_SpecialSymbols_UsedInsteadOfAValue_AnySingleElement(unittest.TestCase):
-    #
-    # Constructions.
-    #
-    def test_Ctor(self):
-        try:
-            AnySingleElement()
-        except:
-            self.fail()
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                class MyTemplateRecordOf(TemplateRecordOf):
+                    def __init__(self):
+                        TemplateRecordOf.__init__(self, MyRecordOf())
+                type = MyTemplateRecordOf()
 
-    #
-    # Successful matching: simple types.
-    #
-    def test_MatchingReturnsTrue_Self(self):
-        # TODO: Define whether this should be allowed. Why to compare a template with another template?
-        self.assertTrue(AnySingleElement() == AnySingleElement())
+    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        with self.assertRaises(InvalidTypeInCtor):
+            for type in [TemplateType(Integer(SimpleType))]:
+                class MyRecordOf(RecordOf):
+                    def __init__(self):
+                        RecordOf.__init__(self, SimpleType(), type)
+                class MyTemplateRecordOf(MyRecordOf):
+                    def __init__(self):
+                        MyRecordOf.__init__(self)
+                type = MyTemplateRecordOf()
 
-    #
-    # Simple types.
-    #
-    # TODO: All types
-    #
-    def test_MatchingReturnsTrue_Boolean(self):
-        self.assertTrue(AnySingleElement() == Boolean().assign(True))
+    def test_Ctor_ConvertsTypesToTemplateTypes_SimpleTypes(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, SimpleType(), type)
+            class MyTemplateRecordOf(TemplateRecordOf):
+                def __init__(self):
+                    TemplateRecordOf.__init__(self, MyRecordOf())
+            type = MyTemplateRecordOf()
+            self.assertTrue(type.mDecoratedType.mType.isOfType(TemplateType))
 
-    def test_MatchingReturnsTrue_Integer(self):
-        self.assertTrue(AnySingleElement() == Integer().assign(1))
+    def test_Ctor_ConvertsTypesToTemplateTypes_NestedRecordsOf(self):
+        class MyInnerRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyOuterRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), MyInnerRecordOf())
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyOuterRecordOf())
+        type = MyTemplateRecordOf()
+        self.assertTrue(type.mDecoratedType.mType.isOfType(TemplateRecordOf))
+        self.assertTrue(type.mDecoratedType.mType.mDecoratedType.mType.isOfType(TemplateType))
 
-    def test_MatchingReturnsTrue_Float(self):
-        self.assertTrue(AnySingleElement() == Float().assign(1.0))
+class TypeSystem_RecordOf_TemplateRecordOf_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = []
+        self.assertTrue(type.accept(value))
 
-    def test_MatchingReturnsTrue_Charstring(self):
-        self.assertTrue(AnySingleElement() == Charstring().assign("WAX"))
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1))]
+        self.assertTrue(type.accept(value))
 
-    #
-    # Successful matching: structured types.
-    #
-    # TODO: All types
-    #
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
+        self.assertTrue(type.accept(value))
 
-    #
-    # Unsuccessful matching.
-    #
-    def test_ComparisonRaisesAnException_InvalidType(self):
-        with self.assertRaises(InvalidTTCN3TypeInComparison):
-            AnySingleElement() == True
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[TemplateType(Integer(SimpleType()))]]:
+            self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnyOfValuesIsATemplateLikeType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)),
+                 TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
+        self.assertTrue(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[AnyValue()]]:
+            self.assertFalse(type.accept(value))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_OtherType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[Float(SimpleType())]]:
+            self.assertFalse(type.accept(value))
+
+class TypeSystem_RecordOf_TemplateRecordOf_Assign(unittest.TestCase):
+    def test_AssignAssignsOnAValidValue_TheSameTypes_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = []
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_TheSameTypes_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1))]
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_TheSameTypes_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
+        type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_TheSameTypes_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[TemplateType(Integer(SimpleType()))]]:
+            type.assign(value)
+
+    def test_AssignAssignsOnAValidValue_TheSameTypes_AnyOfValuesIsATemplateLikeType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        value = [Integer(SimpleType()).assign(IntegerValue(1)),
+                 TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
+        type.assign(value)
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                self.assertFalse(type.assign(value))
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[AnyValue()]]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                self.assertFalse(type.assign(value))
+
+    def test_AssignRaisesAnExceptionOnAnInvalidValue_InvalidType_OtherType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        type = MyTemplateRecordOf()
+        for value in [[Float(SimpleType())]]:
+            with self.assertRaises(InvalidTypeInAssignment):
+                self.assertFalse(type.assign(value))
+
+class TypeSystem_RecordOF_TemplateRecordOf_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_EmptyRecordOf(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([])
+        record2 = MyTemplateRecordOf().assign([])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_OneElement_WithoutSpecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_OneElement_WithSPecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyTemplateRecordOf().assign([TemplateType(Integer(SimpleType())).assign(AnyValue())])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_ManyElements_WithoutSpecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsTrueOnSameValues_ManyElements_WithSpecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertTrue(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_OneElement(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_ManyElements(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(3)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_DiffentSize_SmallerBigger(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_DiffentSize_BiggerSmaller(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqReturnsFalseOnDifferentValues_SequenceMatters(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(2)),
+                                               Integer(SimpleType()).assign(IntegerValue(3))])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                               Integer(SimpleType()).assign(IntegerValue(3)),
+                                               Integer(SimpleType()).assign(IntegerValue(2))])
+        self.assertFalse(record1 == record2)
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
+            with self.assertRaises(InvalidTypeInComparison):
+                record == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf1(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        class MyTemplateRecordOf2(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record1 = MyTemplateRecordOf1().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        record2 = MyTemplateRecordOf2().assign([Integer(SimpleType()).assign(IntegerValue(1))])
+        with self.assertRaises(InvalidTypeInComparison):
+            record1 == record2
+
+class TypeSystem_RecordOf_TemplateRecordOf_GetField(unittest.TestCase):
+    def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyTemplateRecordOf(TemplateRecordOf):
+            def __init__(self):
+                TemplateRecordOf.__init__(self, MyRecordOf())
+        record = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                              Integer(SimpleType()).assign(IntegerValue(2)),
+                                              Integer(SimpleType()).assign(IntegerValue(3))])
+        self.assertEqual(record.getField(1), Integer(SimpleType()).assign(IntegerValue(2)))
+
+    def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
+        with self.assertRaises(LookupErrorMissingField):
+            class MyRecordOf(RecordOf):
+                def __init__(self):
+                    RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+            class MyTemplateRecordOf(TemplateRecordOf):
+                def __init__(self):
+                    TemplateRecordOf.__init__(self, MyRecordOf())
+            record = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
+                                                  Integer(SimpleType()).assign(IntegerValue(2)),
+                                                  Integer(SimpleType()).assign(IntegerValue(3))])
+            record.getField(4)
 
 if __name__ == '__main__':
     unittest.main()

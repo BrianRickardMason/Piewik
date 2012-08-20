@@ -35,43 +35,40 @@ from Runtime.Extensions.Critter.Interface.Messages_pb2 import *
 from Runtime.Extensions.Critter.Interface.Translation  import *
 from Runtime.TypeSystem                                import *
 
-class Encoder_Encode(unittest.TestCase):
+class Decoder_Decode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):
-        sender = PiewikCritterData()
-        sender.assign({'type': Charstring().assign("HelloCritty"),
-                       'nick': Charstring().assign("Sender")})
+        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
 
-        receiver = PiewikCritterData()
-        receiver.assign({'type': Charstring().assign("HelloCritty"),
-                         'nick': Charstring().assign("Receiver")})
+        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
+                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
 
-        graphs = RecordOf(PiewikGraphData)
-        graphs.assign([
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph1")}),
-            PiewikGraphData().assign({'graphName': Charstring().assign("Graph2")})
-        ])
+        graphsData = [
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph2"))}
+        ]
 
-        works = RecordOf(PiewikWorkData)
-        works.assign([
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work1")}),
-            PiewikWorkData().assign({'graphName': Charstring().assign("Graph1"),
-                                     'workName':  Charstring().assign("Work2")})
-        ])
+        worksData = [
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work1"))},
+            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
+             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work2"))}
+        ]
 
-        workPredecessors = RecordOf(PiewikWorkPredecessorData)
-        workPredecessors.assign([
-            PiewikWorkPredecessorData().assign({'workName':            Charstring().assign("Work2"),
-                                                'predecessorWorkName': Charstring().assign("Work1")})
-        ])
+        workPredecessorsData = [
+            {'workName':            Charstring(SimpleType()).assign(CharstringValue("Work2")),
+             'predecessorWorkName': Charstring(SimpleType()).assign(CharstringValue("Work1"))}
+        ]
 
         loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
-        loadGraphAndWorkResponse.assign({'messageName':      Charstring().assign("LoadGraphAndWorkResponse"),
-                                         'sender':           sender,
-                                         'receiver':         receiver,
-                                         'graphs':           graphs,
-                                         'works':            works,
-                                         'workPredecessors': workPredecessors})
+        loadGraphAndWorkResponse.assign({
+            'messageName':      Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkResponse")),
+            'sender':           senderData,
+            'receiver':         receiverData,
+            'graphs':           graphsData,
+            'works':            worksData,
+            'workPredecessors': workPredecessorsData
+        })
 
         encoder = ProtobufEncoder()
 
@@ -81,19 +78,19 @@ class Encoder_Encode(unittest.TestCase):
 
         message = decoder.decode(envelope.SerializeToString())
 
-        self.assertEqual(message.getField('messageName').value(), 'LoadGraphAndWorkResponse')
-        self.assertEqual(message.getField('sender').getField('type').value(), 'HelloCritty')
-        self.assertEqual(message.getField('sender').getField('nick').value(), 'Sender')
-        self.assertEqual(message.getField('receiver').getField('type').value(), 'HelloCritty')
-        self.assertEqual(message.getField('receiver').getField('nick').value(), 'Receiver')
-        self.assertEqual(message.getField('graphs').getField(0).getField('graphName').value(), 'Graph1')
-        self.assertEqual(message.getField('graphs').getField(1).getField('graphName').value(), 'Graph2')
-        self.assertEqual(message.getField('works').getField(0).getField('graphName').value(), 'Graph1')
-        self.assertEqual(message.getField('works').getField(0).getField('workName').value(), 'Work1')
-        self.assertEqual(message.getField('works').getField(1).getField('graphName').value(), 'Graph1')
-        self.assertEqual(message.getField('works').getField(1).getField('workName').value(), 'Work2')
-        self.assertEqual(message.getField('workPredecessors').getField(0).getField('workName').value(), 'Work2')
-        self.assertEqual(message.getField('workPredecessors').getField(0).getField('predecessorWorkName').value(),
+        self.assertEqual(message.getField('messageName').value().value(), 'LoadGraphAndWorkResponse')
+        self.assertEqual(message.getField('sender').getField('type').value().value(), 'HelloCritty')
+        self.assertEqual(message.getField('sender').getField('nick').value().value(), 'Sender')
+        self.assertEqual(message.getField('receiver').getField('type').value().value(), 'HelloCritty')
+        self.assertEqual(message.getField('receiver').getField('nick').value().value(), 'Receiver')
+        self.assertEqual(message.getField('graphs').getField(0).getField('graphName').value().value(), 'Graph1')
+        self.assertEqual(message.getField('graphs').getField(1).getField('graphName').value().value(), 'Graph2')
+        self.assertEqual(message.getField('works').getField(0).getField('graphName').value().value(), 'Graph1')
+        self.assertEqual(message.getField('works').getField(0).getField('workName').value().value(), 'Work1')
+        self.assertEqual(message.getField('works').getField(1).getField('graphName').value().value(), 'Graph1')
+        self.assertEqual(message.getField('works').getField(1).getField('workName').value().value(), 'Work2')
+        self.assertEqual(message.getField('workPredecessors').getField(0).getField('workName').value().value(), 'Work2')
+        self.assertEqual(message.getField('workPredecessors').getField(0).getField('predecessorWorkName').value().value(),
                          'Work1')
 
 if __name__ == '__main__':

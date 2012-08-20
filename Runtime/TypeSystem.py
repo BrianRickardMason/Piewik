@@ -28,230 +28,352 @@
 # SUCH DAMAGE.
 
 #
-# Piewik type system. An attempt to reach a type system as close to the TTCN-3's one as possible.
+# NOTES:
 #
-# A selected approach is to try to implement as many TTCN-3's features (template matching mechanism, subtyping,
-# template restrictions, etc.) inside the type system.
-#
-
-#
-# Part: Types.
+# The types are not initialized with a default value.
 #
 
 #
-# Exceptions used in Piewik type system.
+# TODO: Change isinstance to isOfType.
 #
+
 class TypeSystemException(Exception):
     pass
 
-class InvalidTTCN3TypeInAssignment(TypeSystemException):
+class InvalidTypeInAssignment(TypeSystemException):
     pass
 
-class InvalidTTCN3TypeInBoundaryAssignment(TypeSystemException):
+class InvalidTypeInValueAssignment(TypeSystemException):
     pass
 
-class InvalidTTCN3TypeValueNotInConstraint(TypeSystemException):
+class InvalidTypeInComparison(TypeSystemException):
+    pass
+
+class InvalidTypeInCtor(TypeSystemException):
     pass
 
 class LookupErrorMissingField(TypeSystemException):
     pass
 
-class InvalidTTCN3TypeInCtor(TypeSystemException):
-    pass
-
-class InvalidTTCN3TypeInComparison(TypeSystemException):
-    pass
-
-class InvalidTypeOfDictionaryKey(TypeSystemException):
-    pass
-
-class InvalidTTCN3ValueInAssignment(TypeSystemException):
-    pass
-
-class InvalidTypeOfBoundary(TypeSystemException):
-    pass
-
-class InvalidTypeOfList(TypeSystemException):
-    pass
-
 #
-# Types.
+# The values are needed to overload __eq__, etc... in a clean way.
 #
-class TTCN3Type(object):
-    def __init__(self, aValue):
-        self.mValue = aValue
+class Value(object):
+    def __eq__(self, aOther):
+        raise NotImplementedError
 
     def __ne__(self, aOther):
         return not self.__eq__(aOther)
 
+    def __gt__(self, aOther):
+        raise NotImplementedError
+
+    def __ge__(self, aOther):
+        raise NotImplementedError
+
+    def __lt__(self, aOther):
+        raise NotImplementedError
+
+    def __le__(self, aOther):
+        raise NotImplementedError
+
     def value(self):
         return self.mValue
 
+class BooleanValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is bool:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, BooleanValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
+
+class IntegerValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is int:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, IntegerValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
+
+    def __gt__(self, aOther):
+        if isinstance(aOther, IntegerValue):
+            return self.mValue > aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __ge__(self, aOther):
+        if isinstance(aOther, IntegerValue):
+            return self.mValue >= aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __lt__(self, aOther):
+        return not self.__ge__(aOther)
+
+    def __le__(self, aOther):
+        return not self.__gt__(aOther)
+
+class FloatValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is float:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
+
+    def __gt__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue > aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __ge__(self, aOther):
+        if isinstance(aOther, FloatValue):
+            return self.mValue >= aOther.mValue
+        else:
+            raise InvalidTypeInComparison
+
+    def __lt__(self, aOther):
+        return not self.__ge__(aOther)
+
+    def __le__(self, aOther):
+        return not self.__gt__(aOther)
+
+class CharstringValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is str:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aOther):
+        if isinstance(aOther, CharstringValue):
+            return self.mValue == aOther.mValue
+        elif isinstance(aOther, AnyValue):
+            return aOther.__eq__(self)
+        else:
+            raise InvalidTypeInComparison
+
+class AnyValue(Value):
+    def __eq__(self, aOther):
+        return True
+
+class Type(object):
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
+    def __ne__(self, aOther):
+        raise NotImplementedError
+
     def accept(self, aValue):
         raise NotImplementedError
 
-class TTCN3SimpleType(TTCN3Type):
-    def __init__(self, aValue):
-        TTCN3Type.__init__(self, aValue)
-
-class TTCN3StructuredType(TTCN3Type):
-    def __init__(self, aValue):
-        TTCN3Type.__init__(self, aValue)
-
-#
-# Simple types.
-#
-class Boolean(TTCN3SimpleType):
-    def __init__(self):
-        TTCN3SimpleType.__init__(self, False)
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Boolean):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTTCN3TypeInComparison
-
     def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-        self.mValue = aValue
-        return self
+        raise NotImplementedError
 
-    def accept(self, aValue):
-        return type(aValue) is bool
-
-class Integer(TTCN3SimpleType):
-    def __init__(self):
-        TTCN3SimpleType.__init__(self, 0)
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Integer):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def accept(self, aValue):
-        return type(aValue) is int
-
-class Float(TTCN3SimpleType):
-    def __init__(self):
-        TTCN3SimpleType.__init__(self, 0.0)
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Float):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def accept(self, aValue):
-        return type(aValue) is float
-
-class Charstring(TTCN3SimpleType):
-    def __init__(self):
-        TTCN3SimpleType.__init__(self, "")
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Charstring):
-            return self.mValue == aOther.mValue
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-        self.mValue = aValue
-        return self
-
-    def accept(self, aValue):
-        return type(aValue) is str
-
-#
-# Structured types.
-#
-class Record(TTCN3StructuredType):
-    def __init__(self, aDictionary={}):
-        if type(aDictionary) is not dict:
-            raise InvalidTTCN3TypeInCtor
-
-        TTCN3StructuredType.__init__(self, {})
-
-        # Keys may only be strings.
-        for key in aDictionary:
-            if type(key) is not str:
-                raise InvalidTypeOfDictionaryKey
-
-        # Values must be subtypes of TTCN3Type.
-        for typeName in aDictionary.values():
-            if not issubclass(typeName, TTCN3Type):
-                raise InvalidTTCN3TypeInCtor
-            if issubclass(typeName, TTCN3SpecialSymbolUsedInsteadOfAValueType):
-                raise InvalidTTCN3TypeInCtor
-
-        self.mDictionary = aDictionary
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Record):
-            if len(self.mValue) != len(aOther.mValue):
-                return False
-            for key in self.mValue.keys():
-                if not key in aOther.mValue:
-                    return False
-                else:
-                    if self.mValue[key] != aOther.mValue[key]:
-                        return False
-            return True
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        # TODO: Should it be possible?
-        # elif isinstance(aOther, AnySingleElement):
-        #     return aOther == self
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-    def assign(self, aValue):
-        if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-
-        for key in self.mDictionary:
-            if not key in aValue:
-                raise InvalidTTCN3TypeInAssignment
-        for key in aValue:
-            if not key in self.mDictionary:
-                raise InvalidTTCN3TypeInAssignment
-
-        for value in aValue.values():
-            if isinstance(value, TTCN3SpecialSymbolUsedInsteadOfAValueType):
-                raise InvalidTTCN3TypeInAssignment
-
-        # TODO: For now only AnySingleElement can be assigned to the record. Should it stay so?
-        for key in self.mDictionary:
-            if not ( \
-                   isinstance(aValue[key], self.mDictionary[key]) or \
-                   isinstance(aValue[key], AnySingleElement     )    \
-               ) :
-                raise InvalidTTCN3TypeInAssignment
-
-        self.mValue = aValue
-        return self
-
-    def accept(self, aValue):
-        return type(aValue) is dict
-
-    # TODO: Consider implementation.
     def value(self):
         raise NotImplementedError
+
+class SimpleType(Type):
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
+    def __ne__(self, aOther):
+        raise NotImplementedError
+
+    def accept(self, aValue):
+        raise NotImplementedError
+
+    def assign(self, aValue):
+        raise NotImplementedError
+
+    def value(self):
+        raise NotImplementedError
+
+class TypeDecorator(Type):
+    def __init__(self, aDecoratedType):
+        self.mDecoratedType = aDecoratedType
+
+    def __eq__(self, aOther):
+        raise NotImplementedError
+
+    def __ne__(self, aOther):
+        return not self.__eq__(aOther)
+
+    def accept(self, aValue):
+        raise NotImplementedError
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mValue
+
+    def isOfType(self, aType):
+        if isinstance(self, aType):
+            return True
+        elif isinstance(self.mDecoratedType, aType):
+            return True
+        elif isinstance(self.mDecoratedType, SimpleType):
+            return False
+        else:
+            return self.mDecoratedType.isOfType(aType)
+
+class Boolean(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        if aOther.isOfType(Boolean):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        return type(aValue) is BooleanValue
+
+class Integer(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        if aOther.isOfType(Integer):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        return type(aValue) is IntegerValue
+
+class Float(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        if aOther.isOfType(Float):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        return type(aValue) is FloatValue
+
+class Charstring(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        if aOther.isOfType(Charstring):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        return type(aValue) is CharstringValue
+
+class Record(TypeDecorator):
+    def __init__(self, aDecoratedType, aDictionary={}):
+        # TODO: Add checking of what can be decorated with this decorator.
+        if type(aDictionary) is not dict:
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+        for key in aDictionary:
+            if type(key) is not str:
+                raise InvalidTypeInCtor
+        for typeName in aDictionary.values():
+            if not isinstance(typeName, TypeDecorator):
+                raise InvalidTypeInCtor
+            if isinstance(typeName, TemplateType):
+                raise InvalidTypeInCtor
+        self.mDictionary = aDictionary
+        self.mValue = None
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        if type(aValue) is not dict:
+            return False
+        if len(self.mDictionary) != len(aValue):
+            return False
+        for key in self.mDictionary:
+            if not key in aValue:
+                return False
+        for key in aValue:
+            if not key in self.mDictionary:
+                return False
+        for key in self.mDictionary:
+            if isinstance(self.mDictionary[key], Record):
+                if not self.mDictionary[key].accept(aValue[key]):
+                    return False
+            elif isinstance(self.mDictionary[key], RecordOf):
+                if not self.mDictionary[key].accept(aValue[key]):
+                    return False
+            else:
+                if not isinstance(aValue[key], TypeDecorator):
+                    return False
+                if isinstance(aValue[key], TemplateType):
+                    return False
+                if not isinstance(aValue[key], type(self.mDictionary[key])):
+                    return False
+        return True
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        tmpValue = {}
+        for key in aValue:
+            if isinstance(self.mDictionary[key], Record):
+                tmpValue[key] = type(self.mDictionary[key])().assign(aValue[key])
+            elif isinstance(self.mDictionary[key], RecordOf):
+                tmpValue[key] = type(self.mDictionary[key])().assign(aValue[key])
+            else:
+                tmpValue[key] = aValue[key]
+        self.mValue = tmpValue
+        return self
 
     def getField(self, aName):
         if aName in self.mValue:
@@ -259,47 +381,70 @@ class Record(TTCN3StructuredType):
         else:
             raise LookupErrorMissingField
 
-class RecordOf(TTCN3StructuredType):
-    def __init__(self, aType):
-        if not issubclass(aType, TTCN3Type):
-            raise InvalidTTCN3TypeInCtor
-
-        TTCN3StructuredType.__init__(self, [])
-
-        self.mType = aType
+class RecordOf(TypeDecorator):
+    def __init__(self, aDecoratedType, aInstance):
+        # TODO: Add checking of what can be decorated with this decorator.
+        # Make sure the type is TypeDecorator...
+        if not isinstance(aInstance, TypeDecorator):
+            raise InvalidTypeInCtor
+        # ...and the type is not any TemplateType...
+        # TODO: (this should be done recursively for all decorated types to be 100% bullet proof)...
+        if isinstance(aInstance, TemplateType):
+            raise InvalidTypeInCtor
+        TypeDecorator.__init__(self, aDecoratedType)
+        self.mType = aInstance
+        self.mValue = None
 
     def __eq__(self, aOther):
-        if isinstance(aOther, RecordOf):
-            # TODO: Check the types correctly!
-            if len(self.mValue) != len(aOther.mValue):
-                return False
-            for element in self.mValue:
-                index = self.mValue.index(element)
-                try:
-                    if self.mValue[index] != aOther.mValue[index]:
-                        return False
-                except:
-                    return False
-            return True
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        # TODO: Should it be possible?
-        # elif isinstance(aOther, AnySingleElement):
-        #     return aOther == self
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
         else:
-            raise InvalidTTCN3TypeInComparison
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        # Make sure the value is a list...
+        if type(aValue) is not list:
+            return False
+        for value in aValue:
+            # ...and has only TypeDecorator values...
+            if isinstance(self.mType, Record):
+                if type(value) is not dict:
+                    return False
+            elif isinstance(self.mType, RecordOf):
+                if type(value) is not list:
+                    return False
+            else:
+                if not isinstance(value, TypeDecorator):
+                    return False
+                # ...and has not any TemplateType values...
+                if isinstance(value, TemplateType):
+                    return False
+                # ...and the value is of a specified type...
+                if not isinstance(value, type(self.mType)):
+                    return False
+        return True
 
     def assign(self, aValue):
         if not self.accept(aValue):
-            raise InvalidTTCN3TypeInAssignment
-        for element in aValue:
-            if type(element) != self.mType:
-                raise InvalidTTCN3TypeInAssignment
-        self.mValue = aValue
+            raise InvalidTypeInAssignment
+        tmpValue = []
+        for value in aValue:
+            # TODO: Check it out again!
+            if isinstance(self.mType, Record):
+                if not type(value) is dict:
+                    raise InvalidTypeInAssignment
+                tmpValue.append(type(self.mType)().assign(value))
+            elif isinstance(value, RecordOf):
+                if not type(value) is list:
+                    raise InvalidTypeInAssignment
+                tmpValue.append(type(self.mType)().assign(value))
+            else:
+                tmpValue.append(value)
+        self.mValue = tmpValue
         return self
-
-    def accept(self, aValue):
-        return type(aValue) is list
 
     def getField(self, aIndex):
         try:
@@ -307,318 +452,183 @@ class RecordOf(TTCN3StructuredType):
         except:
             raise LookupErrorMissingField
 
-#
-# Decorated types.
-#
-class TemplateBoolean(Boolean):
-    def __init__(self):
-        Boolean.__init__(self)
+class BoundedType(TypeDecorator):
+    def __init__(self, aDecoratedType, aLowerBoundary, aUpperBoundary):
+        # TODO: Add checking of what can be decorated with this decorator.
+        TypeDecorator.__init__(self, aDecoratedType)
+        self.mLowerBoundary = aLowerBoundary
+        self.mUpperBoundary = aUpperBoundary
 
     def __eq__(self, aOther):
-        if isinstance(aOther, Boolean):
-            # The other value is a special symbol.
-            if not isinstance(self.mValue,   TTCN3Value) and \
-                   isinstance(aOther.mValue, TTCN3Value)     :
-                return aOther.mValue == self.mValue
-            # The self value is a special symbol.
-            # Both values are special symbols.
-            # None of values is a special symbol.
-            return self.mValue == aOther.mValue
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        elif isinstance(aOther, AnySingleElement):
-            return aOther == self
-        else:
-            raise InvalidTTCN3TypeInComparison
+        return self.mDecoratedType.__eq__(aOther)
 
     def accept(self, aValue):
-        return type(aValue) is bool     or \
-               type(aValue) is AnyValue
+        return self.mDecoratedType.accept(aValue) and \
+               aValue >= self.mLowerBoundary      and \
+               aValue <= self.mUpperBoundary
 
-class TemplateInteger(Integer):
-    def __init__(self):
-        Integer.__init__(self)
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mDecoratedType.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mDecoratedType.mValue
+
+class TemplateType(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
+        TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if isinstance(aOther, Integer):
-            # The other value is a special symbol.
-            if not isinstance(self.mValue,   TTCN3Value) and \
-                   isinstance(aOther.mValue, TTCN3Value)     :
-                return aOther.mValue == self.mValue
-            # The self value is a special symbol.
-            # Both values are special symbols.
-            # None of values is a special symbol.
-            return self.mValue == aOther.mValue
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        elif isinstance(aOther, AnySingleElement):
-            return aOther == self
-        else:
-            raise InvalidTTCN3TypeInComparison
+        return self.mDecoratedType.__eq__(aOther)
 
     def accept(self, aValue):
-        # TODO: isinstance().
-        return type(aValue) is int      or \
+        return self.mDecoratedType.accept(aValue) or \
                type(aValue) is AnyValue
 
-class TemplateFloat(Float):
-    def __init__(self):
-        Float.__init__(self)
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mDecoratedType.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mDecoratedType.mValue
+
+class TemplateRecord(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        if not isinstance(aDecoratedType, Record):
+            raise InvalidTypeInCtor
+        if isinstance(aDecoratedType, TemplateRecord):
+            raise InvalidTypeInCtor
+        # ...enforce the decoration of all types...
+        for key in aDecoratedType.mDictionary:
+            if aDecoratedType.mDictionary[key].isOfType(Record):
+                aDecoratedType.mDictionary[key] = TemplateRecord(aDecoratedType.mDictionary[key])
+            elif aDecoratedType.mDictionary[key].isOfType(RecordOf):
+                aDecoratedType.mDictionary[key] = TemplateRecordOf(aDecoratedType.mDictionary[key])
+            elif aDecoratedType.mDictionary[key].isOfType(Boolean   ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Integer   ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Float     ) or \
+                 aDecoratedType.mDictionary[key].isOfType(Charstring)    :
+                aDecoratedType.mDictionary[key] = TemplateType(aDecoratedType.mDictionary[key])
+            else:
+                # TODO: A meaningful exception.
+                raise Exception
+        TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if isinstance(aOther, Float):
-            # The other value is a special symbol.
-            if not isinstance(self.mValue,   TTCN3Value) and \
-                   isinstance(aOther.mValue, TTCN3Value)     :
-                return aOther.mValue == self.mValue
-            # The self value is a special symbol.
-            # Both values are special symbols.
-            # None of values is a special symbol.
-            return self.mValue == aOther.mValue
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        elif isinstance(aOther, AnySingleElement):
-            return aOther == self
-        else:
-            raise InvalidTTCN3TypeInComparison
+        return self.mDecoratedType.__eq__(aOther)
 
     def accept(self, aValue):
-        return type(aValue) is float    or \
-               type(aValue) is AnyValue
-
-class TemplateCharstring(Charstring):
-    def __init__(self):
-        Charstring.__init__(self)
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, Charstring):
-            # The other value is a special symbol.
-            if not isinstance(self.mValue,   TTCN3Value) and \
-                   isinstance(aOther.mValue, TTCN3Value)     :
-                return aOther.mValue == self.mValue
-            # The self value is a special symbol.
-            # Both values are special symbols.
-            # None of values is a special symbol.
-            return self.mValue == aOther.mValue
-        elif isinstance(aOther, AnyOrNone):
-            return aOther == self
-        elif isinstance(aOther, AnySingleElement):
-            return aOther == self
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-    def accept(self, aValue):
-        return type(aValue) is str      or \
-               type(aValue) is AnyValue
-
-#
-# Part: Subtypes.
-#
-
-#
-# Boundaries.
-#
-class Boundary(object):
-    pass
-
-class BoundaryInteger(Boundary):
-    def __init__(self, aValue, aClosed):
-        if type(aValue)  is int  and \
-           type(aClosed) is bool     :
-            self.mValue  = aValue
-            self.mClosed = aClosed
-        else:
-            raise InvalidTTCN3TypeInBoundaryAssignment
-
-    def acceptLowerBoundary(self, aValue):
-        if self.mClosed:
-            return aValue >= self.mValue
-        else:
-            return aValue >  self.mValue
-
-    def acceptUpperBoundary(self, aValue):
-        if self.mClosed:
-            return aValue <= self.mValue
-        else:
-            return aValue <  self.mValue
-
-class BoundaryFloat(Boundary):
-    def __init__(self, aValue, aClosed):
-        if type(aValue)  is float and \
-           type(aClosed) is bool      :
-            self.mValue  = aValue
-            self.mClosed = aClosed
-        else:
-            raise InvalidTTCN3TypeInBoundaryAssignment
-
-    def acceptLowerBoundary(self, aValue):
-        if self.mClosed:
-            return aValue >= self.mValue
-        else:
-            return aValue >  self.mValue
-
-    def acceptUpperBoundary(self, aValue):
-        if self.mClosed:
-            return aValue <= self.mValue
-        else:
-            return aValue <  self.mValue
-
-#
-# Subtypes.
-#
-class SubtypeOfSimpleType(object):
-    pass
-
-class ListOfTemplates(SubtypeOfSimpleType):
-    # TODO: Check on assignment if all types are the same.
-    def __init__(self, aList):
-        if type(aList) is list:
-            for item in aList:
-                if not isinstance(item, TTCN3Type):
-                    raise InvalidTTCN3TypeInCtor
-            self.mList = aList
-        else:
-            raise InvalidTypeOfList
-
-    def accept(self, aValue):
-        for item in self.mList:
-            if item.value() == aValue:
-                return True
-        return False
-
-class ListOfTypes(SubtypeOfSimpleType):
-    # TODO: Check on assignment if all types are the same.
-    def __init__(self, aList):
-        if type(aList) is list:
-            for item in aList:
-                if not isinstance(item, TTCN3Type):
-                    raise InvalidTTCN3TypeInCtor
-            self.mList = aList
-        else:
-            raise InvalidTypeOfList
-
-    def accept(self, aValue):
-        for item in self.mList:
-            if item.accept(aValue):
-                return True
-        return False
-
-class Range(SubtypeOfSimpleType):
-    def __init__(self, aLowerBoundary, aUpperBoundary):
-        if isinstance(aLowerBoundary, Boundary) and \
-           isinstance(aUpperBoundary, Boundary)     :
-            self.mLowerBoundary = aLowerBoundary
-            self.mUpperBoundary = aUpperBoundary
-        else:
-            raise InvalidTypeOfBoundary
-
-    def accept(self, aValue):
-        if self.mLowerBoundary.acceptLowerBoundary(aValue) and \
-           self.mUpperBoundary.acceptUpperBoundary(aValue)     :
-            return True
-        else:
+        if type(aValue) is not dict:
             return False
-
-class StringLength(SubtypeOfSimpleType):
-    pass
-
-class StringPattern(SubtypeOfSimpleType):
-    pass
-
-#
-# Part: special symbols.
-#
-class TTCN3SpecialSymbolType(TTCN3Type):
-    def __init__(self):
-        TTCN3Type.__init__(self, None)
-
-#
-# Special symbols used instead of values.
-#
-class TTCN3SpecialSymbolUsedInsteadOfAValueType(TTCN3SpecialSymbolType):
-    def __init__(self):
-        TTCN3SpecialSymbolType.__init__(self)
-
-class Any(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class AnyOrNone(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    def __init__(self):
-        TTCN3SpecialSymbolUsedInsteadOfAValueType.__init__(self)
-
-    def __eq__(self, aOther):
-        if isinstance(aOther, TTCN3Type):
-            return True
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-class Omit(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class List(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class Complement(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-# TODO: Introduce namespaces.
-class SpecialSymbolRange(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class Superset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class Subset(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-class Pattern(TTCN3SpecialSymbolUsedInsteadOfAValueType):
-    pass
-
-#
-# Special symbols used inside values.
-#
-class TTCN3SpecialSymbolUsedInsideAValueType(TTCN3SpecialSymbolType):
-    def __init__(self):
-        TTCN3SpecialSymbolType.__init__(self)
-
-class AnySingleElement(TTCN3SpecialSymbolUsedInsideAValueType):
-    def __init__(self):
-        TTCN3SpecialSymbolUsedInsideAValueType.__init__(self)
-
-    def __eq__(self, aOther):
-        # TODO: What to compare it with?
-        if isinstance(aOther, TTCN3Type):
-            return True
-        else:
-            raise InvalidTTCN3TypeInComparison
-
-class AnyNumberOfElements(TTCN3SpecialSymbolUsedInsideAValueType):
-    pass
-
-class Permutation(TTCN3SpecialSymbolUsedInsideAValueType):
-    pass
-
-#
-# Special symbols which describe attributes of values.
-#
-class TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType(TTCN3SpecialSymbolType):
-    pass
-
-# TODO: Introduce namespaces.
-class SpecialSymbolLength(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
-    pass
-
-class Present(TTCN3SpecialSymbolWhichDescribeAttributeOfAValueType):
-    pass
-
-#
-# Values.
-#
-class TTCN3Value(object):
-    pass
-
-class AnyValue(TTCN3Value):
-    def __eq__(self, aOther):
-        if isinstance(aOther, AnyValue):
-            return True
+        if len(self.mDecoratedType.mDictionary) != len(aValue):
+            return False
+        for key in self.mDecoratedType.mDictionary:
+            if not key in aValue:
+                return False
+        for key in aValue:
+            if not key in self.mDecoratedType.mDictionary:
+                return False
+        for value in aValue.values():
+            if not (isinstance(value, TypeDecorator) or \
+                    type(value) is dict):
+                return False
+        for key in self.mDecoratedType.mDictionary:
+            if self.mDecoratedType.mDictionary[key].isOfType(Record):
+                pass
+            else:
+                if not (aValue[key].isOfType(type(self.mDecoratedType.mDictionary[key]))  or \
+                        self.mDecoratedType.mDictionary[key].isOfType(type(aValue[key])))    :
+                    return False
+        for key in self.mDecoratedType.mDictionary:
+            if isinstance(self.mDecoratedType.mDictionary[key], Record):
+                if aValue[key].mValue == None:
+                    return False
         return True
+
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mDecoratedType.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mDecoratedType.mValue
+
+    def getField(self, aName):
+        if aName in self.value():
+            return self.value()[aName]
+        else:
+            raise LookupErrorMissingField
+
+class TemplateRecordOf(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
+        # Make sure the type is TypeDecorator...
+        if not isinstance(aDecoratedType, RecordOf):
+            raise InvalidTypeInCtor
+        if isinstance(aDecoratedType, TemplateRecordOf):
+            raise InvalidTypeInCtor
+        # ...enforce the decoration of the type...
+        if aDecoratedType.mType.isOfType(Record):
+            aDecoratedType.mType = TemplateRecord(aDecoratedType.mType)
+        elif aDecoratedType.mType.isOfType(RecordOf):
+            aDecoratedType.mType = TemplateRecordOf(aDecoratedType.mType)
+        elif aDecoratedType.mType.isOfType(Boolean   ) or \
+             aDecoratedType.mType.isOfType(Integer   ) or \
+             aDecoratedType.mType.isOfType(Float     ) or \
+             aDecoratedType.mType.isOfType(Charstring)    :
+            aDecoratedType.mType = TemplateType(aDecoratedType.mType)
+        else:
+            # TODO: A meaningful exception.
+            raise Exception
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        # Make sure the value is a list...
+        if type(aValue) is not list:
+            return False
+        for value in aValue:
+            # ...and has only TypeDecorator values...
+            if not isinstance(value, TypeDecorator):
+                return False
+            # ...and the value is of a specified type...
+            if self.mDecoratedType.mType.isOfType(Record):
+                pass
+            elif self.mDecoratedType.mType.isOfType(RecordOf):
+                pass
+            else:
+                if not (value.isOfType(type(self.mDecoratedType.mType))  or \
+                        self.mDecoratedType.mType.isOfType(type(value)))    :
+                    return False
+            # TODO: To be removed from both. The same as with Record.
+            # ...and if is a Record then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, Record):
+                if value.mValue == None:
+                    return False
+            # ...and if is a RecordOf then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, RecordOf):
+                if value.mValue == None:
+                    return False
+        return True
+
+    def getField(self, aIndex):
+        try:
+            return self.mValue[aIndex]
+        except:
+            raise LookupErrorMissingField

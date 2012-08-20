@@ -60,28 +60,24 @@ class ProtobufDecoder(Decoder):
         for field in aData.ListFields():
             # Built-in types.
             if type(field[1]) is bool:
-                dictionary[field[0].name] = Boolean().assign(field[1])
+                dictionary[field[0].name] = Boolean(SimpleType()).assign(BooleanValue(field[1]))
             elif type(field[1]) is int:
-                dictionary[field[0].name] = Integer().assign(field[1])
+                dictionary[field[0].name] = Integer(SimpleType()).assign(IntegerValue(field[1]))
             elif type(field[1]) is float:
-                dictionary[field[0].name] = Float().assign(field[1])
+                dictionary[field[0].name] = Float(SimpleType()).assign(FloatValue(field[1]))
             elif type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.
-                dictionary[field[0].name] = Charstring().assign(str(field[1]))
+                dictionary[field[0].name] = Charstring(SimpleType()).assign(CharstringValue(str(field[1])))
             # Composite fields.
             elif type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?
-                piewikType = getCorrespondingPiewikType(field[1][0])
-                recordOf = RecordOf(piewikType)
                 list = []
                 for element in field[1]:
-                    list.append(piewikType().assign(self.decodeDictionary(element)))
+                    list.append(self.decodeDictionary(element))
                     self.decodeDictionary(element)
-                recordOf.assign(list)
-                dictionary[field[0].name] = recordOf
+                dictionary[field[0].name] = list
             # Other protobuf types (structured).
             elif isinstance(field[1], Message):
-                piewikType = getCorrespondingPiewikType(field[1])
-                dictionary[field[0].name] = piewikType().assign(self.decodeDictionary(field[1]))
+                dictionary[field[0].name] = self.decodeDictionary(field[1])
 
         return dictionary

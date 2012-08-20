@@ -34,7 +34,8 @@ from Runtime.TypeSystem                                      import *
 
 class ProtobufEncoder(Encoder):
     def encode(self, aPayloadData):
-        (headerId, messageName) = getHeaderIdAndMessageTypeByMessageName(aPayloadData.getField('messageName').value())
+        (headerId, messageName) = \
+            getHeaderIdAndMessageTypeByMessageName(aPayloadData.getField('messageName').value().value())
         envelope = Envelope()
         envelope.header.id = headerId
         payload = messageName()
@@ -46,9 +47,8 @@ class ProtobufEncoder(Encoder):
     def encodePayload(self, aPayloadContent, aPayloadData):
         # TODO: What type?
         # TODO: What exception?
-        if not isinstance(aPayloadData, TTCN3Type):
+        if not isinstance(aPayloadData, TypeDecorator):
             raise
-
         for key in aPayloadData.mDictionary.keys():
             if isinstance(aPayloadData.mValue[key], Record):
                 payload     = getattr(aPayloadContent, key)
@@ -61,4 +61,4 @@ class ProtobufEncoder(Encoder):
                     tmpPayload = payload.add()
                     self.encodePayload(tmpPayload, element)
             else:
-                setattr(aPayloadContent, key, aPayloadData.mValue[key].value())
+                setattr(aPayloadContent, key, aPayloadData.mValue[key].value().value())

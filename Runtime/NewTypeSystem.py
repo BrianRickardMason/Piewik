@@ -483,6 +483,8 @@ class TemplateRecord(TypeDecorator):
         for key in aDecoratedType.mDictionary:
             if aDecoratedType.mDictionary[key].isOfType(Record):
                 aDecoratedType.mDictionary[key] = TemplateRecord(aDecoratedType.mDictionary[key])
+            elif aDecoratedType.mDictionary[key].isOfType(RecordOf):
+                aDecoratedType.mDictionary[key] = TemplateRecordOf(aDecoratedType.mDictionary[key])
             elif aDecoratedType.mDictionary[key].isOfType(Boolean   ) or \
                  aDecoratedType.mDictionary[key].isOfType(Integer   ) or \
                  aDecoratedType.mDictionary[key].isOfType(Float     ) or \
@@ -537,4 +539,72 @@ class TemplateRecord(TypeDecorator):
         if aName in self.value():
             return self.value()[aName]
         else:
+            raise LookupErrorMissingField
+
+class TemplateRecordOf(TypeDecorator):
+    def __init__(self, aDecoratedType):
+        # TODO: Add checking of what can be decorated with this decorator.
+        # Make sure the type is TypeDecorator...
+        if not isinstance(aDecoratedType, RecordOf):
+            raise InvalidTypeInCtor
+        if isinstance(aDecoratedType, TemplateRecordOf):
+            raise InvalidTypeInCtor
+        # ...enforce the decoration of the type...
+        if aDecoratedType.mType.isOfType(Record):
+            aDecoratedType.mType = TemplateRecord(aDecoratedType.mType)
+        elif aDecoratedType.mType.isOfType(RecordOf):
+            aDecoratedType.mType = TemplateRecordOf(aDecoratedType.mType)
+        elif aDecoratedType.mType.isOfType(Boolean   ) or \
+             aDecoratedType.mType.isOfType(Integer   ) or \
+             aDecoratedType.mType.isOfType(Float     ) or \
+             aDecoratedType.mType.isOfType(Charstring)    :
+            aDecoratedType.mType = TemplateType(aDecoratedType.mType)
+        else:
+            # TODO: A meaningful exception.
+            raise Exception
+        TypeDecorator.__init__(self, aDecoratedType)
+
+    def __eq__(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValue):
+        # Make sure the value is a list...
+        if type(aValue) is not list:
+            return False
+        for value in aValue:
+            # ...and has only TypeDecorator values...
+            if not isinstance(value, TypeDecorator):
+                return False
+            # ...and the value is of a specified type...
+            if self.mDecoratedType.mType.isOfType(Record):
+                pass
+            elif self.mDecoratedType.mType.isOfType(RecordOf):
+                pass
+            else:
+                if not (value.isOfType(type(self.mDecoratedType.mType))  or \
+                        self.mDecoratedType.mType.isOfType(type(value)))    :
+                    return False
+            # TODO: To be removed from both. The same as with Record.
+            # ...and if is a Record then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, Record):
+                if value.mValue == None:
+                    return False
+            # ...and if is a RecordOf then it is initialized...
+            # TODO: Test needed.
+            if isinstance(value, RecordOf):
+                if value.mValue == None:
+                    return False
+        return True
+
+    def getField(self, aIndex):
+        try:
+            return self.mValue[aIndex]
+        except:
             raise LookupErrorMissingField

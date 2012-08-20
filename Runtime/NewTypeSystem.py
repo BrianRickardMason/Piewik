@@ -227,8 +227,6 @@ class TypeDecorator(Type):
         return self.mValue
 
     def isOfType(self, aType):
-        if isinstance(self, SimpleType):
-            return False
         if isinstance(self, aType):
             return True
         elif isinstance(self.mDecoratedType, aType):

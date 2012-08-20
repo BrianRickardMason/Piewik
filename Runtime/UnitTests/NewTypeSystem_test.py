@@ -31,6 +31,8 @@
 # TODO: Tests for RecordOf of RecordOf.
 # TODO: Tests for RecordOf of Record.
 # TODO: Tests for Record of RecordOf.
+# TODO: Add exemplary module showing examples of anything that needs calling: class Foo(Bar):...
+#       Example: calling class MyInteger(Integer):... to get a type alias.
 #
 
 import unittest

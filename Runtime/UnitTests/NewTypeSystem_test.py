@@ -1959,7 +1959,7 @@ class NewTypeSystem_RecordOf_Ctor(unittest.TestCase):
     def test_Ctor(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
@@ -1990,7 +1990,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnEmptyList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = []
         self.assertTrue(type.accept(value))
@@ -1998,7 +1998,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_ASingleElementList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1))]
         self.assertTrue(type.accept(value))
@@ -2006,7 +2006,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AManyElementsList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
         self.assertTrue(type.accept(value))
@@ -2014,7 +2014,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
             self.assertFalse(type.accept(value))
@@ -2022,7 +2022,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[AnyValue()]]:
             self.assertFalse(type.accept(value))
@@ -2030,7 +2030,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Template(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[TemplateType(Integer(SimpleType()))]]:
             self.assertFalse(type.accept(value))
@@ -2038,7 +2038,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_OtherType(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[Float(SimpleType())]]:
             self.assertFalse(type.accept(value))
@@ -2046,7 +2046,7 @@ class NewTypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1)),
                  TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
@@ -2056,7 +2056,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnEmptyList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = []
         type.assign(value)
@@ -2064,7 +2064,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_ASingleElementList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1))]
         type.assign(value)
@@ -2072,7 +2072,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AManyElementsList(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1)), Integer(SimpleType()).assign(IntegerValue(2))]
         type.assign(value)
@@ -2080,7 +2080,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
             with self.assertRaises(InvalidTypeInAssignment):
@@ -2089,7 +2089,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[AnyValue()]]:
             with self.assertRaises(InvalidTypeInAssignment):
@@ -2098,7 +2098,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Template(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[TemplateType(Integer(SimpleType()))]]:
             with self.assertRaises(InvalidTypeInAssignment):
@@ -2107,7 +2107,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_OtherType(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         for value in [[Float(SimpleType())]]:
             with self.assertRaises(InvalidTypeInAssignment):
@@ -2116,7 +2116,7 @@ class NewTypeSystem_RecordOf_Assign(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
         value = [Integer(SimpleType()).assign(IntegerValue(1)),
                  TemplateType(Integer(SimpleType()).assign(IntegerValue(2)))]
@@ -2127,7 +2127,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_EmptyRecordOf(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([])
         record2 = MyRecordOf().assign([])
         self.assertTrue(record1 == record2)
@@ -2135,7 +2135,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_OneElement(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         self.assertTrue(record1 == record2)
@@ -2143,7 +2143,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsTrueOnSameValues_ManyElements(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                        Integer(SimpleType()).assign(IntegerValue(2)),
                                        Integer(SimpleType()).assign(IntegerValue(3))])
@@ -2155,7 +2155,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_OneElement(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(2))])
         self.assertFalse(record1 == record2)
@@ -2163,7 +2163,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_ManyElements(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                        Integer(SimpleType()).assign(IntegerValue(2)),
                                        Integer(SimpleType()).assign(IntegerValue(3))])
@@ -2175,7 +2175,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_DiffentSize_SmallerBigger(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                        Integer(SimpleType()).assign(IntegerValue(2))])
         record2 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
@@ -2186,7 +2186,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_DiffentSize_BiggerSmaller(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                        Integer(SimpleType()).assign(IntegerValue(2)),
                                        Integer(SimpleType()).assign(IntegerValue(3))])
@@ -2197,7 +2197,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues_SequenceMatters(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                        Integer(SimpleType()).assign(IntegerValue(2)),
                                        Integer(SimpleType()).assign(IntegerValue(3))])
@@ -2209,7 +2209,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         for value in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
             with self.assertRaises(InvalidTypeInComparison):
@@ -2218,7 +2218,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         for value in [AnyValue()]:
             with self.assertRaises(InvalidTypeInComparison):
@@ -2227,7 +2227,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
             with self.assertRaises(InvalidTypeInComparison):
@@ -2236,10 +2236,10 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
         class MyRecordOf1(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         class MyRecordOf2(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record1 = MyRecordOf1().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         record2 = MyRecordOf2().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         with self.assertRaises(InvalidTypeInComparison):
@@ -2249,7 +2249,7 @@ class NewTypeSystem_RecordOf_GetField(unittest.TestCase):
     def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
-                RecordOf.__init__(self, SimpleType(), Integer)
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                       Integer(SimpleType()).assign(IntegerValue(2)),
                                       Integer(SimpleType()).assign(IntegerValue(3))])
@@ -2259,7 +2259,7 @@ class NewTypeSystem_RecordOf_GetField(unittest.TestCase):
         with self.assertRaises(LookupErrorMissingField):
             class MyRecordOf(RecordOf):
                 def __init__(self):
-                    RecordOf.__init__(self, SimpleType(), Integer)
+                    RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
             record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1)),
                                           Integer(SimpleType()).assign(IntegerValue(2)),
                                           Integer(SimpleType()).assign(IntegerValue(3))])

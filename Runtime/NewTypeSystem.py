@@ -33,6 +33,10 @@
 # The types are not initialized with a default value.
 #
 
+#
+# TODO: Change isinstance to isOfType.
+#
+
 class TypeSystemException(Exception):
     pass
 
@@ -370,17 +374,17 @@ class Record(TypeDecorator):
             raise LookupErrorMissingField
 
 class RecordOf(TypeDecorator):
-    def __init__(self, aDecoratedType, aType):
+    def __init__(self, aDecoratedType, aInstance):
         # TODO: Add checking of what can be decorated with this decorator.
         # Make sure the type is TypeDecorator...
-        if not issubclass(aType, TypeDecorator):
+        if not isinstance(aInstance, TypeDecorator):
             raise InvalidTypeInCtor
         # ...and the type is not any TemplateType...
         # TODO: (this should be done recursively for all decorated types to be 100% bullet proof)...
-        if issubclass(aType, TemplateType):
+        if isinstance(aInstance, TemplateType):
             raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
-        self.mType = aType
+        self.mType = aInstance
         self.mValue = None
 
     def __eq__(self, aOther):
@@ -404,7 +408,7 @@ class RecordOf(TypeDecorator):
             if isinstance(value, TemplateType):
                 return False
             # ...and the value is of a specified type...
-            if not isinstance(value, self.mType):
+            if not isinstance(value, type(self.mType)):
                 return False
             # ...and if is a Record then it is initialized...
             # TODO: Test needed.

@@ -489,22 +489,8 @@ class TemplateRecord(TypeDecorator):
                 raise Exception
         TypeDecorator.__init__(self, aDecoratedType)
 
-    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
-    #       All other checks should be redundant.
     def __eq__(self, aOther):
-        # Make sure you compare only with a Record or a TemplateRecord...
-        if not (isinstance(aOther, Record) or \
-                isinstance(aOther, TemplateRecord)):
-            raise InvalidTypeInComparison
-        # ...that is of the same type or directly decorated type...
-        if not (type(self) is type(aOther) or \
-                type(self.mDecoratedType) is type(aOther)):
-            raise InvalidTypeInComparison
-        # ...and then compare...
-        for key in self.mValue:
-            if not self.mValue[key] == aOther.mValue[key]:
-                return False
-        return True
+        return self.mDecoratedType.__eq__(aOther)
 
     def accept(self, aValue):
         if type(aValue) is not dict:
@@ -534,8 +520,17 @@ class TemplateRecord(TypeDecorator):
                     return False
         return True
 
+    def assign(self, aValue):
+        if not self.accept(aValue):
+            raise InvalidTypeInAssignment
+        self.mDecoratedType.mValue = aValue
+        return self
+
+    def value(self):
+        return self.mDecoratedType.mValue
+
     def getField(self, aName):
-        if aName in self.mValue:
-            return self.mValue[aName]
+        if aName in self.value():
+            return self.value()[aName]
         else:
             raise LookupErrorMissingField

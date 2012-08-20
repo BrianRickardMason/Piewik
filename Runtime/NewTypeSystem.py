@@ -383,50 +383,14 @@ class RecordOf(TypeDecorator):
         self.mType = aType
         self.mValue = None
 
-    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
-    #       All other checks should be redundant.
     def __eq__(self, aOther):
-        # Make sure you compare only with a RecordOf...
-        if not isinstance(aOther, RecordOf):
+        if not isinstance(aOther, TypeDecorator):
             raise InvalidTypeInComparison
-        # ...that is of the same type...
-        if not type(self) is type(aOther):
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
             raise InvalidTypeInComparison
-        # TODO: Remove me once TemplateRecord is introduced.
-        #       This "for" statement is redundant (first condition checks it well enough).
-        for value in aOther.mValue:
-            # ...and has only TypeDecorator values...
-            if not isinstance(value, TypeDecorator):
-                raise InvalidTypeInComparison
-            # ...and has not any TemplateType values...
-            if isinstance(value, TemplateType):
-                raise InvalidTypeInComparison
-            # ...and the value is of a specified type...
-            if not isinstance(value, self.mType):
-                raise InvalidTypeInComparison
-            # ...and if is a Record then it is initialized...
-            # TODO: Test needed.
-            if isinstance(value, Record):
-                if value.mValue == None:
-                    raise InvalidTypeInComparison
-            # ...and if is a RecordOf then it is initialized...
-            # TODO: Test needed.
-            if isinstance(value, RecordOf):
-                if value.mValue == None:
-                    raise InvalidTypeInComparison
-        # ...and then compare...
-        # ...the length...
-        if len(self.mValue) != len(aOther.mValue):
-            return False
-        # ...and the content...
-        for element in self.mValue:
-            index = self.mValue.index(element)
-            try:
-                if self.mValue[index] != aOther.mValue[index]:
-                    return False
-            except:
-                return False
-        return True
 
     def accept(self, aValue):
         # Make sure the value is a list...

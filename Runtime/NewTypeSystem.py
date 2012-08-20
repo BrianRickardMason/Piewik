@@ -238,7 +238,8 @@ class TypeDecorator(Type):
 
 class Boolean(TypeDecorator):
     def __init__(self, aDecoratedType):
-        # TODO: Add checking of what can be decorated with this decorator.
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -246,7 +247,8 @@ class Boolean(TypeDecorator):
 
 class Integer(TypeDecorator):
     def __init__(self, aDecoratedType):
-        # TODO: Add checking of what can be decorated with this decorator.
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -254,7 +256,8 @@ class Integer(TypeDecorator):
 
 class Float(TypeDecorator):
     def __init__(self, aDecoratedType):
-        # TODO: Add checking of what can be decorated with this decorator.
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):
@@ -262,7 +265,8 @@ class Float(TypeDecorator):
 
 class Charstring(TypeDecorator):
     def __init__(self, aDecoratedType):
-        # TODO: Add checking of what can be decorated with this decorator.
+        if not isinstance(aDecoratedType, SimpleType):
+            raise InvalidTypeInCtor
         TypeDecorator.__init__(self, aDecoratedType)
 
     def accept(self, aValue):

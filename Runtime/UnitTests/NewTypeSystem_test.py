@@ -59,6 +59,26 @@ class NewTypeSystem_Boolean_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Boolean(SimpleType())
 
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Boolean(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Boolean(type)
+
 class NewTypeSystem_Boolean_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue(self):
         type = Boolean(SimpleType())
@@ -157,6 +177,26 @@ class NewTypeSystem_Boolean_TemplateType_Eq(unittest.TestCase):
 class NewTypeSystem_Integer_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Integer(SimpleType())
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Integer(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Integer(type)
 
 class NewTypeSystem_Integer_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue(self):
@@ -321,6 +361,26 @@ class NewTypeSystem_Float_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Float(SimpleType())
 
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Float(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Float(type)
+
 class NewTypeSystem_Float_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue(self):
         type = Float(SimpleType())
@@ -484,6 +544,26 @@ class NewTypeSystem_Charstring_Ctor(unittest.TestCase):
     def test_Ctor(self):
         Charstring(SimpleType())
 
+    def test_CtorRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        for type in [True, 1, 1.0, "WAX", {}, [], ()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Regular(self):
+        for type in [Boolean(SimpleType()), Integer(SimpleType()), Float(SimpleType()), Charstring(SimpleType())]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Special(self):
+        for type in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
+    def test_CtorRaisesAnExceptionOnAnInvalidType_Template(self):
+        for type in [TemplateType(Charstring(SimpleType()))]:
+            with self.assertRaises(InvalidTypeInCtor):
+                Charstring(type)
+
 class NewTypeSystem_Charstring_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue(self):
         type = Charstring(SimpleType())
@@ -625,7 +705,7 @@ class NewTypeSystem_Record_Ctor(unittest.TestCase):
                 type = MyRecord()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
-        for type in [TemplateType(Integer(SimpleType))]:
+        for type in [TemplateType(Integer(SimpleType()))]:
             with self.assertRaises(InvalidTypeInCtor):
                 class MyRecord(Record):
                     def __init__(self):
@@ -708,7 +788,7 @@ class NewTypeSystem_Record_Accept(unittest.TestCase):
                 Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                 'bar': TemplateType(Charstring(SimpleType)).assign(AnyValue())}
+                 'bar': TemplateType(Charstring(SimpleType())).assign(AnyValue())}
         self.assertFalse(type.accept(value))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_IncompatibleDictionaries_AssignedEmpty(self):
@@ -971,7 +1051,7 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
         value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
-        for value in [TemplateType(Integer(SimpleType)).assign(IntegerValue(1))]:
+        for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
             with self.assertRaises(InvalidTypeInComparison):
                 record == value
 
@@ -1060,7 +1140,7 @@ class NewTypeSystem_Record_GetField(unittest.TestCase):
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record = MyRecord().assign(value)
         self.assertEqual(record.getField('foo'), Integer(SimpleType()).assign(IntegerValue(1)))
-        self.assertEqual(record.getField('bar'), Charstring(SimpleType).assign(CharstringValue("WAX")))
+        self.assertEqual(record.getField('bar'), Charstring(SimpleType()).assign(CharstringValue("WAX")))
 
     def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
         class MyRecord(Record):
@@ -1129,7 +1209,7 @@ class NewTypeSystem_Record_TemplateRecord_Ctor(unittest.TestCase):
                 type = MyTemplateRecord()
 
     def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
-        for type in [TemplateType(Integer(SimpleType))]:
+        for type in [TemplateType(Integer(SimpleType()))]:
             with self.assertRaises(InvalidTypeInCtor):
                 class MyTemplateRecord(TemplateRecord):
                     def __init__(self):
@@ -1612,7 +1692,7 @@ class NewTypeSystem_Record_TemplateRecord_GetField(unittest.TestCase):
                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         type = MyTemplateRecord().assign(value)
         self.assertEqual(type.getField('foo'), Integer(SimpleType()).assign(IntegerValue(1)))
-        self.assertEqual(type.getField('bar'), Charstring(SimpleType).assign(CharstringValue("WAX")))
+        self.assertEqual(type.getField('bar'), Charstring(SimpleType()).assign(CharstringValue("WAX")))
 
     def test_GetFieldRaisesAnExceptionOnAnInvalidField(self):
         class MyRecord(Record):
@@ -1901,7 +1981,7 @@ class NewTypeSystem_RecordOF_Eq(unittest.TestCase):
             def __init__(self):
                 RecordOf.__init__(self, SimpleType(), Integer)
         record = MyRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
-        for value in [TemplateType(Integer(SimpleType)).assign(IntegerValue(1))]:
+        for value in [TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]:
             with self.assertRaises(InvalidTypeInComparison):
                 record == value
 

@@ -122,9 +122,35 @@ class NewTypeSystem_Boolean_Eq(unittest.TestCase):
         self.assertFalse(   Boolean(SimpleType()).assign(BooleanValue(True))
                          == Boolean(SimpleType()).assign(BooleanValue(False)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = Boolean(SimpleType()).assign(BooleanValue(True))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -168,9 +194,35 @@ class NewTypeSystem_Boolean_TemplateType_Eq(unittest.TestCase):
         self.assertFalse(   TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
                          == TemplateType(Boolean(SimpleType())).assign(BooleanValue(False)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -239,9 +291,35 @@ class NewTypeSystem_Integer_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(Integer(SimpleType()).assign(IntegerValue(1)) == Integer(SimpleType()).assign(IntegerValue(2)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = Integer(SimpleType()).assign(IntegerValue(1))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -305,9 +383,35 @@ class NewTypeSystem_Integer_BoundedType_Eq(unittest.TestCase):
                BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
             == BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(2)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -351,9 +455,35 @@ class NewTypeSystem_Integer_TemplateType_Eq(unittest.TestCase):
         self.assertFalse(   TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
                          == TemplateType(Integer(SimpleType())).assign(IntegerValue(2)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
         for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -422,9 +552,35 @@ class NewTypeSystem_Float_Eq(unittest.TestCase):
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(2.0)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = Float(SimpleType()).assign(FloatValue(1.0))
-        for value in [True, 1, "WAX"]:
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -488,9 +644,35 @@ class NewTypeSystem_Float_BoundedType_Eq(unittest.TestCase):
                BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
             == BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(2.0)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
-        for value in [True, 1, "WAX"]:
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -534,9 +716,35 @@ class NewTypeSystem_Float_TemplateType_Eq(unittest.TestCase):
         self.assertFalse(   TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
                          == TemplateType(Float(SimpleType())).assign(FloatValue(2.0)))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
-        for value in [True, 1, "WAX"]:
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -609,9 +817,35 @@ class NewTypeSystem_Charstring_Eq(unittest.TestCase):
         self.assertFalse(   Charstring(SimpleType()).assign(CharstringValue("WAX"))
                          == Charstring(SimpleType()).assign(CharstringValue("WAS")))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
-        for value in [True, 1, 1.0]:
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
@@ -656,9 +890,35 @@ class NewTypeSystem_Charstring_TemplateType_Eq(unittest.TestCase):
         self.assertFalse(   TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
                          == TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAS")))
 
-    def test_EqRaisesAnExceptionOnAnInvalidType(self):
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
-        for value in [True, 1, 1.0]:
+        for value in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0))
+        ]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                type == value
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        type = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 

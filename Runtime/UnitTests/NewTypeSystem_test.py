@@ -114,9 +114,16 @@ class NewTypeSystem_Boolean_Assign(unittest.TestCase):
                 type.assign(value)
 
 class NewTypeSystem_Boolean_Eq(unittest.TestCase):
-    def test_EqReturnsTrueOnSameValues(self):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
         self.assertTrue(   Boolean(SimpleType()).assign(BooleanValue(True))
                         == Boolean(SimpleType()).assign(BooleanValue(True)))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Boolean(SimpleType()).assign(BooleanValue(True))
+        for value in [
+            TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        ]:
+            self.assertTrue(type == value)
 
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(   Boolean(SimpleType()).assign(BooleanValue(True))
@@ -285,8 +292,16 @@ class NewTypeSystem_Integer_Assign(unittest.TestCase):
                 type.assign(value)
 
 class NewTypeSystem_Integer_Eq(unittest.TestCase):
-    def test_EqReturnsTrueOnSameValues(self):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
         self.assertTrue(Integer(SimpleType()).assign(IntegerValue(1)) == Integer(SimpleType()).assign(IntegerValue(1)))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Integer(SimpleType()).assign(IntegerValue(1))
+        for value in [
+            BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1)),
+            TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        ]:
+            self.assertTrue(type == value)
 
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(Integer(SimpleType()).assign(IntegerValue(1)) == Integer(SimpleType()).assign(IntegerValue(2)))
@@ -546,9 +561,16 @@ class NewTypeSystem_Float_Assign(unittest.TestCase):
                 type.assign(value)
 
 class NewTypeSystem_Float_Eq(unittest.TestCase):
-    def test_EqReturnsTrueOnSameValues(self):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
         self.assertTrue(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(1.0)))
 
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Float(SimpleType()).assign(FloatValue(1.0))
+        for value in [
+            BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0)),
+            TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        ]:
+            self.assertTrue(type == value)
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(2.0)))
 
@@ -807,11 +829,18 @@ class NewTypeSystem_Charstring_Assign(unittest.TestCase):
                 type.assign(value)
 
 class NewTypeSystem_Charstring_Eq(unittest.TestCase):
-    def test_EqReturnsTrueOnSameValues(self):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
         for values in [(CharstringValue(""), CharstringValue("")),
                        (CharstringValue("WAX"), CharstringValue("WAX"))]:
             self.assertTrue(   TemplateType(Charstring(SimpleType())).assign(values[0])
                             == TemplateType(Charstring(SimpleType())).assign(values[1]))
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        type = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for value in [
+            TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        ]:
+            self.assertTrue(type == value)
 
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(   Charstring(SimpleType()).assign(CharstringValue("WAX"))

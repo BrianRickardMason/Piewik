@@ -2276,17 +2276,6 @@ class NewTypeSystem_RecordOf_TemplateRecordOf_Ctor(unittest.TestCase):
                     TemplateRecordOf.__init__(self, MyRecordOf())
             type = MyTemplateRecordOf()
 
-    def test_CtorRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
-        for type in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
-            with self.assertRaises(InvalidTypeInCtor):
-                class MyRecordOf(RecordOf):
-                    def __init__(self):
-                        RecordOf.__init__(self, SimpleType(), type)
-                class MyTemplateRecordOf(TemplateRecordOf):
-                    def __init__(self):
-                        TemplateRecordOf.__init__(self, MyRecordOf())
-                type = MyTemplateRecordOf()
-
     def test_CtorRaisesAnExceptionOnAnInvalidValue_DoubleWrap(self):
         class MyRecordOf(RecordOf):
             def __init__(self):

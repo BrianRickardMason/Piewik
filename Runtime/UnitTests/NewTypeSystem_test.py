@@ -55,7 +55,20 @@ class NewTypeSystem_TypeDecorator_IsOfType(unittest.TestCase):
             def __init__(self):
                 Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
         type = MyRecord()
+        self.assertTrue(type.isOfType(MyRecord))
         self.assertTrue(type.isOfType(Record))
+        self.assertTrue(type.isOfType(SimpleType))
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyWrappedRecord(MyRecord):
+            def __init__(self):
+                MyRecord.__init__(self)
+        type = MyWrappedRecord()
+        self.assertTrue(type.isOfType(MyWrappedRecord))
+        self.assertTrue(type.isOfType(MyRecord))
+        self.assertTrue(type.isOfType(Record))
+        self.assertTrue(type.isOfType(SimpleType))
 
 class NewTypeSystem_Boolean_Ctor(unittest.TestCase):
     def test_Ctor(self):
@@ -1270,14 +1283,18 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
         class ExternalRecord(Record):
             def __init__(self):
                 Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': InternalRecord()})
-        internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                         'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        externalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
-                         'bar': internalValue}
+        internalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        internalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        externalValue1 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue1}
+        externalValue2 = {'foo': Integer(SimpleType()).assign(IntegerValue(2)),
+                          'bar': internalValue2}
         externalRecord1 = ExternalRecord()
         externalRecord2 = ExternalRecord()
-        externalRecord1.assign(externalValue)
-        externalRecord2.assign(externalValue)
+        externalRecord1.assign(externalValue1)
+        externalRecord2.assign(externalValue2)
         self.assertTrue(externalRecord1 == externalRecord2)
 
     def test_EqReturnsFalseOnDifferentValues_NonEmptyRecord(self):
@@ -1359,66 +1376,6 @@ class NewTypeSystem_Record_Eq(unittest.TestCase):
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record1 = MyRecord1().assign(value1)
         record2 = MyRecord2().assign(value2)
-        with self.assertRaises(InvalidTypeInComparison):
-            record1 == record2
-
-    def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondEmpty(self):
-        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
-        record2 = Record(SimpleType(), {})
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        record1.assign(value1)
-        record2.assign({})
-        with self.assertRaises(InvalidTypeInComparison):
-            record1 == record2
-
-    def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondTooSmall(self):
-        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
-        record2 = Record(SimpleType(), {'foo': Integer(SimpleType())})
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1))}
-        record1.assign(value1)
-        record2.assign(value2)
-        with self.assertRaises(InvalidTypeInComparison):
-            record1 == record2
-
-    def test_EqRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_SecondTooBig(self):
-        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
-        record2 = Record(SimpleType(), {'foo': Integer(SimpleType()),
-                                        'bar': Charstring(SimpleType()),
-                                        'baz': Integer(SimpleType())})
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX")),
-                  'baz': Integer(SimpleType()).assign(IntegerValue(2))}
-        record1.assign(value1)
-        record2.assign(value2)
-        with self.assertRaises(InvalidTypeInComparison):
-            record1 == record2
-
-    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasDifferentKeys(self):
-        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
-        record2 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'baz': Charstring(SimpleType())})
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'baz': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        record1.assign(value1)
-        record2.assign(value2)
-        with self.assertRaises(InvalidTypeInComparison):
-            record1 == record2
-
-    def test_AssignRaisesAnExceptionOnAnInvalidValue_IncompatibleDictionaries_AssignedHasChangedKeys(self):
-        record1 = Record(SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
-        record2 = Record(SimpleType(), {'bar': Integer(SimpleType()), 'foo': Charstring(SimpleType())})
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        value2 = {'bar': Integer(SimpleType()).assign(IntegerValue(1)),
-                  'foo': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        record1.assign(value1)
-        record2.assign(value2)
         with self.assertRaises(InvalidTypeInComparison):
             record1 == record2
 

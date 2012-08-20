@@ -318,44 +318,14 @@ class Record(TypeDecorator):
         self.mDictionary = aDictionary
         self.mValue = None
 
-    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
-    #       All other checks should be redundant.
     def __eq__(self, aOther):
-        # Make sure you compare only with a record...
-        if not isinstance(aOther, Record):
+        if not isinstance(aOther, TypeDecorator):
             raise InvalidTypeInComparison
-        # ...that is of the same type...
-        if type(self) is not type(aOther):
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
             raise InvalidTypeInComparison
-        # ...of the same length...
-        if len(self.mValue) != len(aOther.mValue):
-            raise InvalidTypeInComparison
-        # ...which has mine keys...
-        for key in self.mValue:
-            if not key in aOther.mValue:
-                raise InvalidTypeInComparison
-        # ...and which's keys I have...
-        for key in aOther.mValue:
-            if not key in self.mValue:
-                raise InvalidTypeInComparison
-        # TODO: Remove me once TemplateRecord is introduced.
-        #       This "for" statement is redundant (first condition checks it well enough).
-        for value in aOther.mValue.values():
-            # ...and that has only TypeDecorator values...
-            if not isinstance(value, TypeDecorator):
-                raise InvalidTypeInComparison
-            # ...and that has not any TemplateType values...
-            if isinstance(value, TemplateType):
-                raise InvalidTypeInComparison
-        # ...and which's values underneath keys are the same as mine...
-        for key in self.mValue:
-            if not isinstance(aOther.mValue[key], type(self.mDictionary[key])):
-                raise InvalidTypeInComparison
-        # ...and then compare...
-        for key in self.mValue:
-            if not self.mValue[key] == aOther.mValue[key]:
-                return False
-        return True
 
     def accept(self, aValue):
         if type(aValue) is not dict:
@@ -413,8 +383,8 @@ class RecordOf(TypeDecorator):
         self.mType = aType
         self.mValue = None
 
-#    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
-#    #       All other checks should be redundant.
+    # NOTE: Actually we should only make sure that we are comparing the record of the same types.
+    #       All other checks should be redundant.
     def __eq__(self, aOther):
         # Make sure you compare only with a RecordOf...
         if not isinstance(aOther, RecordOf):

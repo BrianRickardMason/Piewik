@@ -1517,6 +1517,7 @@ class TypeSystem_Record_Eq(unittest.TestCase):
         record1 = MyRecord().assign({})
         record2 = MyRecord().assign({})
         self.assertTrue(record1 == record2)
+        self.assertTrue(record2 == record1)
 
     def test_EqReturnsTrueOnSameValues_NonEmptyRecord(self):
         class MyRecord(Record):
@@ -1527,6 +1528,7 @@ class TypeSystem_Record_Eq(unittest.TestCase):
         record1 = MyRecord().assign(value)
         record2 = MyRecord().assign(value)
         self.assertTrue(record1 == record2)
+        self.assertTrue(record2 == record1)
 
     def test_EqReturnsTrueOnSameValues_NestedRecords(self):
         class InternalRecord(Record):
@@ -1548,6 +1550,7 @@ class TypeSystem_Record_Eq(unittest.TestCase):
         externalRecord1.assign(externalValue1)
         externalRecord2.assign(externalValue2)
         self.assertTrue(externalRecord1 == externalRecord2)
+        self.assertTrue(externalRecord2 == externalRecord1)
 
     def test_EqReturnsFalseOnDifferentValues_NonEmptyRecord(self):
         class MyRecord(Record):
@@ -1560,6 +1563,7 @@ class TypeSystem_Record_Eq(unittest.TestCase):
         record1 = MyRecord().assign(value1)
         record2 = MyRecord().assign(value2)
         self.assertFalse(record1 == record2)
+        self.assertFalse(record2 == record1)
 
     def test_EqReturnsFalseOnDifferentValues_NestedRecords(self):
         class InternalRecord(Record):
@@ -1581,6 +1585,7 @@ class TypeSystem_Record_Eq(unittest.TestCase):
         externalRecord1.assign(externalValue1)
         externalRecord2.assign(externalValue2)
         self.assertFalse(externalRecord1 == externalRecord2)
+        self.assertFalse(externalRecord2 == externalRecord1)
 
     def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecord(Record):

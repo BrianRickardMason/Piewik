@@ -2487,7 +2487,7 @@ class TypeSystem_RecordOf_TemplateRecordOf_Accept(unittest.TestCase):
             def __init__(self):
                 TemplateRecordOf.__init__(self, MyRecordOf())
         type = MyTemplateRecordOf()
-        for value in [[TemplateType(Integer(SimpleType()))]]:
+        for value in [[TemplateType(Integer(SimpleType())).assign(IntegerValue(1))]]:
             self.assertTrue(type.accept(value))
 
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_AnyOfValuesIsATemplateLikeType(self):
@@ -2532,7 +2532,7 @@ class TypeSystem_RecordOf_TemplateRecordOf_Accept(unittest.TestCase):
             def __init__(self):
                 TemplateRecordOf.__init__(self, MyRecordOf())
         type = MyTemplateRecordOf()
-        for value in [[Float(SimpleType())]]:
+        for value in [[Float(SimpleType()).assign(FloatValue(1.0))]]:
             self.assertFalse(type.accept(value))
 
 class TypeSystem_RecordOf_TemplateRecordOf_Assign(unittest.TestCase):
@@ -2577,7 +2577,8 @@ class TypeSystem_RecordOf_TemplateRecordOf_Assign(unittest.TestCase):
             def __init__(self):
                 TemplateRecordOf.__init__(self, MyRecordOf())
         type = MyTemplateRecordOf()
-        for value in [[TemplateType(Integer(SimpleType()))]]:
+        for value in [[TemplateType(Integer(SimpleType())).assign(IntegerValue(1))],
+                      [TemplateType(Integer(SimpleType())).assign(AnyValue())]]:
             type.assign(value)
 
     def test_AssignAssignsOnAValidValue_TheSameTypes_AnyOfValuesIsATemplateLikeType(self):
@@ -2624,7 +2625,7 @@ class TypeSystem_RecordOf_TemplateRecordOf_Assign(unittest.TestCase):
             def __init__(self):
                 TemplateRecordOf.__init__(self, MyRecordOf())
         type = MyTemplateRecordOf()
-        for value in [[Float(SimpleType())]]:
+        for value in [[Float(SimpleType()).assign(FloatValue(1.0))]]:
             with self.assertRaises(InvalidTypeInAssignment):
                 self.assertFalse(type.assign(value))
 

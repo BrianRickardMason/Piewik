@@ -421,7 +421,13 @@ class RecordOf(TypeDecorator):
             elif self.mType.isOfType(TypeDecorator):
                 if isinstance(value, TypeDecorator):
                     if isinstance(value, TemplateType):
-                        return False
+                        if self.mType.isOfType(TemplateRecordOf) or \
+                           self.mType.isOfType(TemplateRecord)   or \
+                           self.mType.isOfType(TemplateType)        :
+                            if not self.mType.accept(value.value()):
+                                return False
+                        else:
+                            return False
                     else:
                         if not self.mType.accept(value.value()):
                             return False
@@ -478,7 +484,7 @@ class BoundedType(TypeDecorator):
         return self
 
     def value(self):
-        return self.mDecoratedType.mValue
+        return self.mDecoratedType.value()
 
 class TemplateType(TypeDecorator):
     def __init__(self, aDecoratedType):
@@ -499,7 +505,7 @@ class TemplateType(TypeDecorator):
         return self
 
     def value(self):
-        return self.mDecoratedType.mValue
+        return self.mDecoratedType.value()
 
 class TemplateRecord(TypeDecorator):
     def __init__(self, aDecoratedType):
@@ -536,7 +542,7 @@ class TemplateRecord(TypeDecorator):
         return self
 
     def value(self):
-        return self.mDecoratedType.mValue
+        return self.mDecoratedType.value()
 
     def getField(self, aName):
         if aName in self.value():
@@ -577,35 +583,7 @@ class TemplateRecordOf(TypeDecorator):
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
-        # TODO: Do as in the Record!
-        # Make sure the value is a list...
-        if type(aValue) is not list:
-            return False
-        for value in aValue:
-            # ...and has only TypeDecorator values...
-            if not isinstance(value, TypeDecorator):
-                return False
-            # ...and the value is of a specified type...
-            if self.mDecoratedType.mType.isOfType(Record):
-                pass
-            elif self.mDecoratedType.mType.isOfType(RecordOf):
-                pass
-            else:
-                if not (value.isOfType(type(self.mDecoratedType.mType))  or \
-                        self.mDecoratedType.mType.isOfType(type(value)))    :
-                    return False
-            # TODO: To be removed from both. The same as with Record.
-            # ...and if is a Record then it is initialized...
-            # TODO: Test needed.
-            if isinstance(value, Record):
-                if value.mValue == None:
-                    return False
-            # ...and if is a RecordOf then it is initialized...
-            # TODO: Test needed.
-            if isinstance(value, RecordOf):
-                if value.mValue == None:
-                    return False
-        return True
+        return self.mDecoratedType.accept(aValue)
 
     def getField(self, aIndex):
         try:

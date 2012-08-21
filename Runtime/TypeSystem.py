@@ -36,6 +36,8 @@
 #
 # TODO: Change isinstance to isOfType.
 # TODO: value() for Record/RecordOf.
+# TODO: Add type compatibility (e.g. to be used in __eq__().
+# TODO: Enable assignment of a TypeDecorator to a TypeDecorator (not only value assignment).
 #
 
 class TypeSystemException(Exception):

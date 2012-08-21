@@ -179,6 +179,59 @@ class TypeSystem_Boolean_Eq(unittest.TestCase):
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
 
+class TypeSystem_Boolean_IsCompatible(unittest.TestCase):
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Self(self):
+        instance = Boolean(SimpleType()).assign(BooleanValue(True))
+        self.assertTrue(instance.isCompatible(instance))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Subtyped(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        class MyBoolean(Boolean):
+            def __init__(self):
+                Boolean.__init__(self, SimpleType())
+        instance2 = MyBoolean().assign(BooleanValue(True))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_DoubleSubtyped(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        class MyBoolean(Boolean):
+            def __init__(self):
+                Boolean.__init__(self, SimpleType())
+        class MyBoolean2(MyBoolean):
+            def __init__(self):
+                MyBoolean.__init__(self)
+        instance2 = MyBoolean2().assign(BooleanValue(True))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Template(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        instance2 = TemplateType(Boolean(SimpleType())).assign(BooleanValue(True))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_BuiltIn(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        for instance2 in [True, 1.0, "WAX"]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        for instance2 in [
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Special(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        for instance2 in [AnyValue()]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_TemplateWithSpecial(self):
+        instance1 = Boolean(SimpleType()).assign(BooleanValue(True))
+        instance2 = TemplateType(Boolean(SimpleType())).assign(AnyValue())
+        self.assertFalse(instance1.isCompatible(instance2))
+
 class TypeSystem_Boolean_TemplateType_Ctor(unittest.TestCase):
     def test_Ctor(self):
         TemplateType(Boolean(SimpleType()))
@@ -355,6 +408,64 @@ class TypeSystem_Integer_Eq(unittest.TestCase):
         ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
+
+class TypeSystem_Integer_IsCompatible(unittest.TestCase):
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Self(self):
+        instance = Integer(SimpleType()).assign(IntegerValue(1))
+        self.assertTrue(instance.isCompatible(instance))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_BoundedType(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        instance2 = BoundedType(Integer(SimpleType()), IntegerValue(0), IntegerValue(10)).assign(IntegerValue(1))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Subtyped(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self, SimpleType())
+        instance2 = MyInteger().assign(IntegerValue(1))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_DoubleSubtyped(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self, SimpleType())
+        class MyInteger2(MyInteger):
+            def __init__(self):
+                MyInteger.__init__(self)
+        instance2 = MyInteger2().assign(IntegerValue(1))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Template(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        instance2 = TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_BuiltIn(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        for instance2 in [True, 1.0, "WAX"]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        for instance2 in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Special(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        for instance2 in [AnyValue()]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_TemplateWithSpecial(self):
+        instance1 = Integer(SimpleType()).assign(IntegerValue(1))
+        instance2 = TemplateType(Integer(SimpleType())).assign(AnyValue())
+        self.assertFalse(instance1.isCompatible(instance2))
 
 class TypeSystem_Integer_BoundedType_Ctor(unittest.TestCase):
     def test_Ctor(self):
@@ -589,6 +700,7 @@ class TypeSystem_Float_Eq(unittest.TestCase):
             TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
         ]:
             self.assertTrue(type == value)
+
     def test_EqReturnsFalseOnDifferentValues(self):
         self.assertFalse(Float(SimpleType()).assign(FloatValue(1.0)) == Float(SimpleType()).assign(FloatValue(2.0)))
 
@@ -623,6 +735,64 @@ class TypeSystem_Float_Eq(unittest.TestCase):
         ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
+
+class TypeSystem_Float_IsCompatible(unittest.TestCase):
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Self(self):
+        instance = Float(SimpleType()).assign(FloatValue(1.0))
+        self.assertTrue(instance.isCompatible(instance))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_BoundedType(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        instance2 = BoundedType(Float(SimpleType()), FloatValue(0.0), FloatValue(10.0)).assign(FloatValue(1.0))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Subtyped(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        class MyFloat(Float):
+            def __init__(self):
+                Float.__init__(self, SimpleType())
+        instance2 = MyFloat().assign(FloatValue(1.0))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_DoubleSubtyped(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        class MyFloat(Float):
+            def __init__(self):
+                Float.__init__(self, SimpleType())
+        class MyFloat2(MyFloat):
+            def __init__(self):
+                MyFloat.__init__(self)
+        instance2 = MyFloat2().assign(FloatValue(1.0))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Template(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        instance2 = TemplateType(Float(SimpleType())).assign(FloatValue(1.0))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_BuiltIn(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        for instance2 in [True, 1.0, "WAX"]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        for instance2 in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        ]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Special(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        for instance2 in [AnyValue()]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_TemplateWithSpecial(self):
+        instance1 = Float(SimpleType()).assign(FloatValue(1.0))
+        instance2 = TemplateType(Float(SimpleType())).assign(AnyValue())
+        self.assertFalse(instance1.isCompatible(instance2))
 
 class TypeSystem_Float_BoundedType_Ctor(unittest.TestCase):
     def test_Ctor(self):
@@ -895,6 +1065,59 @@ class TypeSystem_Charstring_Eq(unittest.TestCase):
         ]:
             with self.assertRaises(InvalidTypeInComparison):
                 type == value
+
+class TypeSystem_Charstring_IsCompatible(unittest.TestCase):
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Self(self):
+        instance = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        self.assertTrue(instance.isCompatible(instance))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Subtyped(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        class MyCharstring(Charstring):
+            def __init__(self):
+                Charstring.__init__(self, SimpleType())
+        instance2 = MyCharstring().assign(CharstringValue("WAX"))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_DoubleSubtyped(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        class MyCharstring(Charstring):
+            def __init__(self):
+                Charstring.__init__(self, SimpleType())
+        class MyCharstring2(MyCharstring):
+            def __init__(self):
+                MyCharstring.__init__(self)
+        instance2 = MyCharstring2().assign(CharstringValue("WAX"))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Template(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        instance2 = TemplateType(Charstring(SimpleType())).assign(CharstringValue("WAX"))
+        self.assertTrue(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_BuiltIn(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for instance2 in [True, 1.0, "WAX"]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for instance2 in [
+            Boolean(SimpleType()).assign(BooleanValue(True)),
+            Integer(SimpleType()).assign(IntegerValue(1)),
+            Float(SimpleType()).assign(FloatValue(1.0)),
+        ]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Special(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        for instance2 in [AnyValue()]:
+            self.assertFalse(instance1.isCompatible(instance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_TemplateWithSpecial(self):
+        instance1 = Charstring(SimpleType()).assign(CharstringValue("WAX"))
+        instance2 = TemplateType(Charstring(SimpleType())).assign(AnyValue())
+        self.assertFalse(instance1.isCompatible(instance2))
 
 class TypeSystem_Charstring_TemplateType_Ctor(unittest.TestCase):
     def test_Ctor(self):
@@ -1934,9 +2157,9 @@ class TypeSystem_Record_TemplateRecord_Eq(unittest.TestCase):
             def __init__(self):
                 TemplateRecord.__init__(self, MyRecord())
         type = MyTemplateRecord()
-        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+        value1 = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        value2 = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                   'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
         record1 = MyTemplateRecord().assign(value1)
         record2 = MyTemplateRecord().assign(value2)
@@ -2679,8 +2902,8 @@ class TypeSystem_RecordOF_TemplateRecordOf_Eq(unittest.TestCase):
         class MyTemplateRecordOf(TemplateRecordOf):
             def __init__(self):
                 TemplateRecordOf.__init__(self, MyRecordOf())
-        record1 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
-        record2 = MyTemplateRecordOf().assign([TemplateType(Integer(SimpleType())).assign(AnyValue())])
+        record1 = MyTemplateRecordOf().assign([TemplateType(Integer(SimpleType())).assign(AnyValue())])
+        record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         self.assertTrue(record1 == record2)
 
     def test_EqReturnsTrueOnSameValues_ManyElements_WithoutSpecial(self):

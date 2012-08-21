@@ -195,6 +195,9 @@ class Type(object):
     def assign(self, aValue):
         raise NotImplementedError
 
+    def isCompatible(self, aOther):
+        raise NotImplementedError
+
     def value(self):
         raise NotImplementedError
 
@@ -209,6 +212,9 @@ class SimpleType(Type):
         raise NotImplementedError
 
     def assign(self, aValue):
+        raise NotImplementedError
+
+    def isCompatible(self, aOther):
         raise NotImplementedError
 
     def value(self):
@@ -233,6 +239,9 @@ class TypeDecorator(Type):
         self.mValue = aValue
         return self
 
+    def isCompatible(self, aOther):
+        raise NotImplementedError
+
     def value(self):
         return self.mValue
 
@@ -253,15 +262,22 @@ class Boolean(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if not isinstance(aOther, TypeDecorator):
-            raise InvalidTypeInComparison
-        if aOther.isOfType(Boolean):
+        if self.isCompatible(aOther):
             return self.value() == aOther.value()
         else:
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return type(aValue) is BooleanValue
+
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(Boolean):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
 
 class Integer(TypeDecorator):
     def __init__(self, aDecoratedType):
@@ -270,15 +286,22 @@ class Integer(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if not isinstance(aOther, TypeDecorator):
-            raise InvalidTypeInComparison
-        if aOther.isOfType(Integer):
+        if self.isCompatible(aOther):
             return self.value() == aOther.value()
         else:
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return type(aValue) is IntegerValue
+
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(Integer):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
 
 class Float(TypeDecorator):
     def __init__(self, aDecoratedType):
@@ -287,15 +310,22 @@ class Float(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if not isinstance(aOther, TypeDecorator):
-            raise InvalidTypeInComparison
-        if aOther.isOfType(Float):
+        if self.isCompatible(aOther):
             return self.value() == aOther.value()
         else:
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return type(aValue) is FloatValue
+
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(Float):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
 
 class Charstring(TypeDecorator):
     def __init__(self, aDecoratedType):
@@ -304,15 +334,22 @@ class Charstring(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        if not isinstance(aOther, TypeDecorator):
-            raise InvalidTypeInComparison
-        if aOther.isOfType(Charstring):
+        if self.isCompatible(aOther):
             return self.value() == aOther.value()
         else:
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return type(aValue) is CharstringValue
+
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(Charstring):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
 
 class Record(TypeDecorator):
     def __init__(self, aDecoratedType, aDictionary={}):
@@ -473,7 +510,10 @@ class BoundedType(TypeDecorator):
         self.mUpperBoundary = aUpperBoundary
 
     def __eq__(self, aOther):
-        return self.mDecoratedType.__eq__(aOther)
+        if self.isCompatible(aOther):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue) and \
@@ -486,6 +526,15 @@ class BoundedType(TypeDecorator):
         self.mDecoratedType.mValue = aValue
         return self
 
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(type(self.mDecoratedType)):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
+
     def value(self):
         return self.mDecoratedType.value()
 
@@ -495,7 +544,10 @@ class TemplateType(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        return self.mDecoratedType.__eq__(aOther)
+        if self.isCompatible(aOther):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue) or \
@@ -506,6 +558,15 @@ class TemplateType(TypeDecorator):
             raise InvalidTypeInAssignment
         self.mDecoratedType.mValue = aValue
         return self
+
+    def isCompatible(self, aOther):
+        if not isinstance(aOther, TypeDecorator):
+            return False
+        if not aOther.isOfType(type(self.mDecoratedType)):
+            return False
+        if not self.accept(aOther.value()):
+            return False
+        return True
 
     def value(self):
         return self.mDecoratedType.value()

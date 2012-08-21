@@ -531,7 +531,15 @@ class TemplateRecord(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
-        return self.mDecoratedType.__eq__(aOther)
+        # Must be called that way to distinguish between two Records of the same structure and a different type.
+        # Cannot simply call self.mDecoratedType.__eq__(aOther).
+        if not isinstance(aOther, TypeDecorator):
+            raise InvalidTypeInComparison
+        # TODO: Consider moving it to simple types (different trees of inheritance).
+        if aOther.isOfType(type(self)):
+            return self.value() == aOther.value()
+        else:
+            raise InvalidTypeInComparison
 
     def accept(self, aValue):
         return self.mDecoratedType.accept(aValue)
@@ -575,6 +583,8 @@ class TemplateRecordOf(TypeDecorator):
         TypeDecorator.__init__(self, aDecoratedType)
 
     def __eq__(self, aOther):
+        # Must be called that way to distinguish between two RecordsOf of the same structure and a different type.
+        # Cannot simply call self.mDecoratedType.__eq__(aOther).
         if not isinstance(aOther, TypeDecorator):
             raise InvalidTypeInComparison
         # TODO: Consider moving it to simple types (different trees of inheritance).

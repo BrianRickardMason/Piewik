@@ -35,6 +35,7 @@
 #       Example: calling class MyInteger(Integer):... to get a type alias.
 # TODO: More tests for template types without special values
 #       (TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
+# TODO: DifferentType tests for basic types.
 #
 
 import unittest
@@ -2005,6 +2006,25 @@ class TypeSystem_Record_TemplateRecord_Eq(unittest.TestCase):
         type2.assign(externalValue2)
         self.assertFalse(type1 == type2)
 
+    def test_EqRaisesAnExceptionOnAnInvalidValue_InvalidType_DifferentType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': Charstring(SimpleType())})
+        class MyTemplateRecord1(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        class MyTemplateRecord2(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        value1 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        value2 = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                  'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
+        record1 = MyTemplateRecord1().assign(value1)
+        record2 = MyTemplateRecord2().assign(value2)
+        with self.assertRaises(InvalidTypeInComparison):
+            record1 == record2
+
 class TypeSystem_Record_TemplateRecord_GetField(unittest.TestCase):
     def test_GetFieldReturnsTheValueOfTheFieldOnAValidField(self):
         class MyRecord(Record):
@@ -2652,7 +2672,7 @@ class TypeSystem_RecordOF_TemplateRecordOf_Eq(unittest.TestCase):
         record2 = MyTemplateRecordOf().assign([Integer(SimpleType()).assign(IntegerValue(1))])
         self.assertTrue(record1 == record2)
 
-    def test_EqReturnsTrueOnSameValues_OneElement_WithSPecial(self):
+    def test_EqReturnsTrueOnSameValues_OneElement_WithSpecial(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
                 RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))

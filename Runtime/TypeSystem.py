@@ -35,6 +35,7 @@
 
 #
 # TODO: Change isinstance to isOfType.
+# TODO: value() for Record/RecordOf.
 #
 
 class TypeSystemException(Exception):

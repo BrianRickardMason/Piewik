@@ -33,6 +33,8 @@
 # TODO: More tests for Record of RecordOf.
 # TODO: Add exemplary module showing examples of anything that needs calling: class Foo(Bar):...
 #       Example: calling class MyInteger(Integer):... to get a type alias.
+# TODO: More tests for template types without special values
+#       (TemplateType(Integer(SimpleType())).assign(IntegerValue(1))
 #
 
 import unittest
@@ -1524,6 +1526,25 @@ class TypeSystem_Record_TemplateRecord_Ctor(unittest.TestCase):
         self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['bar'].isOfType(Charstring))
         self.assertTrue(type.mDecoratedType.mDictionary['bar'].mDecoratedType.mDictionary['bar'].isOfType(TemplateType))
 
+    def test_Ctor_ConvertsTypesToTemplateTypes_RecordWithNestedRecordOf(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': MyRecordOf()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        myTemplateRecord = MyTemplateRecord()
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['foo'].isOfType(TemplateType))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['foo'].isOfType(Integer))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['bar'].isOfType(TemplateRecordOf))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['bar'].isOfType(MyRecordOf))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['bar'].isOfType(RecordOf))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['bar'].mDecoratedType.mType.isOfType(TemplateType))
+        self.assertTrue(myTemplateRecord.mDecoratedType.mDictionary['bar'].mDecoratedType.mType.isOfType(Integer))
+
 class TypeSystem_Record_TemplateRecord_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValue_TheSameTypes_WithoutSpecial(self):
         class MyRecord(Record):
@@ -1578,9 +1599,8 @@ class TypeSystem_Record_TemplateRecord_Accept(unittest.TestCase):
                 TemplateRecord.__init__(self, ExternalRecord())
         internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord = InternalRecord().assign(internalValue)
         externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
-                         'bar': internalRecord}
+                         'bar': internalValue}
         type = MyTemplateRecord()
         self.assertTrue(type.accept(externalValue))
 
@@ -1600,6 +1620,38 @@ class TypeSystem_Record_TemplateRecord_Accept(unittest.TestCase):
                          'bar': internalValue}
         type = MyTemplateRecord()
         self.assertTrue(type.accept(externalValue))
+
+    def test_AcceptReturnsTrueOnAValidValue_RecordWithNestedRecordOf_WithoutSpecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': MyRecordOf()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        myTemplateRecord = MyTemplateRecord()
+        value = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
+                 'bar': [Integer(SimpleType()).assign(IntegerValue(1)),
+                         Integer(SimpleType()).assign(IntegerValue(1))]}
+        self.assertTrue(myTemplateRecord.accept(value))
+
+    def test_AcceptReturnsTrueOnAValidValue_RecordWithNestedRecordOf_WithSpecial(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, SimpleType(), {'foo': Integer(SimpleType()), 'bar': MyRecordOf()})
+        class MyTemplateRecord(TemplateRecord):
+            def __init__(self):
+                TemplateRecord.__init__(self, MyRecord())
+        myTemplateRecord = MyTemplateRecord()
+        value = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
+                 'bar': [Integer(SimpleType()).assign(IntegerValue(1)),
+                         TemplateType(Integer(SimpleType())).assign(AnyValue())]}
+        self.assertTrue(myTemplateRecord.accept(value))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
         class MyRecord(Record):
@@ -1736,9 +1788,8 @@ class TypeSystem_Record_TemplateRecord_Assign(unittest.TestCase):
                 TemplateRecord.__init__(self, ExternalRecord())
         internalValue = {'foo': Integer(SimpleType()).assign(IntegerValue(1)),
                          'bar': Charstring(SimpleType()).assign(CharstringValue("WAX"))}
-        internalRecord = InternalRecord().assign(internalValue)
         externalValue = {'foo': TemplateType(Integer(SimpleType())).assign(AnyValue()),
-                         'bar': internalRecord}
+                         'bar': internalValue}
         type = MyTemplateRecord()
         type.assign(externalValue)
 
@@ -2058,7 +2109,8 @@ class TypeSystem_RecordOf_Accept(unittest.TestCase):
             def __init__(self):
                 RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
-        for value in [[TemplateType(Integer(SimpleType()))]]:
+        for value in [[TemplateType(Integer(SimpleType())).assign(IntegerValue(1)),
+                       TemplateType(Integer(SimpleType())).assign(AnyValue())]]:
             self.assertFalse(type.accept(value))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_OtherType(self):
@@ -2066,7 +2118,7 @@ class TypeSystem_RecordOf_Accept(unittest.TestCase):
             def __init__(self):
                 RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
-        for value in [[Float(SimpleType())]]:
+        for value in [[Float(SimpleType()).assign(FloatValue(1.0))]]:
             self.assertFalse(type.accept(value))
 
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType(self):
@@ -2155,7 +2207,7 @@ class TypeSystem_RecordOf_Assign(unittest.TestCase):
             def __init__(self):
                 RecordOf.__init__(self, SimpleType(), Integer(SimpleType()))
         type = MyRecordOf()
-        for value in [[Float(SimpleType())]]:
+        for value in [[Float(SimpleType()).assign(FloatValue(1.0))]]:
             with self.assertRaises(InvalidTypeInAssignment):
                 type.assign(value)
 

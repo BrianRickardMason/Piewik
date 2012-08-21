@@ -176,6 +176,9 @@ class AnyValue(Value):
     def __eq__(self, aOther):
         return True
 
+    def value(self):
+        return self
+
 class Type(object):
     def __eq__(self, aOther):
         raise NotImplementedError
@@ -346,19 +349,20 @@ class Record(TypeDecorator):
             if not key in self.mDictionary:
                 return False
         for key in self.mDictionary:
-            if isinstance(self.mDictionary[key], Record):
+            if self.mDictionary[key].isOfType(Record):
                 if not self.mDictionary[key].accept(aValue[key]):
                     return False
-            elif isinstance(self.mDictionary[key], RecordOf):
+            elif self.mDictionary[key].isOfType(RecordOf):
                 if not self.mDictionary[key].accept(aValue[key]):
+                    return False
+            elif self.mDictionary[key].isOfType(TypeDecorator):
+                if isinstance(aValue[key], TypeDecorator):
+                    if not self.mDictionary[key].accept(aValue[key].value()):
+                        return False
+                else:
                     return False
             else:
-                if not isinstance(aValue[key], TypeDecorator):
-                    return False
-                if isinstance(aValue[key], TemplateType):
-                    return False
-                if not isinstance(aValue[key], type(self.mDictionary[key])):
-                    return False
+                return False
         return True
 
     def assign(self, aValue):
@@ -405,26 +409,26 @@ class RecordOf(TypeDecorator):
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
-        # Make sure the value is a list...
         if type(aValue) is not list:
             return False
         for value in aValue:
-            # ...and has only TypeDecorator values...
-            if isinstance(self.mType, Record):
-                if type(value) is not dict:
+            if self.mType.isOfType(Record):
+                if not self.mType.accept(value):
                     return False
-            elif isinstance(self.mType, RecordOf):
-                if type(value) is not list:
+            elif self.mType.isOfType(RecordOf):
+                if not self.mType.accept(value):
+                    return False
+            elif self.mType.isOfType(TypeDecorator):
+                if isinstance(value, TypeDecorator):
+                    if isinstance(value, TemplateType):
+                        return False
+                    else:
+                        if not self.mType.accept(value.value()):
+                            return False
+                else:
                     return False
             else:
-                if not isinstance(value, TypeDecorator):
-                    return False
-                # ...and has not any TemplateType values...
-                if isinstance(value, TemplateType):
-                    return False
-                # ...and the value is of a specified type...
-                if not isinstance(value, type(self.mType)):
-                    return False
+                return False
         return True
 
     def assign(self, aValue):
@@ -523,32 +527,7 @@ class TemplateRecord(TypeDecorator):
         return self.mDecoratedType.__eq__(aOther)
 
     def accept(self, aValue):
-        if type(aValue) is not dict:
-            return False
-        if len(self.mDecoratedType.mDictionary) != len(aValue):
-            return False
-        for key in self.mDecoratedType.mDictionary:
-            if not key in aValue:
-                return False
-        for key in aValue:
-            if not key in self.mDecoratedType.mDictionary:
-                return False
-        for value in aValue.values():
-            if not (isinstance(value, TypeDecorator) or \
-                    type(value) is dict):
-                return False
-        for key in self.mDecoratedType.mDictionary:
-            if self.mDecoratedType.mDictionary[key].isOfType(Record):
-                pass
-            else:
-                if not (aValue[key].isOfType(type(self.mDecoratedType.mDictionary[key]))  or \
-                        self.mDecoratedType.mDictionary[key].isOfType(type(aValue[key])))    :
-                    return False
-        for key in self.mDecoratedType.mDictionary:
-            if isinstance(self.mDecoratedType.mDictionary[key], Record):
-                if aValue[key].mValue == None:
-                    return False
-        return True
+        return self.mDecoratedType.accept(aValue)
 
     def assign(self, aValue):
         if not self.accept(aValue):
@@ -598,6 +577,7 @@ class TemplateRecordOf(TypeDecorator):
             raise InvalidTypeInComparison
 
     def accept(self, aValue):
+        # TODO: Do as in the Record!
         # Make sure the value is a list...
         if type(aValue) is not list:
             return False

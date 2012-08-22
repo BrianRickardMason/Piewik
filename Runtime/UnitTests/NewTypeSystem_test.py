@@ -148,25 +148,27 @@ class TypeSystem_Integer_Eq(unittest.TestCase):
         self.assertTrue(Integer().assignValueType(IntegerValue(1)) == Integer().assignValueType(IntegerValue(1)))
 
     def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
-        typeInstance = Integer().assignValueType(IntegerValue(1))
-        for value in [
+        typeInstance1 = Integer().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
             Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                  'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
         ]:
-            self.assertTrue(typeInstance == value)
+            self.assertTrue(typeInstance1 == typeInstance2)
+            self.assertTrue(typeInstance2 == typeInstance1)
 
     def test_EqReturnsFalseOnDifferentValues_SameTypes(self):
         self.assertFalse(Integer().assignValueType(IntegerValue(1)) == Integer().assignValueType(IntegerValue(2)))
 
     def test_EqReturnsFalseOnDifferentValues_CompatibleTypes(self):
-        typeInstance = Integer().assignValueType(IntegerValue(1))
-        for value in [
+        typeInstance1 = Integer().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
             Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                  'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(2)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(2))
         ]:
-            self.assertFalse(typeInstance == value)
+            self.assertFalse(typeInstance1 == typeInstance2)
+            self.assertFalse(typeInstance2 == typeInstance1)
 
     def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         typeInstance = Integer().assignValueType(IntegerValue(1))
@@ -274,7 +276,7 @@ class TypeSystem_Integer_Ranged_Accept(unittest.TestCase):
         for valueType in [IntegerValue(0), IntegerValue(1), IntegerValue(10)]:
             self.assertTrue(typeInstance.accept(valueType))
 
-    def test_AcceptReturnsFalseOnAnInvalidValue(self):
+    def test_AcceptReturnsFalseOnAnInvalidValue_Boundary(self):
         typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
         for valueType in [IntegerValue(-1), IntegerValue(11)]:
@@ -303,7 +305,7 @@ class TypeSystem_Integer_Ranged_Subtyped_Accept(unittest.TestCase):
         for valueType in [IntegerValue(0), IntegerValue(1), IntegerValue(10)]:
             self.assertTrue(typeInstance.accept(valueType))
 
-    def test_AcceptReturnsFalseOnAnInvalidValue(self):
+    def test_AcceptReturnsFalseOnAnInvalidValue_Boundary(self):
         class MyInteger(Integer):
             def __init__(self):
                 Integer.__init__(self)
@@ -412,15 +414,17 @@ class TypeSystem_Integer_Ranged_Eq(unittest.TestCase):
         typeInstance2 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                              'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
         self.assertTrue(typeInstance1 == typeInstance2)
+        self.assertTrue(typeInstance2 == typeInstance1)
 
     def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
-        typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+        typeInstance1 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
-        for value in [
+        for typeInstance2 in [
             Integer().assignValueType(IntegerValue(1)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
         ]:
-            self.assertTrue(typeInstance == value)
+            self.assertTrue(typeInstance1 == typeInstance2)
+            self.assertTrue(typeInstance2 == typeInstance1)
 
     def test_EqReturnsFalseOnDifferentValues_SameTypes(self):
         typeInstance1 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
@@ -428,22 +432,24 @@ class TypeSystem_Integer_Ranged_Eq(unittest.TestCase):
         typeInstance2 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                              'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(2))
         self.assertFalse(typeInstance1 == typeInstance2)
+        self.assertFalse(typeInstance2 == typeInstance1)
 
     def test_EqReturnsFalseOnDifferentValues_CompatibleTypes(self):
-        typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+        typeInstance1 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
-        for value in [
+        for typeInstance2 in [
             Integer().assignValueType(IntegerValue(2)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(2))
         ]:
-            self.assertFalse(typeInstance == value)
+            self.assertFalse(typeInstance1 == typeInstance2)
+            self.assertFalse(typeInstance2 == typeInstance1)
 
     def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
-        for valueType in [True, 1.0, "WAX"]:
+        for builtIn in [True, 1.0, "WAX"]:
             with self.assertRaises(InvalidTypeInComparison):
-                typeInstance == valueType
+                typeInstance == builtIn
 
     def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
         self.skipTest("Not implemented yet.")
@@ -468,6 +474,7 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
         typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
         typeInstance2 = MyInteger().assignValueType(IntegerValue(1))
         self.assertTrue(typeInstance1 == typeInstance2)
+        self.assertTrue(typeInstance2 == typeInstance1)
 
     def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
         class MyInteger(Integer):
@@ -475,12 +482,13 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
-        typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for value in [
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
             Integer().assignValueType(IntegerValue(1)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
         ]:
-            self.assertTrue(typeInstance == value)
+            self.assertTrue(typeInstance1 == typeInstance2)
+            self.assertTrue(typeInstance2 == typeInstance1)
 
     def test_EqReturnsFalseOnDifferentValues_SameTypes(self):
         class MyInteger(Integer):
@@ -491,6 +499,7 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
         typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
         typeInstance2 = MyInteger().assignValueType(IntegerValue(2))
         self.assertFalse(typeInstance1 == typeInstance2)
+        self.assertFalse(typeInstance2 == typeInstance1)
 
     def test_EqReturnsFalseOnDifferentValues_CompatibleTypes(self):
         class MyInteger(Integer):
@@ -498,12 +507,13 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
-        typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for value in [
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
             Integer().assignValueType(IntegerValue(2)),
             Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(2))
         ]:
-            self.assertFalse(typeInstance == value)
+            self.assertFalse(typeInstance1 == typeInstance2)
+            self.assertFalse(typeInstance2 == typeInstance1)
 
     def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
         class MyInteger(Integer):
@@ -512,9 +522,9 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [True, 1.0, "WAX"]:
+        for builtIn in [True, 1.0, "WAX"]:
             with self.assertRaises(InvalidTypeInComparison):
-                typeInstance == valueType
+                typeInstance == builtIn
 
     def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
         self.skipTest("Not implemented yet.")
@@ -525,6 +535,261 @@ class TypeSystem_Integer_Ranged_Subtyped_Eq(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                typeInstance == valueType
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        self.skipTest("Not implemented yet.")
+
+class TypeSystem_Integer_Template_IsCompatible(unittest.TestCase):
+    def test_IsCompatibleReturnsFlaseOnAnIncompatibleType_Self_NotInitialized(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {})
+        self.assertFalse(typeInstance.isCompatible(typeInstance))
+
+    def test_IsCompatibleReturnsCorrectValue_Self_Mixed(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {})
+        typeInstance2 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1.isCompatible(typeInstance2))
+        self.assertFalse(typeInstance2.isCompatible(typeInstance1))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Self_Initialized(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance.isCompatible(typeInstance))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Subtyped(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance2 = MyInteger().assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1.isCompatible(typeInstance2))
+        self.assertTrue(typeInstance2.isCompatible(typeInstance1))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_DoubleSubtyped(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        class MyInteger2(MyInteger):
+            def __init__(self):
+                MyInteger.__init__(self)
+        typeInstance2 = MyInteger2().assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1.isCompatible(typeInstance2))
+        self.assertTrue(typeInstance2.isCompatible(typeInstance1))
+
+    def test_IsCompatibleReturnsTrueOnACompatibleType_Bounded(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        typeInstance2 = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+                                                                             'upperBoundary': IntegerValue(10)}).\
+                                  assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1.isCompatible(typeInstance2))
+        self.assertTrue(typeInstance2.isCompatible(typeInstance1))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_BuiltIn(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for typeInstance2 in [True, 1.0, "WAX"]:
+            self.assertFalse(typeInstance1.isCompatible(typeInstance2))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Special(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for typeInstance2 in [AnyValue()]:
+            self.assertFalse(typeInstance1.isCompatible(typeInstance2))
+
+class TypeSystem_Integer_Template_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {})
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+            self.assertTrue(typeInstance.accept(valueType))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {})
+        for valueType in [True, 1.0, "WAX"]:
+            self.assertFalse(typeInstance.accept(valueType))
+
+class TypeSystem_Integer_Template_Subtyped_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+            self.assertTrue(typeInstance.accept(valueType))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_BuiltIn(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [True, 1.0, "WAX"]:
+            self.assertFalse(typeInstance.accept(valueType))
+
+class TypeSystem_Integer_Template_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValue(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+            self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                typeInstance.assignValueType(valueType)
+
+class TypeSystem_Integer_Ranged_Subtyped_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValue(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+            self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_BuiltIn(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for valueType in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                typeInstance.assignValueType(valueType)
+
+class TypeSystem_Integer_Template_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        typeInstance2 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1 == typeInstance2)
+        self.assertTrue(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for typeInstance2 in [
+            Integer().assignValueType(IntegerValue(1)),
+            Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+                                                                 'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
+        ]:
+            self.assertTrue(typeInstance1 == typeInstance2)
+            self.assertTrue(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsFalseOnDifferentValues_SameTypes(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        typeInstance2 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(2))
+        self.assertFalse(typeInstance1 == typeInstance2)
+        self.assertFalse(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsFalseOnDifferentValues_CompatibleTypes(self):
+        typeInstance1 = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for typeInstance2 in [
+            Integer().assignValueType(IntegerValue(2)),
+            Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+                                                                 'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(2))
+        ]:
+            self.assertFalse(typeInstance1 == typeInstance2)
+            self.assertFalse(typeInstance2 == typeInstance1)
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for builtIn in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                typeInstance == builtIn
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {}).assignValueType(IntegerValue(1))
+        for valueType in [AnyValue()]:
+            with self.assertRaises(InvalidTypeInComparison):
+                typeInstance == valueType
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Template(self):
+        self.skipTest("Not implemented yet.")
+
+class TypeSystem_Integer_Template_Subtyped_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_SameTypes(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        typeInstance2 = MyInteger().assignValueType(IntegerValue(1))
+        self.assertTrue(typeInstance1 == typeInstance2)
+        self.assertTrue(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsTrueOnSameValues_CompatibleTypes(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
+            Integer().assignValueType(IntegerValue(1)),
+            Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+                                                                 'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
+        ]:
+            self.assertTrue(typeInstance1 == typeInstance2)
+            self.assertTrue(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsFalseOnDifferentValues_SameTypes(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        typeInstance2 = MyInteger().assignValueType(IntegerValue(2))
+        self.assertFalse(typeInstance1 == typeInstance2)
+        self.assertFalse(typeInstance2 == typeInstance1)
+
+    def test_EqReturnsFalseOnDifferentValues_CompatibleTypes(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance1 = MyInteger().assignValueType(IntegerValue(1))
+        for typeInstance2 in [
+            Integer().assignValueType(IntegerValue(2)),
+            Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
+                                                                 'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(2))
+        ]:
+            self.assertFalse(typeInstance1 == typeInstance2)
+            self.assertFalse(typeInstance2 == typeInstance1)
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_BuiltIn(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyInteger().assignValueType(IntegerValue(1))
+        for builtIn in [True, 1.0, "WAX"]:
+            with self.assertRaises(InvalidTypeInComparison):
+                typeInstance == builtIn
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_EqRaisesAnExceptionOnAnInvalidType_Special(self):
+        class MyInteger(Integer):
+            def __init__(self):
+                Integer.__init__(self)
+                self.mAcceptDecorator =  TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
         for valueType in [AnyValue()]:
             with self.assertRaises(InvalidTypeInComparison):

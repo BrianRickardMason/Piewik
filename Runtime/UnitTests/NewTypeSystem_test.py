@@ -1076,14 +1076,15 @@ class TypeSystem_Record_AssignValueType(unittest.TestCase):
             def __init__(self):
                 Record.__init__(self, {})
         typeInstance = MyRecord()
-        typeInstance.assignValueType({})
+        self.assertEqual(typeInstance.assignValueType({}).valueType(), {})
 
     def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty(self):
         class MyRecord(Record):
             def __init__(self):
                 Record.__init__(self, {'foo': Integer()})
         typeInstance = MyRecord()
-        typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1))})
+        valueType = {'foo': Integer().assignValueType(IntegerValue(1))}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_Nested1(self):
         class MyRecord(Record):
@@ -1093,7 +1094,8 @@ class TypeSystem_Record_AssignValueType(unittest.TestCase):
             def __init__(self):
                 Record.__init__(self, {'bar': MyRecord()})
         typeInstance = MyRecord1()
-        typeInstance.assignValueType({'bar': {'foo': Integer().assignValueType(IntegerValue(1))}})
+        valueType = {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_Nested2(self):
         class MyRecord(Record):
@@ -1107,8 +1109,9 @@ class TypeSystem_Record_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {'baz1': MyRecord1(),
                                        'baz2': Integer()})
         typeInstance = MyRecord2()
-        typeInstance.assignValueType({'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
-                                      'baz2': Integer().assignValueType(IntegerValue(1))})
+        valueType = {'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
+                                      'baz2': Integer().assignValueType(IntegerValue(1))}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_CompatibleType(self):
         self.skipTest("Not implemented yet.")
@@ -1154,7 +1157,7 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
-        typeInstance.assignValueType({})
+        self.assertEqual(typeInstance.assignValueType({}).valueType(), {})
 
     def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_WithoutSpecialValueType(self):
         class MyRecord(Record):
@@ -1162,7 +1165,8 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {'foo': Integer()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
-        typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1))})
+        valueType = {'foo': Integer().assignValueType(IntegerValue(1))}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_WithSpecialValueType(self):
         class MyRecord(Record):
@@ -1170,7 +1174,8 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {'foo': Integer()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
-        typeInstance.assignValueType({'foo': TemplateInteger().assignValueType(AnyValue())})
+        valueType = {'foo': TemplateInteger().assignValueType(AnyValue())}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_Nested1_WithoutSpecialValueType(self):
         class MyRecord(Record):
@@ -1181,7 +1186,8 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {'bar': MyRecord()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord1()
-        typeInstance.assignValueType({'bar': {'foo': Integer().assignValueType(IntegerValue(1))}})
+        valueType = {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_Nested1_WithSpecialValueType(self):
         class MyRecord(Record):
@@ -1192,7 +1198,8 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                 Record.__init__(self, {'bar': MyRecord()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord1()
-        typeInstance.assignValueType({'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}})
+        valueType = {'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_Nested2_WithoutSpecialValueType(self):
         class MyRecord(Record):
@@ -1207,8 +1214,9 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                                        'baz2': Integer()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord2()
-        typeInstance.assignValueType({'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
-                                               'baz2': Integer().assignValueType(IntegerValue(1))})
+        valueType = {'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
+                                      'baz2': Integer().assignValueType(IntegerValue(1))}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 #
     def test_AssignValueTypeAssignsOnAValidValueType_Nested2_WithSpecialValueType(self):
         class MyRecord(Record):
@@ -1223,8 +1231,9 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
                                        'baz2': Integer()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord2()
-        typeInstance.assignValueType({'baz1': {'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}},
-                                                       'baz2': TemplateInteger().assignValueType(AnyValue())})
+        valueType = {'baz1': {'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}},
+                                      'baz2': TemplateInteger().assignValueType(AnyValue())}
+        self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeAssignsOnAValidValueType_CompatibleType(self):
         self.skipTest("Not implemented yet.")
@@ -1488,6 +1497,81 @@ class TypeSystem_RecordOf_Template_Accept(unittest.TestCase):
         instance = MyRecordOf()
         for valueType in [[AnyValue()]]:
             self.assertFalse(instance.accept(valueType))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
+class TypeSystem_RecordOf_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValue_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        valueType = []
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)), Integer().assignValueType(IntegerValue(2))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_AnyOfValuesIsATemplateLikeType_WithoutSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(IntegerValue(2))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType_WithSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(AnyValue())]
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            instanceType.assignValueType(valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        for valueType in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                instanceType.assignValueType(valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        for valueType in [[AnyValue()]]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                instanceType.assignValueType(valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidType_Template(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType = MyRecordOf()
+        for valueType in [[TemplateInteger().assignValueType(IntegerValue(1)),
+                           TemplateInteger().assignValueType(AnyValue())]]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                instanceType.assignValueType(valueType)
 
     def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
         self.skipTest("Not implemented yet.")

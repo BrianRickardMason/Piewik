@@ -1423,5 +1423,74 @@ class TypeSystem_RecordOf_Accept(unittest.TestCase):
     def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
         self.skipTest("Not implemented yet.")
 
+class TypeSystem_RecordOf_Template_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValue_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        valueType = []
+        self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsTrueOnAValidValue_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1))]
+        self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsTrueOnAValidValue_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)), Integer().assignValueType(IntegerValue(2))]
+        self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsTrueOnAValidValue_AnyOfValuesIsATemplateLikeType_WithoutSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(IntegerValue(2))]
+        self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsTrueOnAValidValue_AnyOfValuesIsATemplateLikeType_WithSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(AnyValue())]
+        self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        for valueType in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            self.assertFalse(instance.accept(valueType))
+
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        for valueType in [[AnyValue()]]:
+            self.assertFalse(instance.accept(valueType))
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
 if __name__ == '__main__':
     unittest.main()

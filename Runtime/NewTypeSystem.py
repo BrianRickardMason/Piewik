@@ -27,6 +27,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+# TODO: Add verification of decorated types in AcceptDecorators.
+
 class TypeSystemException(Exception):
     pass
 
@@ -210,9 +212,9 @@ class Record(Type):
             tmpValue = {}
             for key in aValueType:
                 if isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], Record):
-                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assign(aValue[key])
-                elif isinstance(self.mDescriptorDictionary[key], RecordOf):
-                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assign(aValue[key])
+                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assignValueType(aValue[key])
+                elif isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], RecordOf):
+                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assignValueType(aValue[key])
                 else:
                     tmpValue[key] = aValue[key]
             self.mValue = tmpValue
@@ -238,7 +240,59 @@ class Record(Type):
             raise LookupErrorMissingField
 
 class RecordOf(Type):
-    pass
+    def __init__(self, aDescriptorType):
+        Type.__init__(self)
+        self.mAcceptDecorator = RecordOfAcceptDecorator(AcceptDecorator(), {'descriptorType': aDescriptorType})
+
+    def __eq__(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            return self.valueType() == aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValueType):
+        return self.mAcceptDecorator.accept(aValueType)
+
+    def assignType(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            # TODO: Add test of assignment of an uninitalized type.
+            self.mValue = aTypeInstance.value()
+            self.mValueType = aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInTypeAssignment
+        return self
+
+    def assignValueType(self, aValueType):
+        if self.accept(aValueType):
+            tmpValue = []
+            for valueType in aValueType:
+                if isinstance(self.mAcceptDecorator.mDescriptorType, Record):
+                    tmpValue.append(self.mAcceptDecorator.mDescriptorType().assignValueType(valueType))
+                elif isinstance(self.mAcceptDecorator.mDescriptorType, RecordOf):
+                    tmpValue.append(self.mAcceptDecorator.mDescriptorType().assignValueType(valueType))
+                else:
+                    tmpValue[key] = aValue[key]
+            self.mValue = tmpValue
+            self.mValueType = aValueType
+        else:
+            raise InvalidTypeInValueTypeAssignment
+        return self
+
+    def isCompatible(self, aTypeInstance):
+        if not isinstance(aTypeInstance, RecordOf):
+            return False
+        if not self.accept(aTypeInstance.valueType()):
+            return False
+        return True
+
+    def value():
+        return self.mValue
+
+    def getField(self, aIndex):
+        try:
+            return self.mValue[aIndex]
+        except:
+            raise LookupErrorMissingField
 
 # TODO: Define and check the hierarchy of accept decorators.
 class AcceptDecorator(object):
@@ -281,6 +335,30 @@ class RecordAcceptDecorator(AcceptDecorator):
                     return False
             elif isinstance(self.mDescriptorDictionary[key], Type):
                 if not self.mDescriptorDictionary[key].isCompatible(aValueType[key]):
+                    return False
+            else:
+                return False
+        return True
+
+class RecordOfAcceptDecorator(AcceptDecorator):
+    def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
+        self.mAcceptDecorator = aAcceptDecorator
+        self.mDescriptorType = aAcceptDecoratorParams['descriptorType']
+
+    def accept(self, aValueType):
+        if not self.mAcceptDecorator.accept(aValueType):
+            return False
+        if type(aValueType) is not list:
+            return False
+        for valueType in aValueType:
+            if isinstance(self.mDescriptorType, Record):
+                if not self.mDescriptorType.accept(valueType):
+                    return False
+            elif isinstance(self.mDescriptorType, Record):
+                if not self.mDescriptorType.accept(valueType):
+                    return False
+            elif isinstance(self.mDescriptorType, Type):
+                if not self.mDescriptorType.isCompatible(valueType):
                     return False
             else:
                 return False

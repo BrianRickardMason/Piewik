@@ -212,11 +212,11 @@ class Record(Type):
             tmpValue = {}
             for key in aValueType:
                 if isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], Record):
-                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assignValueType(aValue[key])
+                    tmpValue[key] = type(self.mAcceptDecorator.mDescriptorDictionary[key])().assignValueType(aValueType[key])
                 elif isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], RecordOf):
-                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assignValueType(aValue[key])
+                    tmpValue[key] = type(self.mAcceptDecorator.mDescriptorDictionary[key])().assignValueType(aValueType[key])
                 else:
-                    tmpValue[key] = aValue[key]
+                    tmpValue[key] = aValueType[key]
             self.mValue = tmpValue
             self.mValueType = aValueType
         else:

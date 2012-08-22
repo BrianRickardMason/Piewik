@@ -1025,5 +1025,82 @@ class TypeSystem_Record_Template_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValueType_InvalidValue(self):
         self.skipTest("Not implemented yet.")
 
+class TypeSystem_Record_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValueType_Empty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+        typeInstance = MyRecord()
+        typeInstance.assignValueType({})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        typeInstance = MyRecord()
+        typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested1(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+        typeInstance = MyRecord1()
+        typeInstance.assignValueType({'bar': {'foo': Integer().assignValueType(IntegerValue(1))}})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested2(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+        class MyRecord2(Record):
+            def __init__(self):
+                Record.__init__(self, {'baz1': MyRecord1(),
+                                       'baz2': Integer()})
+        typeInstance = MyRecord2()
+        typeInstance.assignValueType({'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
+                                      'baz2': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_CompatibleType(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Subtyped(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeAssignsOnAValidValueType_DoubleSubtyped(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidType_InvalidNumberOfKeys_TooShort(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidType_InvalidNumberOfKeys_TooLong(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1)),
+                                          'bar':  Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidType_InvalidKey(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({'bar': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidType_InvalidValue(self):
+        self.skipTest("Not implemented yet.")
+
 if __name__ == '__main__':
     unittest.main()

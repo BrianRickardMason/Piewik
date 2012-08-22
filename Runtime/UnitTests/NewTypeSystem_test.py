@@ -1294,5 +1294,63 @@ class TypeSystem_RecordOf_Ctor(unittest.TestCase):
                 RecordOf.__init__(self, MyRecordOf1())
         typeInstance = MyRecordOf2()
 
+class TypeSystem_RecordOf_Template_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecordOf()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType, Integer))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+    def test_Ctor_Nested1(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecordOf1()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType, MyRecordOf))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType, Integer))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+    def test_Ctor_Nested2(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf())
+        class MyRecordOf2(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf1())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecordOf2()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType, MyRecordOf1))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType, MyRecordOf))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType, Integer))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
 if __name__ == '__main__':
     unittest.main()

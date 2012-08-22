@@ -391,6 +391,9 @@ class TemplateAcceptDecorator(AcceptDecorator):
             for key in aAcceptDecorator.mDescriptorDictionary:
                 aAcceptDecorator.mDescriptorDictionary[key].addAcceptDecorator(TemplateAcceptDecorator, aAcceptDecoratorParams)
             self.mAcceptDecorator = aAcceptDecorator
+        if isinstance(aAcceptDecorator, RecordOfAcceptDecorator):
+            aAcceptDecorator.mDescriptorType.addAcceptDecorator(TemplateAcceptDecorator, aAcceptDecoratorParams)
+            self.mAcceptDecorator = aAcceptDecorator
         else:
             self.mAcceptDecorator = aAcceptDecorator
 
@@ -403,4 +406,3 @@ class TemplateAcceptDecorator(AcceptDecorator):
 
     def descriptorDictionary(self):
         return self.mAcceptDecorator.descriptorDictionary()
-

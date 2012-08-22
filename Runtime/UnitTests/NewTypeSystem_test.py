@@ -827,6 +827,8 @@ class TypeSystem_Record_Template_Ctor(unittest.TestCase):
                 Record.__init__(self, {})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
 
     def test_Ctor_NonEmpty(self):
         class MyRecord(Record):
@@ -834,6 +836,49 @@ class TypeSystem_Record_Template_Ctor(unittest.TestCase):
                 Record.__init__(self, {'foo': Integer()})
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+    def test_Ctor_Nested1(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord1()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+    def test_Ctor_Nested2(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+        class MyRecord2(Record):
+            def __init__(self):
+                Record.__init__(self, {'baz1': MyRecord1(),
+                                       'baz2': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord2()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
 
 class TypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValueType_Empty(self):
@@ -1101,6 +1146,153 @@ class TypeSystem_Record_AssignValueType(unittest.TestCase):
 
     def test_AssignValueTypeRaisesAnExceptionOnAnInvalidType_InvalidValue(self):
         self.skipTest("Not implemented yet.")
+
+class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValueType_Empty(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        typeInstance.assignValueType({})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_WithoutSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_WithSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        typeInstance.assignValueType({'foo': TemplateInteger().assignValueType(AnyValue())})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested1_WithoutSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord1()
+        typeInstance.assignValueType({'bar': {'foo': Integer().assignValueType(IntegerValue(1))}})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested1_WithSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord1()
+        typeInstance.assignValueType({'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested2_WithoutSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+        class MyRecord2(Record):
+            def __init__(self):
+                Record.__init__(self, {'baz1': MyRecord1(),
+                                       'baz2': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord2()
+        typeInstance.assignValueType({'baz1': {'bar': {'foo': Integer().assignValueType(IntegerValue(1))}},
+                                               'baz2': Integer().assignValueType(IntegerValue(1))})
+#
+    def test_AssignValueTypeAssignsOnAValidValueType_Nested2_WithSpecialValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        class MyRecord1(Record):
+            def __init__(self):
+                Record.__init__(self, {'bar': MyRecord()})
+        class MyRecord2(Record):
+            def __init__(self):
+                Record.__init__(self, {'baz1': MyRecord1(),
+                                       'baz2': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord2()
+        typeInstance.assignValueType({'baz1': {'bar': {'foo': TemplateInteger().assignValueType(AnyValue())}},
+                                                       'baz2': TemplateInteger().assignValueType(AnyValue())})
+
+    def test_AssignValueTypeAssignsOnAValidValueType_CompatibleType(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeAssignsOnAValidValueType_Subtyped(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeAssignsOnAValidValueType_DoubleSubtyped(self):
+        self.skipTest("Not implemented yet.")
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_InvalidNumberOfKeys_TooShort(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_InvalidNumberOfKeys_TooLong(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({'foo': Integer().assignValueType(IntegerValue(1)),
+                                          'bar': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_InvalidKey(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer().assignValueType(IntegerValue(1))})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        with self.assertRaises(InvalidTypeInValueTypeAssignment):
+            typeInstance.assignValueType({'bar': Integer().assignValueType(IntegerValue(1))})
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_InvalidValue(self):
+        self.skipTest("Not implemented yet.")
+
+class TypeSystem_RecordOf_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        typeInstance = MyRecordOf()
+
+    def test_Ctor_Nested1(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf())
+        typeInstance = MyRecordOf1()
+
+    def test_Ctor_Nested2(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf())
+        class MyRecordOf2(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, MyRecordOf1())
+        typeInstance = MyRecordOf2()
 
 if __name__ == '__main__':
     unittest.main()

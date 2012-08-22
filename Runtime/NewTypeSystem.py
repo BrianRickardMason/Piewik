@@ -29,6 +29,8 @@
 
 # TODO: Add verification of decorated types in AcceptDecorators.
 
+from copy import deepcopy
+
 class TypeSystemException(Exception):
     pass
 
@@ -211,10 +213,10 @@ class Record(Type):
         if self.accept(aValueType):
             tmpValue = {}
             for key in aValueType:
-                if isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], Record):
-                    tmpValue[key] = type(self.mAcceptDecorator.mDescriptorDictionary[key])().assignValueType(aValueType[key])
-                elif isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], RecordOf):
-                    tmpValue[key] = type(self.mAcceptDecorator.mDescriptorDictionary[key])().assignValueType(aValueType[key])
+                if isinstance(self.mAcceptDecorator.descriptorDictionary()[key], Record):
+                    tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
+                elif isinstance(self.mAcceptDecorator.descriptorDictionary()[key], RecordOf):
+                    tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
                 else:
                     tmpValue[key] = aValueType[key]
             self.mValue = tmpValue
@@ -267,9 +269,9 @@ class RecordOf(Type):
             tmpValue = []
             for valueType in aValueType:
                 if isinstance(self.mAcceptDecorator.mDescriptorType, Record):
-                    tmpValue.append(self.mAcceptDecorator.mDescriptorType().assignValueType(valueType))
+                    tmpValue.append(deepcopy(self.mAcceptDecorator.mDescriptorType).assignValueType(valueType))
                 elif isinstance(self.mAcceptDecorator.mDescriptorType, RecordOf):
-                    tmpValue.append(self.mAcceptDecorator.mDescriptorType().assignValueType(valueType))
+                    tmpValue.append(deepcopy(self.mAcceptDecorator.mDescriptorType).assignValueType(valueType))
                 else:
                     tmpValue[key] = aValue[key]
             self.mValue = tmpValue
@@ -298,6 +300,9 @@ class RecordOf(Type):
 class AcceptDecorator(object):
     def accept(self, aValueType):
         return True
+
+    def descriptorDictionary(self):
+        raise NotImplementedError
 
 class TypeAcceptDecorator(AcceptDecorator):
     def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
@@ -340,6 +345,9 @@ class RecordAcceptDecorator(AcceptDecorator):
                 return False
         return True
 
+    def descriptorDictionary(self):
+        return self.mDescriptorDictionary
+
 class RecordOfAcceptDecorator(AcceptDecorator):
     def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
         self.mAcceptDecorator = aAcceptDecorator
@@ -354,7 +362,7 @@ class RecordOfAcceptDecorator(AcceptDecorator):
             if isinstance(self.mDescriptorType, Record):
                 if not self.mDescriptorType.accept(valueType):
                     return False
-            elif isinstance(self.mDescriptorType, Record):
+            elif isinstance(self.mDescriptorType, RecordOf):
                 if not self.mDescriptorType.accept(valueType):
                     return False
             elif isinstance(self.mDescriptorType, Type):
@@ -392,3 +400,7 @@ class TemplateAcceptDecorator(AcceptDecorator):
         else:
             return self.mAcceptDecorator.accept(aValueType) or \
                    type(aValueType) is AnyValue
+
+    def descriptorDictionary(self):
+        return self.mAcceptDecorator.descriptorDictionary()
+

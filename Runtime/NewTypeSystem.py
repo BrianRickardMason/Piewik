@@ -232,7 +232,7 @@ class Record(Type):
             return False
         return True
 
-    def value():
+    def value(self):
         return self.mValue
 
     def getField(self, aName):
@@ -273,7 +273,7 @@ class RecordOf(Type):
                 elif isinstance(self.mAcceptDecorator.mDescriptorType, RecordOf):
                     tmpValue.append(deepcopy(self.mAcceptDecorator.mDescriptorType).assignValueType(valueType))
                 else:
-                    tmpValue[key] = aValue[key]
+                    tmpValue.append(valueType)
             self.mValue = tmpValue
             self.mValueType = aValueType
         else:
@@ -287,7 +287,7 @@ class RecordOf(Type):
             return False
         return True
 
-    def value():
+    def value(self):
         return self.mValue
 
     def getField(self, aIndex):

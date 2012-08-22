@@ -32,6 +32,7 @@ import unittest
 from Runtime.NewTypeSystem import *
 
 # Helpers.
+
 class TemplateInteger(Integer):
     def __init__(self):
         Integer.__init__(self)

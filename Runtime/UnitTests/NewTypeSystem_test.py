@@ -1576,5 +1576,76 @@ class TypeSystem_RecordOf_AssignValueType(unittest.TestCase):
     def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
         self.skipTest("Not implemented yet.")
 
+class TypeSystem_RecordOf_Template_AssignValueType(unittest.TestCase):
+    def test_AssignValueTypeAssignsOnAValidValue_AnEmptyList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        valueType = []
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_ASingleElementList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_AManyElementsList(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)), Integer().assignValueType(IntegerValue(2))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_AnyOfValuesIsATemplateLikeType_WithoutSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(IntegerValue(2))]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeAssignsOnAValidValue_AnyOfValuesIsATemplateLikeType_WithSpecialValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        valueType = [Integer().assignValueType(IntegerValue(1)),
+                     TemplateInteger().assignValueType(AnyValue())]
+        self.assertEqual(instanceType.assignValueType(valueType).valueType(), valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidType_BuiltIn(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        for valueType in [True, 1, 1.0, "WAX", [1, 2], (1, 2)]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                instanceType.assignValueType(valueType)
+
+    def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValue_InvalidType_Special(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        for valueType in [[AnyValue()]]:
+            with self.assertRaises(InvalidTypeInValueTypeAssignment):
+                instanceType.assignValueType(valueType)
+
+    def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
+        self.skipTest("Not implemented yet.")
+
 if __name__ == '__main__':
     unittest.main()

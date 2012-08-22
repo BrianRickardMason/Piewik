@@ -268,10 +268,10 @@ class RecordOf(Type):
         if self.accept(aValueType):
             tmpValue = []
             for valueType in aValueType:
-                if isinstance(self.mAcceptDecorator.mDescriptorType, Record):
-                    tmpValue.append(deepcopy(self.mAcceptDecorator.mDescriptorType).assignValueType(valueType))
-                elif isinstance(self.mAcceptDecorator.mDescriptorType, RecordOf):
-                    tmpValue.append(deepcopy(self.mAcceptDecorator.mDescriptorType).assignValueType(valueType))
+                if isinstance(self.mAcceptDecorator.descriptorType(), Record):
+                    tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
+                elif isinstance(self.mAcceptDecorator.descriptorType(), RecordOf):
+                    tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
                 else:
                     tmpValue.append(valueType)
             self.mValue = tmpValue
@@ -372,6 +372,9 @@ class RecordOfAcceptDecorator(AcceptDecorator):
                 return False
         return True
 
+    def descriptorType(self):
+        return self.mDescriptorType
+
 class RangedAcceptDecorator(AcceptDecorator):
     def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
         self.mAcceptDecorator = aAcceptDecorator
@@ -406,3 +409,6 @@ class TemplateAcceptDecorator(AcceptDecorator):
 
     def descriptorDictionary(self):
         return self.mAcceptDecorator.descriptorDictionary()
+
+    def descriptorType(self):
+        return self.mAcceptDecorator.descriptorType()

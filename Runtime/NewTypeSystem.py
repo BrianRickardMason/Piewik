@@ -48,6 +48,12 @@ class InvalidTypeInComparison(TypeSystemException):
 class InvalidTypeInValueComparison(TypeSystemException):
     pass
 
+class LookupErrorMissingField(TypeSystemException):
+    pass
+
+class TemplateAcceptDecoratorAppliedForASecondTimeError(TypeSystemException):
+    pass
+
 #
 # The values are needed to overload __eq__, etc... in a clean way.
 #
@@ -177,6 +183,63 @@ class Integer(Type):
             return False
         return True
 
+class Record(Type):
+    def __init__(self, aDescriptorDictionary):
+        Type.__init__(self)
+        self.mAcceptDecorator = RecordAcceptDecorator(AcceptDecorator(), {'descriptorDictionary': aDescriptorDictionary})
+
+    def __eq__(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            return self.valueType() == aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValueType):
+        return self.mAcceptDecorator.accept(aValueType)
+
+    def assignType(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            self.mValue = aTypeInstance.value()
+            self.mValueType = aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInTypeAssignment
+        return self
+
+    def assignValueType(self, aValueType):
+        if self.accept(aValueType):
+            tmpValue = {}
+            for key in aValueType:
+                if isinstance(self.mAcceptDecorator.mDescriptorDictionary[key], Record):
+                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assign(aValue[key])
+                elif isinstance(self.mDescriptorDictionary[key], RecordOf):
+                    tmpValue[key] = self.mAcceptDecorator.mDescriptorDictionary[key]().assign(aValue[key])
+                else:
+                    tmpValue[key] = aValue[key]
+            self.mValue = tmpValue
+            self.mValueType = aValueType
+        else:
+            raise InvalidTypeInValueTypeAssignment
+        return self
+
+    def isCompatible(self, aTypeInstance):
+        if not isinstance(aTypeInstance, Record):
+            return False
+        if not self.accept(aTypeInstance.valueType()):
+            return False
+        return True
+
+    def value():
+        return self.mValue
+
+    def getField(self, aName):
+        if aName in self.mValue:
+            return self.mValue[aName]
+        else:
+            raise LookupErrorMissingField
+
+class RecordOf(Type):
+    pass
+
 # TODO: Define and check the hierarchy of accept decorators.
 class AcceptDecorator(object):
     def accept(self, aValueType):
@@ -191,6 +254,38 @@ class TypeAcceptDecorator(AcceptDecorator):
         return self.mAcceptDecorator.accept(aValueType) and \
                type(aValueType) is self.mType
 
+class RecordAcceptDecorator(AcceptDecorator):
+    def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
+        self.mAcceptDecorator = aAcceptDecorator
+        self.mDescriptorDictionary = aAcceptDecoratorParams['descriptorDictionary']
+
+    def accept(self, aValueType):
+        if not self.mAcceptDecorator.accept(aValueType):
+            return False
+        if type(aValueType) is not dict:
+            return False
+        if len(self.mDescriptorDictionary) != len(aValueType):
+            return False
+        for key in self.mDescriptorDictionary:
+            if not key in aValueType:
+                return False
+        for key in aValueType:
+            if not key in self.mDescriptorDictionary:
+                return False
+        for key in self.mDescriptorDictionary:
+            if isinstance(self.mDescriptorDictionary[key], Record):
+                if not self.mDescriptorDictionary[key].accept(aValueType[key]):
+                    return False
+            elif isinstance(self.mDescriptorDictionary[key], RecordOf):
+                if not self.mDescriptorDictionary[key].accept(aValueType[key]):
+                    return False
+            elif isinstance(self.mDescriptorDictionary[key], Type):
+                if not self.mDescriptorDictionary[key].isCompatible(aValueType[key]):
+                    return False
+            else:
+                return False
+        return True
+
 class RangedAcceptDecorator(AcceptDecorator):
     def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
         self.mAcceptDecorator = aAcceptDecorator
@@ -204,8 +299,18 @@ class RangedAcceptDecorator(AcceptDecorator):
 
 class TemplateAcceptDecorator(AcceptDecorator):
     def __init__(self, aAcceptDecorator, aAcceptDecoratorParams):
-        self.mAcceptDecorator = aAcceptDecorator
+        if isinstance(aAcceptDecorator, TemplateAcceptDecorator):
+            raise TemplateAcceptDecoratorAppliedForASecondTimeError
+        if isinstance(aAcceptDecorator, RecordAcceptDecorator):
+            for key in aAcceptDecorator.mDescriptorDictionary:
+                aAcceptDecorator.mDescriptorDictionary[key].addAcceptDecorator(TemplateAcceptDecorator, aAcceptDecoratorParams)
+            self.mAcceptDecorator = aAcceptDecorator
+        else:
+            self.mAcceptDecorator = aAcceptDecorator
 
     def accept(self, aValueType):
-        return self.mAcceptDecorator.accept(aValueType) or \
-               type(aValueType) is AnyValue
+        if isinstance(self.mAcceptDecorator, RecordAcceptDecorator):
+            return self.mAcceptDecorator.accept(aValueType)
+        else:
+            return self.mAcceptDecorator.accept(aValueType) or \
+                   type(aValueType) is AnyValue

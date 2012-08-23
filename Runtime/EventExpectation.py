@@ -27,8 +27,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.Event import ComponentDoneEvent
-from Runtime.Event import PortReceivedEvent
+from Runtime.Event         import ComponentDoneEvent
+from Runtime.Event         import PortReceivedEvent
+from Runtime.NewTypeSystem import InvalidTypeInComparison
 
 class EventExpectation(object):
     pass
@@ -58,5 +59,8 @@ class PortReceiveExpectation(EventExpectation):
                (self.mSender  is None or self.mSender == aEvent.mSender)
 
     def __doMatch(self, aTemplate, aMessage):
-        # TODO: Delegate to the matcher.
-        return aTemplate == aMessage
+        try:
+            # TODO: Delegate to the matcher.
+            return aTemplate == aMessage
+        except InvalidTypeInComparison:
+            return False

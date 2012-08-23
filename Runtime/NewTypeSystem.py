@@ -83,6 +83,20 @@ class Value(object):
     def value(self):
         return self.mValue
 
+class BooleanValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is bool:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aValue):
+        if isinstance(aValue, BooleanValue):
+            return self.mValue == aValue.mValue
+        elif isinstance(aValue, AnyValue):
+            return aValue.__eq__(self)
+        else:
+            raise InvalidTypeInValueComparison
+
 class IntegerValue(Value):
     def __init__(self, aValue):
         if not type(aValue) is int:
@@ -104,11 +118,71 @@ class IntegerValue(Value):
             raise InvalidTypeInValueComparison
 
     def __ge__(self, aValue):
-        if isinstance(aValue, IntegerValue):
+        return self.__gt__(aValue) or \
+               self.__eq__(aValue)
+
+    def __lt__(self, aValue):
+        return not self.__ge__(aValue)
+
+    def __le__(self, aValue):
+        return not self.__gt__(aValue)
+
+class FloatValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is float:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aValue):
+        if isinstance(aValue, FloatValue):
+            return self.mValue == aValue.mValue
+        elif isinstance(aValue, AnyValue):
+            return aValue.__eq__(self)
+        else:
+            raise InvalidTypeInValueComparison
+
+    def __gt__(self, aValue):
+        if isinstance(aValue, FloatValue):
+            return self.mValue > aValue.mValue
+        else:
+            raise InvalidTypeInValueComparison
+
+    def __ge__(self, aValue):
+        if isinstance(aValue, FloatValue):
             return self.__gt__(aValue) or \
                    self.__eq__(aValue)
         else:
             raise InvalidTypeInValueComparison
+
+    def __lt__(self, aValue):
+        return not self.__ge__(aValue)
+
+    def __le__(self, aValue):
+        return not self.__gt__(aValue)
+
+class CharstringValue(Value):
+    def __init__(self, aValue):
+        if not type(aValue) is str:
+            raise InvalidTypeInValueAssignment
+        self.mValue = aValue
+
+    def __eq__(self, aValue):
+        if isinstance(aValue, CharstringValue):
+            return self.mValue == aValue.mValue
+        elif isinstance(aValue, AnyValue):
+            return aValue.__eq__(self)
+        else:
+            raise InvalidTypeInValueComparison
+
+    def __gt__(self, aValue):
+        if isinstance(aValue, CharstringValue):
+            return self.mValue > aValue.mValue
+        else:
+            raise InvalidTypeInValueComparison
+
+    def __ge__(self, aValue):
+        return self.__gt__(aValue) or \
+               self.__eq__(aValue)
 
     def __lt__(self, aValue):
         return not self.__ge__(aValue)
@@ -152,6 +226,41 @@ class Type(object):
         self.mAcceptDecorator = aAcceptDecoratorType(self.mAcceptDecorator, aAcceptDecoratorParams)
         return self
 
+class Boolean(Type):
+    def __init__(self):
+        Type.__init__(self)
+        self.mAcceptDecorator = TypeAcceptDecorator(AcceptDecorator(), {'type': BooleanValue})
+
+    def __eq__(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            return self.valueType() == aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValueType):
+        return self.mAcceptDecorator.accept(aValueType)
+
+    def assignType(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            self.mValueType = aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInTypeAssignment
+        return self
+
+    def assignValueType(self, aValueType):
+        if self.accept(aValueType):
+            self.mValueType = aValueType
+        else:
+            raise InvalidTypeInValueTypeAssignment
+        return self
+
+    def isCompatible(self, aTypeInstance):
+        if not isinstance(aTypeInstance, Boolean):
+            return False
+        if not self.accept(aTypeInstance.valueType()):
+            return False
+        return True
+
 class Integer(Type):
     def __init__(self):
         Type.__init__(self)
@@ -182,6 +291,76 @@ class Integer(Type):
 
     def isCompatible(self, aTypeInstance):
         if not isinstance(aTypeInstance, Integer):
+            return False
+        if not self.accept(aTypeInstance.valueType()):
+            return False
+        return True
+
+class Float(Type):
+    def __init__(self):
+        Type.__init__(self)
+        self.mAcceptDecorator = TypeAcceptDecorator(AcceptDecorator(), {'type': FloatValue})
+
+    def __eq__(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            return self.valueType() == aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValueType):
+        return self.mAcceptDecorator.accept(aValueType)
+
+    def assignType(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            self.mValueType = aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInTypeAssignment
+        return self
+
+    def assignValueType(self, aValueType):
+        if self.accept(aValueType):
+            self.mValueType = aValueType
+        else:
+            raise InvalidTypeInValueTypeAssignment
+        return self
+
+    def isCompatible(self, aTypeInstance):
+        if not isinstance(aTypeInstance, Float):
+            return False
+        if not self.accept(aTypeInstance.valueType()):
+            return False
+        return True
+
+class Charstring(Type):
+    def __init__(self):
+        Type.__init__(self)
+        self.mAcceptDecorator = TypeAcceptDecorator(AcceptDecorator(), {'type': CharstringValue})
+
+    def __eq__(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            return self.valueType() == aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInComparison
+
+    def accept(self, aValueType):
+        return self.mAcceptDecorator.accept(aValueType)
+
+    def assignType(self, aTypeInstance):
+        if self.isCompatible(aTypeInstance):
+            self.mValueType = aTypeInstance.valueType()
+        else:
+            raise InvalidTypeInTypeAssignment
+        return self
+
+    def assignValueType(self, aValueType):
+        if self.accept(aValueType):
+            self.mValueType = aValueType
+        else:
+            raise InvalidTypeInValueTypeAssignment
+        return self
+
+    def isCompatible(self, aTypeInstance):
+        if not isinstance(aTypeInstance, Charstring):
             return False
         if not self.accept(aTypeInstance.valueType()):
             return False

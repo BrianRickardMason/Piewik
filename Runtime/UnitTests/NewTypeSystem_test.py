@@ -820,6 +820,27 @@ class TypeSystem_Record_Ctor(unittest.TestCase):
                 Record.__init__(self, {'foo': Integer()})
         typeInstance = MyRecord()
 
+class TypeSystem_Record_RecordOf_Ctor(unittest.TestCase):
+    def test_Ctor(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+        typeInstance = MyRecord()
+
+    def test_Ctor(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+        typeInstance = MyRecord()
+
 class TypeSystem_Record_Template_Ctor(unittest.TestCase):
     def test_Ctor_Empty(self):
         class MyRecord(Record):

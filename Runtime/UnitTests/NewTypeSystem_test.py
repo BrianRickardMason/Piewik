@@ -1237,6 +1237,158 @@ class TypeSystem_Record_RecordOf_Accept(unittest.TestCase):
                            'baz': Integer()}
         self.assertFalse(typeInstance.accept(valueTypeRecord))
 
+    def test_AcceptReturnsFalseOnAnInvalidValueType_Standalone_WithSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+        valueTypeRecordOf = [TemplateInteger().assignValueType(AnyValue())]
+        valueTypeRecord = {'foo': valueTypeRecordOf}
+        typeInstance = MyRecord()
+        self.assertFalse(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsFalseOnAnInvalidValueType_WithOtherTypes_RecordOfWithSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = [TemplateInteger().assignValueType(AnyValue())]
+        valueTypeRecord = {'foo': Integer().assignValueType(IntegerValue(1)),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer().assignValueType(IntegerValue(2))}
+        self.assertFalse(typeInstance.accept(valueTypeRecordOf))
+
+    def test_AcceptReturnsFalseOnAnInvalidValueType_WithOtherTypes_AnyOtherTypeWithSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = [Integer().assignValueType(IntegerValue(1))]
+        valueTypeRecord = {'foo': TemplateInteger().assignValueType(AnyValue()),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer().assignValueType(IntegerValue(2))}
+        self.assertFalse(typeInstance.accept(valueTypeRecordOf))
+
+class TypeSystem_Record_RecordOf_Template_Accept(unittest.TestCase):
+    def test_AcceptReturnsTrueOnAValidValueType_Standalone_EmptyRecord(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        valueTypeRecordOf = []
+        valueTypeRecord = {'foo': valueTypeRecordOf}
+        typeInstance = MyRecord()
+        self.assertTrue(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsTrueOnAValidValueType_Standalone_NonEmptyRecord(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        valueTypeRecordOf = [TemplateInteger().assignValueType(AnyValue())]
+        valueTypeRecord = {'foo': valueTypeRecordOf}
+        typeInstance = MyRecord()
+        self.assertTrue(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsTrueOnAValidValueType_WithOtherTypes_EmptyRecord(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = []
+        valueTypeRecord = {'foo': Integer().assignValueType(IntegerValue(1)),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer().assignValueType(IntegerValue(2))}
+        self.assertTrue(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsTrueOnAValidValueType_WithOtherTypes_NonEmptyRecord(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = [TemplateInteger().assignValueType(AnyValue())]
+        valueTypeRecord = {'foo': Integer().assignValueType(IntegerValue(1)),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer().assignValueType(IntegerValue(2))}
+        self.assertTrue(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsFalseOnAnInvalidValueType_Standalone_RecordNotInitialized(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        valueTypeRecordOf = [TemplateInteger()]
+        valueTypeRecord = {'foo': valueTypeRecordOf}
+        typeInstance = MyRecord()
+        self.assertFalse(typeInstance.accept(valueTypeRecord))
+
+    def test_AcceptReturnsFalseOnAnInvalidValueType_WithOtherTypes_RecordOfNotInitialized(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = [TemplateInteger()]
+        valueTypeRecord = {'foo': Integer().assignValueType(IntegerValue(1)),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer().assignValueType(IntegerValue(2))}
+        self.assertFalse(typeInstance.accept(valueTypeRecordOf))
+
+    def test_AcceptReturnsFalseOnAnInvalidValueType_WithOtherTypes_AnyOtherTypeNotInitialized(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        valueTypeRecordOf = [TemplateInteger().assignValueType(AnyValue())]
+        valueTypeRecord = {'foo': Integer().assignValueType(IntegerValue(1)),
+                           'bar': valueTypeRecordOf,
+                           'baz': Integer()}
+        self.assertFalse(typeInstance.accept(valueTypeRecord))
+
 class TypeSystem_Record_AssignValueType(unittest.TestCase):
     def test_AssignValueTypeAssignsOnAValidValueType_Empty(self):
         class MyRecord(Record):

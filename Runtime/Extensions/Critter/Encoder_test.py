@@ -33,36 +33,36 @@ from Runtime.Extensions.Critter.Encoder                 import ProtobufEncoder
 from Runtime.Extensions.Critter.Interface.MessageCommon import *
 from Runtime.Extensions.Critter.Interface.Messages_pb2  import *
 from Runtime.Extensions.Critter.Interface.Translation   import *
-from Runtime.TypeSystem                                 import *
+from Runtime.NewTypeSystem                              import *
 
 class Encoder_Encode(unittest.TestCase):
     def test_LoadGraphAndWorkResponse(self):
-        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
+        senderData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                      'nick': Charstring().assignValueType(CharstringValue("Sender"))}
 
-        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
+        receiverData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                        'nick': Charstring().assignValueType(CharstringValue("Receiver"))}
 
         graphsData = [
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1"))},
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph2"))}
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1"))},
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph2"))}
         ]
 
         worksData =[
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
-             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work1"))},
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
-             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work2"))}
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1")),
+             'workName':  Charstring().assignValueType(CharstringValue("Work1"))},
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1")),
+             'workName':  Charstring().assignValueType(CharstringValue("Work2"))}
         ]
 
         workPredecessorsData = [
-            {'workName':            Charstring(SimpleType()).assign(CharstringValue("Work2")),
-             'predecessorWorkName': Charstring(SimpleType()).assign(CharstringValue("Work1"))}
+            {'workName':            Charstring().assignValueType(CharstringValue("Work2")),
+             'predecessorWorkName': Charstring().assignValueType(CharstringValue("Work1"))}
         ]
 
         loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
-        loadGraphAndWorkResponse.assign({
-            'messageName':      Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkResponse")),
+        loadGraphAndWorkResponse.assignValueType({
+            'messageName':      Charstring().assignValueType(CharstringValue("LoadGraphAndWorkResponse")),
             'sender':           senderData,
             'receiver':         receiverData,
             'graphs':           graphsData,
@@ -98,14 +98,14 @@ class Encoder_Encode(unittest.TestCase):
 
 class Encoder_EncodePayload(unittest.TestCase):
     def test_HeartbeatAnnouncement(self):
-        critterData = {'type': Charstring(SimpleType()).assign(CharstringValue("TYPE")),
-                       'nick': Charstring(SimpleType()).assign(CharstringValue("NICK"))}
+        critterData = {'type': Charstring().assignValueType(CharstringValue("TYPE")),
+                       'nick': Charstring().assignValueType(CharstringValue("NICK"))}
 
         heartbeatAnnouncement = PiewikHeartbeatAnnouncement()
-        heartbeatAnnouncement.assign({
-            'messageName': Charstring(SimpleType()).assign(CharstringValue("HeartbeatAnnouncement")),
+        heartbeatAnnouncement.assignValueType({
+            'messageName': Charstring().assignValueType(CharstringValue("HeartbeatAnnouncement")),
             'sender':      critterData,
-            'timestamp':   Float(SimpleType()).assign(FloatValue(1234.5678))
+            'timestamp':   Float().assignValueType(FloatValue(1234.5678))
         })
 
         encoder = ProtobufEncoder()
@@ -121,15 +121,15 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.timestamp,   1234.5678)
 
     def test_PresentYourselfRequest(self):
-        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
+        senderData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                      'nick': Charstring().assignValueType(CharstringValue("Sender"))}
 
-        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
+        receiverData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                        'nick': Charstring().assignValueType(CharstringValue("Receiver"))}
 
         presentYourselfRequest = PiewikPresentYourselfRequest()
-        presentYourselfRequest.assign({
-            'messageName': Charstring(SimpleType()).assign(CharstringValue("PresentYourselfRequest")),
+        presentYourselfRequest.assignValueType({
+            'messageName': Charstring().assignValueType(CharstringValue("PresentYourselfRequest")),
             'sender':      senderData,
             'receiver':    receiverData
         })
@@ -148,15 +148,15 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.receiver.nick, "Receiver")
 
     def test_PresentYourselfResponse(self):
-        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
+        senderData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                      'nick': Charstring().assignValueType(CharstringValue("Sender"))}
 
-        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
+        receiverData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                        'nick': Charstring().assignValueType(CharstringValue("Receiver"))}
 
         presentYourselfResponse = PiewikPresentYourselfResponse()
-        presentYourselfResponse.assign({
-            'messageName': Charstring(SimpleType()).assign(CharstringValue("PresentYourselfResponse")),
+        presentYourselfResponse.assignValueType({
+            'messageName': Charstring().assignValueType(CharstringValue("PresentYourselfResponse")),
             'sender':      senderData,
             'receiver':    receiverData
         })
@@ -175,12 +175,12 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.receiver.nick, "Receiver")
 
     def test_LoadGraphAndWorkReqeust(self):
-        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
+        senderData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                      'nick': Charstring().assignValueType(CharstringValue("Sender"))}
 
         loadGraphAndWorkRequest = PiewikLoadGraphAndWorkRequest()
-        loadGraphAndWorkRequest.assign({
-            'messageName': Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkRequest")),
+        loadGraphAndWorkRequest.assignValueType({
+            'messageName': Charstring().assignValueType(CharstringValue("LoadGraphAndWorkRequest")),
             'sender':      senderData
         })
 
@@ -196,32 +196,32 @@ class Encoder_EncodePayload(unittest.TestCase):
         self.assertEqual(payload.sender.nick, "Sender")
 
     def test_LoadGraphAndWorkResponse(self):
-        senderData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                      'nick': Charstring(SimpleType()).assign(CharstringValue("Sender"))}
+        senderData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                      'nick': Charstring().assignValueType(CharstringValue("Sender"))}
 
-        receiverData = {'type': Charstring(SimpleType()).assign(CharstringValue("HelloCritty")),
-                        'nick': Charstring(SimpleType()).assign(CharstringValue("Receiver"))}
+        receiverData = {'type': Charstring().assignValueType(CharstringValue("HelloCritty")),
+                        'nick': Charstring().assignValueType(CharstringValue("Receiver"))}
 
         graphsData = [
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1"))},
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph2"))}
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1"))},
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph2"))}
         ]
 
         worksData =[
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
-             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work1"))},
-            {'graphName': Charstring(SimpleType()).assign(CharstringValue("Graph1")),
-             'workName':  Charstring(SimpleType()).assign(CharstringValue("Work2"))}
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1")),
+             'workName':  Charstring().assignValueType(CharstringValue("Work1"))},
+            {'graphName': Charstring().assignValueType(CharstringValue("Graph1")),
+             'workName':  Charstring().assignValueType(CharstringValue("Work2"))}
         ]
 
         workPredecessorsData = [
-            {'workName':            Charstring(SimpleType()).assign(CharstringValue("Work2")),
-             'predecessorWorkName': Charstring(SimpleType()).assign(CharstringValue("Work1"))}
+            {'workName':            Charstring().assignValueType(CharstringValue("Work2")),
+             'predecessorWorkName': Charstring().assignValueType(CharstringValue("Work1"))}
         ]
 
         loadGraphAndWorkResponse = PiewikLoadGraphAndWorkResponse()
-        loadGraphAndWorkResponse.assign({
-            'messageName':      Charstring(SimpleType()).assign(CharstringValue("LoadGraphAndWorkResponse")),
+        loadGraphAndWorkResponse.assignValueType({
+            'messageName':      Charstring().assignValueType(CharstringValue("LoadGraphAndWorkResponse")),
             'sender':           senderData,
             'receiver':         receiverData,
             'graphs':           graphsData,

@@ -37,7 +37,7 @@ from Runtime.EventExpectation import ComponentDoneExpectation
 from Runtime.EventExpectation import PortReceiveExpectation
 from Runtime.Port             import MessagePort
 from Runtime.Testcase         import Testcase
-from Runtime.TypeSystem       import *
+from Runtime.NewTypeSystem    import *
 
 class MyPort(MessagePort):
     def __init__(self, aEventQueue):
@@ -94,14 +94,14 @@ class Function_ReceiveMessages(Function):
         if isinstance(aComponent, self.mRunsOn):
             aComponent.executeBlockingAction(
                 Alternative([
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring(SimpleType()).assign(CharstringValue("Foo")))),
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring(SimpleType()).assign(CharstringValue("Bar"))))
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring().assignValueType(CharstringValue("Foo")))),
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring().assignValueType(CharstringValue("Bar"))))
                 ])
             )
             aComponent.executeBlockingAction(
                 Alternative([
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring(SimpleType()).assign(CharstringValue("Foo")))),
-                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring(SimpleType()).assign(CharstringValue("Bar"))))
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA1, Charstring().assignValueType(CharstringValue("Foo")))),
+                    Blocking(PortReceiveExpectation(aComponent.mTestPortA2, Charstring().assignValueType(CharstringValue("Bar"))))
                 ])
             )
         else:
@@ -147,8 +147,8 @@ class SimpleTestcase(Testcase):
         componentA2.setContext(self.mMtc, self)
         componentB .setContext(self.mMtc, self)
 
-        componentA1.addFunction(Function_SendMessage(Charstring(SimpleType()).assign(CharstringValue("Foo"))))
-        componentA2.addFunction(Function_SendMessage(Charstring(SimpleType()).assign(CharstringValue("Bar"))))
+        componentA1.addFunction(Function_SendMessage(Charstring().assignValueType(CharstringValue("Foo"))))
+        componentA2.addFunction(Function_SendMessage(Charstring().assignValueType(CharstringValue("Bar"))))
         componentB .addFunction(Function_ReceiveMessages())
 
         connect(componentA1.mTestPort, componentB.mTestPortA1)

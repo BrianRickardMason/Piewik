@@ -35,7 +35,7 @@ from Runtime.Extensions.Critter.Interface.MessageCommon      import *
 from Runtime.Extensions.Critter.Interface.Messages_pb2       import *
 from Runtime.Extensions.Critter.Interface.Translation        import *
 from Runtime.Extensions.Critter.Interface.TranslationHelpers import *
-from Runtime.TypeSystem                                      import *
+from Runtime.NewTypeSystem                                   import *
 
 class ProtobufDecoder(Decoder):
     def decode(self, aBytesRead):
@@ -51,7 +51,7 @@ class ProtobufDecoder(Decoder):
     def decodeInternally(self, aData):
         aHook = getCorrespondingPiewikType(aData)()
         dictionary = self.decodeDictionary(aData)
-        aHook.assign(dictionary)
+        aHook.assignValueType(dictionary)
         return aHook
 
     def decodeDictionary(self, aData):
@@ -60,14 +60,14 @@ class ProtobufDecoder(Decoder):
         for field in aData.ListFields():
             # Built-in types.
             if type(field[1]) is bool:
-                dictionary[field[0].name] = Boolean(SimpleType()).assign(BooleanValue(field[1]))
+                dictionary[field[0].name] = Boolean().assignValueType(BooleanValue(field[1]))
             elif type(field[1]) is int:
-                dictionary[field[0].name] = Integer(SimpleType()).assign(IntegerValue(field[1]))
+                dictionary[field[0].name] = Integer().assignValueType(IntegerValue(field[1]))
             elif type(field[1]) is float:
-                dictionary[field[0].name] = Float(SimpleType()).assign(FloatValue(field[1]))
+                dictionary[field[0].name] = Float().assignValueType(FloatValue(field[1]))
             elif type(field[1]) in (str, unicode):
                 # TODO: Potentially dangerous casting of unicode to str.
-                dictionary[field[0].name] = Charstring(SimpleType()).assign(CharstringValue(str(field[1])))
+                dictionary[field[0].name] = Charstring().assignValueType(CharstringValue(str(field[1])))
             # Composite fields.
             elif type(field[1]) is RepeatedCompositeFieldContainer:
                 # TODO: What if there's nothing?

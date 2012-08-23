@@ -30,12 +30,12 @@
 from Runtime.Encoder                                         import Encoder
 from Runtime.Extensions.Critter.Interface.Messages_pb2       import Envelope
 from Runtime.Extensions.Critter.Interface.TranslationHelpers import *
-from Runtime.TypeSystem                                      import *
+from Runtime.NewTypeSystem                                   import *
 
 class ProtobufEncoder(Encoder):
     def encode(self, aPayloadData):
         (headerId, messageName) = \
-            getHeaderIdAndMessageTypeByMessageName(aPayloadData.getField('messageName').value().value())
+            getHeaderIdAndMessageTypeByMessageName(aPayloadData.getField('messageName').valueType().value())
         envelope = Envelope()
         envelope.header.id = headerId
         payload = messageName()
@@ -47,9 +47,9 @@ class ProtobufEncoder(Encoder):
     def encodePayload(self, aPayloadContent, aPayloadData):
         # TODO: What type?
         # TODO: What exception?
-        if not isinstance(aPayloadData, TypeDecorator):
+        if not isinstance(aPayloadData, Type):
             raise
-        for key in aPayloadData.mDictionary.keys():
+        for key in aPayloadData.mAcceptDecorator.descriptorDictionary().keys():
             if isinstance(aPayloadData.mValue[key], Record):
                 payload     = getattr(aPayloadContent, key)
                 payloadData = aPayloadData.mValue[key]
@@ -61,4 +61,4 @@ class ProtobufEncoder(Encoder):
                     tmpPayload = payload.add()
                     self.encodePayload(tmpPayload, element)
             else:
-                setattr(aPayloadContent, key, aPayloadData.mValue[key].value().value())
+                setattr(aPayloadContent, key, aPayloadData.mValue[key].valueType().value())

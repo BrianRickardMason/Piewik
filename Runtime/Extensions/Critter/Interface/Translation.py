@@ -27,7 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-from Runtime.TypeSystem import *
+from Runtime.NewTypeSystem import *
 
 #
 # NOTE: Header, Payload and Envelope are not translated.
@@ -36,93 +36,82 @@ from Runtime.TypeSystem import *
 class PiewikCritterData(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'type': Charstring(SimpleType()),
-                         'nick': Charstring(SimpleType())})
+                        {'type': Charstring(),
+                         'nick': Charstring()})
 
 class PiewikHeartbeatAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'timestamp':   Float(SimpleType())})
+                         'timestamp':   Float()})
 
 class PiewikPresentYourselfRequest(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData()})
 
 class PiewikPresentYourselfResponse(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData()})
 
 class PiewikPokeAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData()})
 
 class PiewikExecuteGraphAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType())})
+                         'graphName':   Charstring()})
 
 class PiewikGraphData(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'graphName': Charstring(SimpleType())})
+                        {'graphName': Charstring()})
 
 class PiewikWorkData(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'graphName': Charstring(SimpleType()),
-                         'workName':  Charstring(SimpleType())})
+                        {'graphName': Charstring(),
+                         'workName':  Charstring()})
 
 class PiewikWorkPredecessorData(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'workName':           Charstring(SimpleType()),
-                        'predecessorWorkName': Charstring(SimpleType())})
+                        {'workName':           Charstring(),
+                        'predecessorWorkName': Charstring()})
 
 class PiewikRecordOfGraphData(RecordOf):
     def __init__(self):
-        RecordOf.__init__(self, SimpleType(), PiewikGraphData())
+        RecordOf.__init__(self, PiewikGraphData())
 
 class PiewikRecordOfWorkData(RecordOf):
     def __init__(self):
-        RecordOf.__init__(self, SimpleType(), PiewikWorkData())
+        RecordOf.__init__(self, PiewikWorkData())
 
 class PiewikRecordOfWorkPredecessorData(RecordOf):
     def __init__(self):
-        RecordOf.__init__(self, SimpleType(), PiewikWorkPredecessorData())
+        RecordOf.__init__(self, PiewikWorkPredecessorData())
 
 class PiewikLoadGraphAndWorkRequest(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData()})
 
 class PiewikLoadGraphAndWorkResponse(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName':      Charstring(SimpleType()),
+                        {'messageName':      Charstring(),
                          'sender':           PiewikCritterData(),
                          'receiver':         PiewikCritterData(),
                          'graphs':           PiewikRecordOfGraphData(),
@@ -132,26 +121,23 @@ class PiewikLoadGraphAndWorkResponse(Record):
 class PiewikWorkDetailsData(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'workName': Charstring(SimpleType()),
-                         'dummy':    Integer(SimpleType())})
+                        {'workName': Charstring(),
+                         'dummy':    Integer()})
 
 class PiewikRecordOfWorkDetailsData(RecordOf):
     def __init__(self):
-        RecordOf.__init__(self, SimpleType(), PiewikWorkDetailsData())
+        RecordOf.__init__(self, PiewikWorkDetailsData())
 
 class PiewikLoadWorkDetailsRequest(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData()})
 
 class PiewikLoadWorkDetailsResponse(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData(),
                          'details':     PiewikRecordOfWorkDetailsData()})
@@ -159,83 +145,75 @@ class PiewikLoadWorkDetailsResponse(Record):
 class PiewikDetermineGraphCycleRequest(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType())})
+                         'graphName':   Charstring()})
 
 class PiewikDetermineGraphCycleResponse(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer()})
 
 class PiewikCommandWorkExecutionAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer(),
+                         'workName':    Charstring()})
 
 class PiewikExecuteWorkAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer(),
+                         'workName':    Charstring()})
 
 class PiewikDetermineWorkCycleRequest(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer(),
+                         'workName':    Charstring()})
 
 class PiewikDetermineWorkCycleResponse(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType()),
-                         'workCycle':   Integer(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer(),
+                         'workName':    Charstring(),
+                         'workCycle':   Integer()})
 
 class PiewikReportFinishedWorkAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'graphCycle':  Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType()),
-                         'workCycle':   Integer(SimpleType()),
-                         'result':      Boolean(SimpleType())})
+                         'graphName':   Charstring(),
+                         'graphCycle':  Integer(),
+                         'workName':    Charstring(),
+                         'workCycle':   Integer(),
+                         'result':      Boolean()})
 
 class PiewikCantExecuteWorkNowAnnouncement(Record):
     def __init__(self):
         Record.__init__(self,
-                        SimpleType(),
-                        {'messageName': Charstring(SimpleType()),
+                        {'messageName': Charstring(),
                          'sender':      PiewikCritterData(),
                          'receiver':    PiewikCritterData(),
-                         'graphName':   Charstring(SimpleType()),
-                         'cycle':       Integer(SimpleType()),
-                         'workName':    Charstring(SimpleType())})
+                         'graphName':   Charstring(),
+                         'cycle':       Integer(),
+                         'workName':    Charstring()})

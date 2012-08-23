@@ -821,7 +821,7 @@ class TypeSystem_Record_Ctor(unittest.TestCase):
         typeInstance = MyRecord()
 
 class TypeSystem_Record_RecordOf_Ctor(unittest.TestCase):
-    def test_Ctor(self):
+    def test_Ctor_Standalone(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
                 RecordOf.__init__(self, Integer())
@@ -830,7 +830,7 @@ class TypeSystem_Record_RecordOf_Ctor(unittest.TestCase):
                 Record.__init__(self, {'foo': MyRecordOf()})
         typeInstance = MyRecord()
 
-    def test_Ctor(self):
+    def test_Ctor_WithOtherTypes(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
                 RecordOf.__init__(self, Integer())
@@ -900,6 +900,51 @@ class TypeSystem_Record_Template_Ctor(unittest.TestCase):
         self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
         self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
         self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz1'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+class TypeSystem_Record_RecordOf_Template_Ctor(unittest.TestCase):
+    def test_Ctor_Standalone(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': MyRecordOf()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mDescriptorType, Integer))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+
+    def test_Ctor_WithOtherTypes(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer(),
+                                       'bar': MyRecordOf(),
+                                       'baz': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator, RecordAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['foo'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator, RecordOfAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorType, Integer))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['bar'].mAcceptDecorator.mAcceptDecorator.mDescriptorType.mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz'].mAcceptDecorator, TemplateAcceptDecorator))
+        self.assertTrue(isinstance(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz'].mAcceptDecorator.mAcceptDecorator, TypeAcceptDecorator))
+        self.assertTrue(issubclass(typeInstance.mAcceptDecorator.mAcceptDecorator.mDescriptorDictionary['baz'].mAcceptDecorator.mAcceptDecorator.mType, IntegerValue))
 
 class TypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValueType_Empty(self):

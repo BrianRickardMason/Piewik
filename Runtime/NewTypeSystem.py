@@ -197,6 +197,13 @@ class AnyValue(Value):
     def value(self):
         return self
 
+class AnyValueType(Value):
+    def __eq__(self, aValue):
+        return True
+
+    def value(self):
+        return self
+
 class Type(object):
     def __init__(self):
         self.mValueType = None
@@ -284,7 +291,10 @@ class Integer(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            self.mValueType = aValueType
+            if isinstance(aValueType, AnyValueType):
+                self.mValueType = AnyValue()
+            else:
+                self.mValueType = aValueType
         else:
             raise InvalidTypeInValueTypeAssignment
         return self
@@ -390,16 +400,28 @@ class Record(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            tmpValue = {}
-            for key in aValueType:
-                if isinstance(self.mAcceptDecorator.descriptorDictionary()[key], Record):
-                    tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
-                elif isinstance(self.mAcceptDecorator.descriptorDictionary()[key], RecordOf):
-                    tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
-                else:
-                    tmpValue[key] = aValueType[key]
-            self.mValue = tmpValue
-            self.mValueType = aValueType
+            if isinstance(aValueType, AnyValueType):
+                tmpValue = {}
+                for key in self.mAcceptDecorator.descriptorDictionary():
+                    if isinstance(self.mAcceptDecorator.descriptorDictionary()[key], Record):
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                    elif isinstance(self.mAcceptDecorator.descriptorDictionary()[key], RecordOf):
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                    else:
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                self.mValue = tmpValue
+                self.mValueType = aValueType
+            else:
+                tmpValue = {}
+                for key in aValueType:
+                    if isinstance(self.mAcceptDecorator.descriptorDictionary()[key], Record):
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
+                    elif isinstance(self.mAcceptDecorator.descriptorDictionary()[key], RecordOf):
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(aValueType[key])
+                    else:
+                        tmpValue[key] = aValueType[key]
+                self.mValue = tmpValue
+                self.mValueType = aValueType
         else:
             raise InvalidTypeInValueTypeAssignment
         return self
@@ -445,16 +467,20 @@ class RecordOf(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            tmpValue = []
-            for valueType in aValueType:
-                if isinstance(self.mAcceptDecorator.descriptorType(), Record):
-                    tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
-                elif isinstance(self.mAcceptDecorator.descriptorType(), RecordOf):
-                    tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
-                else:
-                    tmpValue.append(valueType)
-            self.mValue = tmpValue
-            self.mValueType = aValueType
+            if isinstance(aValueType, AnyValueType):
+                self.mValue = deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(AnyValueType())
+                self.mValueType = aValueType
+            else:
+                tmpValue = []
+                for valueType in aValueType:
+                    if isinstance(self.mAcceptDecorator.descriptorType(), Record):
+                        tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
+                    elif isinstance(self.mAcceptDecorator.descriptorType(), RecordOf):
+                        tmpValue.append(deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(valueType))
+                    else:
+                        tmpValue.append(valueType)
+                self.mValue = tmpValue
+                self.mValueType = aValueType
         else:
             raise InvalidTypeInValueTypeAssignment
         return self
@@ -580,11 +606,16 @@ class TemplateAcceptDecorator(AcceptDecorator):
             self.mAcceptDecorator = aAcceptDecorator
 
     def accept(self, aValueType):
-        if isinstance(self.mAcceptDecorator, RecordAcceptDecorator):
-            return self.mAcceptDecorator.accept(aValueType)
+        if isinstance(aValueType, AnyValueType):
+            return True
         else:
-            return self.mAcceptDecorator.accept(aValueType) or \
-                   type(aValueType) is AnyValue
+            if isinstance(self.mAcceptDecorator, RecordAcceptDecorator):
+                return self.mAcceptDecorator.accept(aValueType)
+            elif isinstance(self.mAcceptDecorator, RecordOfAcceptDecorator):
+                return self.mAcceptDecorator.accept(aValueType)
+            else:
+                return self.mAcceptDecorator.accept(aValueType) or \
+                       type(aValueType) is AnyValue
 
     def descriptorDictionary(self):
         return self.mAcceptDecorator.descriptorDictionary()

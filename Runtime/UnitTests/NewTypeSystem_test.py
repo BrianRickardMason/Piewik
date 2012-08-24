@@ -271,7 +271,7 @@ class TypeSystem_Integer_Accept(unittest.TestCase):
 
     def test_AcceptReturnsFalseOnAnInvalidValueType_Special(self):
         typeInstance = Integer()
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             self.assertFalse(typeInstance.accept(valueType))
 
 class TypeSystem_Integer_Ranged_Accept(unittest.TestCase):
@@ -296,7 +296,7 @@ class TypeSystem_Integer_Ranged_Accept(unittest.TestCase):
     def test_AcceptReturnsFalseOnAnInvalidValueType_Special(self):
         typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             self.assertFalse(typeInstance.accept(valueType))
 
 class TypeSystem_Integer_Ranged_Subtyped_Accept(unittest.TestCase):
@@ -337,13 +337,13 @@ class TypeSystem_Integer_Ranged_Subtyped_Accept(unittest.TestCase):
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             self.assertFalse(typeInstance.accept(valueType))
 
 class TypeSystem_Integer_Template_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValueType(self):
         typeInstance = Integer().addAcceptDecorator(TemplateAcceptDecorator, {})
-        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue(), AnyValueType()]:
             self.assertTrue(typeInstance.accept(valueType))
 
     def test_AcceptReturnsFalseOnAnInvalidValueType_BuiltIn(self):
@@ -358,7 +358,7 @@ class TypeSystem_Integer_Template_Subtyped_Accept(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue(), AnyValueType()]:
             self.assertTrue(typeInstance.accept(valueType))
 
     def test_AcceptReturnsFalseOnAnInvalidValueType_BuiltIn(self):
@@ -384,7 +384,7 @@ class TypeSystem_Integer_AssignValueType(unittest.TestCase):
 
     def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_Special(self):
         typeInstance = Integer()
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             with self.assertRaises(InvalidTypeInValueTypeAssignment):
                 typeInstance.assignValueType(valueType)
 
@@ -412,7 +412,7 @@ class TypeSystem_Integer_Ranged_AssignValueType(unittest.TestCase):
     def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_Special(self):
         typeInstance = Integer().addAcceptDecorator(RangedAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                             'upperBoundary': IntegerValue(10)}).assignValueType(IntegerValue(1))
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             with self.assertRaises(InvalidTypeInValueTypeAssignment):
                 typeInstance.assignValueType(valueType)
 
@@ -456,7 +456,7 @@ class TypeSystem_Integer_Ranged_Subtyped_AssignValueType(unittest.TestCase):
                 self.mAcceptDecorator = RangedAcceptDecorator(self.mAcceptDecorator, {'lowerBoundary': IntegerValue(0),
                                                                                       'upperBoundary': IntegerValue(10)})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [AnyValue()]:
+        for valueType in [AnyValue(), AnyValueType()]:
             with self.assertRaises(InvalidTypeInValueTypeAssignment):
                 typeInstance.assignValueType(valueType)
 
@@ -467,7 +467,7 @@ class TypeSystem_Integer_Template_AssignValueType(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue(), AnyValueType()]:
             self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_BuiltIn(self):
@@ -487,7 +487,7 @@ class TypeSystem_Integer_Template_Subtyped_AssignValueType(unittest.TestCase):
                 Integer.__init__(self)
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyInteger().assignValueType(IntegerValue(1))
-        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue()]:
+        for valueType in [IntegerValue(-1), IntegerValue(0), IntegerValue(1), AnyValue(), AnyValueType()]:
             self.assertEqual(typeInstance.assignValueType(valueType).valueType(), valueType)
 
     def test_AssignValueTypeRaisesAnExceptionOnAnInvalidValueType_BuiltIn(self):
@@ -995,6 +995,13 @@ class TypeSystem_Record_Accept(unittest.TestCase):
     def test_AcceptReturnsTrueOnAValidValueType_DoubleSubtyped(self):
         self.skipTest("Not implemented yet.")
 
+    def test_AcceptReturnsTrueOnAValidValueType_NonEmpty_AnyValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+        typeInstance = MyRecord()
+        self.assertFalse(typeInstance.accept(AnyValueType()))
+
     def test_AcceptReturnsFalseOnAnInvalidValueType_InvalidNumberOfKeys_TooShort(self):
         class MyRecord(Record):
             def __init__(self):
@@ -1028,6 +1035,14 @@ class TypeSystem_Record_Template_Accept(unittest.TestCase):
                 self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
         typeInstance = MyRecord()
         self.assertTrue(typeInstance.accept({}))
+
+    def test_AcceptReturnsTrueOnAValidValueType_NonEmpty_AnyValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance = MyRecord()
+        self.assertTrue(typeInstance.accept(AnyValueType()))
 
     def test_AcceptReturnsTrueOnAValidValueType_NonEmpty_WithoutSpecialValueType(self):
         class MyRecord(Record):
@@ -1478,6 +1493,18 @@ class TypeSystem_Record_Template_AssignValueType(unittest.TestCase):
         typeInstance = MyRecord()
         self.assertEqual(typeInstance.assignValueType({}).valueType(), {})
 
+    def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_AnyValueType(self):
+        class MyRecord(Record):
+            def __init__(self):
+                Record.__init__(self, {'foo': Integer()})
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        typeInstance1 = MyRecord()
+        typeInstance2 = MyRecord()
+        typeInstance2.assignValueType({
+            'foo': TemplateInteger().assignValueType(AnyValue())
+        })
+        self.assertEqual(typeInstance1.assignValueType(AnyValueType()).valueType(), typeInstance2)
+
     def test_AssignValueTypeAssignsOnAValidValueType_NonEmpty_WithoutSpecialValueType(self):
         class MyRecord(Record):
             def __init__(self):
@@ -1714,6 +1741,13 @@ class TypeSystem_RecordOf_Accept(unittest.TestCase):
                      TemplateInteger().assignValueType(IntegerValue(2))]
         self.assertTrue(instance.accept(valueType))
 
+    def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instance = MyRecordOf()
+        self.assertFalse(instance.accept(AnyValueType()))
+
     def test_AcceptReturnsFalseOnAnInvalidValue_InvalidValue_AnyOfValuesIsATemplateLikeType_WithSpecialValueType(self):
         class MyRecordOf(RecordOf):
             def __init__(self):
@@ -1760,6 +1794,14 @@ class TypeSystem_RecordOf_Template_Accept(unittest.TestCase):
         instance = MyRecordOf()
         valueType = []
         self.assertTrue(instance.accept(valueType))
+
+    def test_AcceptReturnsTrueOnAVvalidValue_AnyValueType(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instance = MyRecordOf()
+        self.assertTrue(instance.accept(AnyValueType()))
 
     def test_AcceptReturnsTrueOnAValidValue_ASingleElementList(self):
         class MyRecordOf(RecordOf):
@@ -1965,6 +2007,128 @@ class TypeSystem_RecordOf_Template_AssignValueType(unittest.TestCase):
 
     def test_IsCompatibleReturnsFalseOnAnIncompatibleType_Regular(self):
         self.skipTest("Not implemented yet.")
+
+class TypeSystem_RecordOf_Template_Eq(unittest.TestCase):
+    def test_EqReturnsTrueOnSameValues_Self(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType = MyRecordOf()
+        instanceType.assignValueType(AnyValueType())
+        self.assertTrue(instanceType == instanceType)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithNonTemplate_Empty(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithNonTemplate_OneElement(self):
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        class MyRecordOf2(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType1 = MyRecordOf1()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf2()
+        instanceType2.assignValueType([
+            Integer().assignValueType(IntegerValue(1))
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithNonTemplate_ManyElements(self):
+        class MyRecordOf1(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        class MyRecordOf2(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+        instanceType1 = MyRecordOf1()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf2()
+        instanceType2.assignValueType([
+            Integer().assignValueType(IntegerValue(1)),
+            Integer().assignValueType(IntegerValue(2)),
+            Integer().assignValueType(IntegerValue(3))
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithTemplate_Empty(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithTemplate_OneElement_WithoutSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([
+            Integer().assignValueType(IntegerValue(1))
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithTemplate_OneElement_WithSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([
+            TemplateInteger().assignValueType(AnyValue())
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithTemplate_ManyElements_WithoutSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([
+            Integer().assignValueType(IntegerValue(1)),
+            Integer().assignValueType(IntegerValue(2)),
+            Integer().assignValueType(IntegerValue(3))
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
+
+    def test_EqReturnsTrueOnSameValues_TemplateWithTemplate_ManyElements_WithSpecialValue(self):
+        class MyRecordOf(RecordOf):
+            def __init__(self):
+                RecordOf.__init__(self, Integer())
+                self.mAcceptDecorator = TemplateAcceptDecorator(self.mAcceptDecorator, {})
+        instanceType1 = MyRecordOf()
+        instanceType1.assignValueType(AnyValueType())
+        instanceType2 = MyRecordOf()
+        instanceType2.assignValueType([
+            TemplateInteger().assignValueType(AnyValue()),
+            TemplateInteger().assignValueType(IntegerValue(2)),
+            TemplateInteger().assignValueType(AnyValue())
+        ])
+        self.assertTrue(instanceType1 == instanceType2)
 
 if __name__ == '__main__':
     unittest.main()

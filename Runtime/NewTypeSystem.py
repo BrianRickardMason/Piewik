@@ -197,13 +197,6 @@ class AnyValue(Value):
     def value(self):
         return self
 
-class AnyValueType(Value):
-    def __eq__(self, aValue):
-        return True
-
-    def value(self):
-        return self
-
 class Type(object):
     def __init__(self):
         self.mValueType = None
@@ -291,7 +284,7 @@ class Integer(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            if isinstance(aValueType, AnyValueType):
+            if isinstance(aValueType, AnyValue):
                 self.mValueType = AnyValue()
             else:
                 self.mValueType = aValueType
@@ -400,15 +393,15 @@ class Record(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            if isinstance(aValueType, AnyValueType):
+            if isinstance(aValueType, AnyValue):
                 tmpValue = {}
                 for key in self.mAcceptDecorator.descriptorDictionary():
                     if isinstance(self.mAcceptDecorator.descriptorDictionary()[key], Record):
-                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValue())
                     elif isinstance(self.mAcceptDecorator.descriptorDictionary()[key], RecordOf):
-                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValue())
                     else:
-                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValueType())
+                        tmpValue[key] = deepcopy(self.mAcceptDecorator.descriptorDictionary()[key]).assignValueType(AnyValue())
                 self.mValue = tmpValue
                 self.mValueType = aValueType
             else:
@@ -467,8 +460,8 @@ class RecordOf(Type):
 
     def assignValueType(self, aValueType):
         if self.accept(aValueType):
-            if isinstance(aValueType, AnyValueType):
-                self.mValue = deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(AnyValueType())
+            if isinstance(aValueType, AnyValue):
+                self.mValue = deepcopy(self.mAcceptDecorator.descriptorType()).assignValueType(AnyValue())
                 self.mValueType = aValueType
             else:
                 tmpValue = []
@@ -606,7 +599,7 @@ class TemplateAcceptDecorator(AcceptDecorator):
             self.mAcceptDecorator = aAcceptDecorator
 
     def accept(self, aValueType):
-        if isinstance(aValueType, AnyValueType):
+        if isinstance(aValueType, AnyValue):
             return True
         else:
             if isinstance(self.mAcceptDecorator, RecordAcceptDecorator):

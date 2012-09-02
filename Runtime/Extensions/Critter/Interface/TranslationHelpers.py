@@ -36,74 +36,89 @@ from Runtime.Extensions.Critter.Interface.Translation   import *
 #
 
 def getHeaderIdAndMessageTypeByMessageName(aMessageName):
-    if   aMessageName == 'CantExecuteWorkNowAnnouncement':   return (CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT,  CantExecuteWorkNowAnnouncement)
-    elif aMessageName == 'CommandWorkExecutionAnnouncement': return (COMMAND_WORK_EXECUTION_ANNOUNCEMENT, CommandWorkExecutionAnnouncement)
-    elif aMessageName == 'DetermineGraphCycleRequest':       return (DETERMINE_GRAPH_CYCLE_REQUEST,       DetermineGraphCycleRequest)
-    elif aMessageName == 'DetermineGraphCycleResponse':      return (DETERMINE_GRAPH_CYCLE_RESPONSE,      DetermineGraphCycleResponse)
-    elif aMessageName == 'DetermineWorkCycleRequest':        return (DETERMINE_WORK_CYCLE_REQUEST,        DetermineWorkCycleRequest)
-    elif aMessageName == 'DetermineWorkCycleResponse':       return (DETERMINE_WORK_CYCLE_RESPONSE,       DetermineWorkCycleResponse)
-    elif aMessageName == 'ExecuteGraphAnnouncement':         return (EXECUTE_GRAPH_ANNOUNCEMENT,          ExecuteGraphAnnouncement)
-    elif aMessageName == 'ExecuteWorkAnnouncement':          return (EXECUTE_WORK_ANNOUNCEMENT,           ExecuteWorkAnnouncement)
-    elif aMessageName == 'HeartbeatAnnouncement':            return (HEARTBEAT_ANNOUNCEMENT,              HeartbeatAnnouncement)
-    elif aMessageName == 'LoadGraphAndWorkRequest':          return (LOAD_GRAPH_AND_WORK_REQUEST,         LoadGraphAndWorkRequest)
-    elif aMessageName == 'LoadGraphAndWorkResponse':         return (LOAD_GRAPH_AND_WORK_RESPONSE,        LoadGraphAndWorkResponse)
-    elif aMessageName == 'LoadWorkDetailsRequest':           return (LOAD_WORK_DETAILS_REQUEST,           LoadWorkDetailsRequest)
-    elif aMessageName == 'LoadWorkDetailsResponse':          return (LOAD_WORK_DETAILS_RESPONSE,          LoadWorkDetailsResponse)
-    elif aMessageName == 'PokeAnnouncement':                 return (POKE_ANNOUNCEMENT,                   PokeAnnouncement)
-    elif aMessageName == 'PresentYourselfRequest':           return (PRESENT_YOURSELF_REQUEST,            PresentYourselfRequest)
-    elif aMessageName == 'PresentYourselfResponse':          return (PRESENT_YOURSELF_RESPONSE,           PresentYourselfResponse)
-    elif aMessageName == 'ReportFinishedWorkAnnouncement':   return (REPORT_FINISHED_WORK_ANNOUNCEMENT,   ReportFinishedWorkAnnouncement)
+    if False: pass
+    elif aMessageName == 'CantExecuteWorkNowAnnouncement':  return (CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT, CantExecuteWorkNowAnnouncement)
+    elif aMessageName == 'Command_DetermineGraphCycle_Req': return (COMMAND_DETERMINE_GRAPH_CYCLE_REQ, Command_DetermineGraphCycle_Req)
+    elif aMessageName == 'Command_DetermineGraphCycle_Res': return (COMMAND_DETERMINE_GRAPH_CYCLE_RES, Command_DetermineGraphCycle_Res)
+    elif aMessageName == 'Command_DetermineWorkCycle_Req':  return (COMMAND_DETERMINE_WORK_CYCLE_REQ, Command_DetermineWorkCycle_Req)
+    elif aMessageName == 'Command_DetermineWorkCycle_Res':  return (COMMAND_DETERMINE_WORK_CYCLE_RES, Command_DetermineWorkCycle_Res)
+    elif aMessageName == 'Command_Election_Req':            return (COMMAND_ELECTION_REQ, Command_Election_Req)
+    elif aMessageName == 'Command_Election_Res':            return (COMMAND_ELECTION_RES, Command_Election_Res)
+    elif aMessageName == 'Command_ExecuteGraph_Req':        return (COMMAND_EXECUTE_GRAPH_REQ, Command_ExecuteGraph_Req)
+    elif aMessageName == 'Command_ExecuteGraph_Res':        return (COMMAND_EXECUTE_GRAPH_RES, Command_ExecuteGraph_Res)
+    elif aMessageName == 'Command_ExecuteWork_Req':         return (COMMAND_EXECUTE_WORK_REQ, Command_ExecuteWork_Req)
+    elif aMessageName == 'Command_ExecuteWork_Res':         return (COMMAND_EXECUTE_WORK_RES, Command_ExecuteWork_Res)
+    elif aMessageName == 'Command_OrderWorkExecution_Req':  return (COMMAND_ORDER_WORK_EXECUTION_REQ, Command_OrderWorkExecution_Req)
+    elif aMessageName == 'Command_OrderWorkExecution_Res':  return (COMMAND_ORDER_WORK_EXECUTION_RES, Command_OrderWorkExecution_Res)
+    elif aMessageName == 'HeartbeatAnnouncement':           return (HEARTBEAT_ANNOUNCEMENT, HeartbeatAnnouncement)
+    elif aMessageName == 'LoadGraphAndWorkRequest':         return (LOAD_GRAPH_AND_WORK_REQUEST, LoadGraphAndWorkRequest)
+    elif aMessageName == 'LoadGraphAndWorkResponse':        return (LOAD_GRAPH_AND_WORK_RESPONSE, LoadGraphAndWorkResponse)
+    elif aMessageName == 'LoadWorkDetailsRequest':          return (LOAD_WORK_DETAILS_REQUEST, LoadWorkDetailsRequest)
+    elif aMessageName == 'LoadWorkDetailsResponse':         return (LOAD_WORK_DETAILS_RESPONSE, LoadWorkDetailsResponse)
+    elif aMessageName == 'PokeAnnouncement':                return (POKE_ANNOUNCEMENT, PokeAnnouncement)
+    elif aMessageName == 'PresentYourselfRequest':          return (PRESENT_YOURSELF_REQUEST, PresentYourselfRequest)
+    elif aMessageName == 'PresentYourselfResponse':         return (PRESENT_YOURSELF_RESPONSE, PresentYourselfResponse)
     # TODO: Raise a meaningful exception.
     # Not found.
-    else:                                                    raise
+    else:                                                   raise
 
 def getMessageByHeaderId(aId):
-    if   aId == CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT:  return CantExecuteWorkNowAnnouncement()
-    elif aId == COMMAND_WORK_EXECUTION_ANNOUNCEMENT: return CommandWorkExecutionAnnouncement()
-    elif aId == DETERMINE_GRAPH_CYCLE_REQUEST:       return DetermineGraphCycleRequest()
-    elif aId == DETERMINE_GRAPH_CYCLE_RESPONSE:      return DetermineGraphCycleResponse()
-    elif aId == DETERMINE_WORK_CYCLE_REQUEST:        return DetermineWorkCycleRequest()
-    elif aId == DETERMINE_WORK_CYCLE_RESPONSE:       return DetermineWorkCycleResponse()
-    elif aId == EXECUTE_GRAPH_ANNOUNCEMENT:          return ExecuteGraphAnnouncement()
-    elif aId == EXECUTE_WORK_ANNOUNCEMENT:           return ExecuteWorkAnnouncement()
-    elif aId == HEARTBEAT_ANNOUNCEMENT:              return HeartbeatAnnouncement()
-    elif aId == LOAD_GRAPH_AND_WORK_REQUEST:         return LoadGraphAndWorkRequest()
-    elif aId == LOAD_GRAPH_AND_WORK_RESPONSE:        return LoadGraphAndWorkResponse()
-    elif aId == LOAD_WORK_DETAILS_REQUEST:           return LoadWorkDetailsRequest()
-    elif aId == LOAD_WORK_DETAILS_RESPONSE:          return LoadWorkDetailsResponse()
-    elif aId == POKE_ANNOUNCEMENT:                   return PokeAnnouncement()
-    elif aId == PRESENT_YOURSELF_REQUEST:            return PresentYourselfRequest()
-    elif aId == PRESENT_YOURSELF_RESPONSE:           return PresentYourselfResponse()
-    elif aId == REPORT_FINISHED_WORK_ANNOUNCEMENT:   return ReportFinishedWorkAnnouncement()
+    if False: pass
+    elif aId == CANT_EXECUTE_WORK_NOW_ANNOUNCEMENT: return CantExecuteWorkNowAnnouncement()
+    elif aId == COMMAND_DETERMINE_GRAPH_CYCLE_REQ:  return Command_DetermineGraphCycle_Req()
+    elif aId == COMMAND_DETERMINE_GRAPH_CYCLE_RES:  return Command_DetermineGraphCycle_Res()
+    elif aId == COMMAND_DETERMINE_WORK_CYCLE_REQ:   return Command_DetermineWorkCycle_Req()
+    elif aId == COMMAND_DETERMINE_WORK_CYCLE_RES:   return Command_DetermineWorkCycle_Res()
+    elif aId == COMMAND_ELECTION_REQ:               return Command_Election_Req()
+    elif aId == COMMAND_ELECTION_RES:               return Command_Election_Res()
+    elif aId == COMMAND_EXECUTE_GRAPH_REQ:          return Command_ExecuteGraph_Req()
+    elif aId == COMMAND_EXECUTE_GRAPH_RES:          return Command_ExecuteGraph_Res()
+    elif aId == COMMAND_EXECUTE_WORK_REQ:           return Command_ExecuteWork_Req()
+    elif aId == COMMAND_EXECUTE_WORK_RES:           return Command_ExecuteWork_Res()
+    elif aId == COMMAND_ORDER_WORK_EXECUTION_REQ:   return Command_OrderWorkExecution_Req()
+    elif aId == COMMAND_ORDER_WORK_EXECUTION_RES:   return Command_OrderWorkExecution_Res()
+    elif aId == HEARTBEAT_ANNOUNCEMENT:             return HeartbeatAnnouncement()
+    elif aId == LOAD_GRAPH_AND_WORK_REQUEST:        return LoadGraphAndWorkRequest()
+    elif aId == LOAD_GRAPH_AND_WORK_RESPONSE:       return LoadGraphAndWorkResponse()
+    elif aId == LOAD_WORK_DETAILS_REQUEST:          return LoadWorkDetailsRequest()
+    elif aId == LOAD_WORK_DETAILS_RESPONSE:         return LoadWorkDetailsResponse()
+    elif aId == POKE_ANNOUNCEMENT:                  return PokeAnnouncement()
+    elif aId == PRESENT_YOURSELF_REQUEST:           return PresentYourselfRequest()
+    elif aId == PRESENT_YOURSELF_RESPONSE:          return PresentYourselfResponse()
     # TODO: Raise a meaningful exception.
     # Not found.
-    else:                                            raise
+    else:                                           raise
 
 def getCorrespondingPiewikType(aProtobufType):
+    if False: pass
     # Structures.
-    if   type(aProtobufType) is CritterData:                      return PiewikCritterData
-    elif type(aProtobufType) is GraphData:                        return PiewikGraphData
-    elif type(aProtobufType) is WorkData:                         return PiewikWorkData
-    elif type(aProtobufType) is WorkDetailsData:                  return PiewikWorkDetailsData
-    elif type(aProtobufType) is WorkPredecessorData:              return PiewikWorkPredecessorData
+    elif type(aProtobufType) is CritterData:                     return Piewik_CritterData
+    elif type(aProtobufType) is GraphData:                       return Piewik_GraphData
+    elif type(aProtobufType) is WorkData:                        return Piewik_WorkData
+    elif type(aProtobufType) is WorkDetailsData:                 return Piewik_WorkDetailsData
+    elif type(aProtobufType) is WorkPredecessorData:             return Piewik_WorkPredecessorData
     # Messages.
-    elif type(aProtobufType) is CantExecuteWorkNowAnnouncement:   return PiewikCantExecuteWorkNowAnnouncement
-    elif type(aProtobufType) is HeartbeatAnnouncement:            return PiewikHeartbeatAnnouncement
-    elif type(aProtobufType) is PresentYourselfRequest:           return PiewikPresentYourselfRequest
-    elif type(aProtobufType) is PresentYourselfResponse:          return PiewikPresentYourselfResponse
-    elif type(aProtobufType) is PokeAnnouncement:                 return PiewikPokeAnnouncement
-    elif type(aProtobufType) is ExecuteGraphAnnouncement:         return PiewikExecuteGraphAnnouncement
-    elif type(aProtobufType) is LoadGraphAndWorkRequest:          return PiewikLoadGraphAndWorkRequest
-    elif type(aProtobufType) is LoadGraphAndWorkResponse:         return PiewikLoadGraphAndWorkResponse
-    elif type(aProtobufType) is LoadWorkDetailsRequest:           return PiewikLoadWorkDetailsRequest
-    elif type(aProtobufType) is LoadWorkDetailsResponse:          return PiewikLoadWorkDetailsResponse
-    elif type(aProtobufType) is DetermineGraphCycleRequest:       return PiewikDetermineGraphCycleRequest
-    elif type(aProtobufType) is DetermineGraphCycleResponse:      return PiewikDetermineGraphCycleResponse
-    elif type(aProtobufType) is CommandWorkExecutionAnnouncement: return PiewikCommandWorkExecutionAnnouncement
-    elif type(aProtobufType) is ExecuteWorkAnnouncement:          return PiewikExecuteWorkAnnouncement
-    elif type(aProtobufType) is DetermineWorkCycleRequest:        return PiewikDetermineWorkCycleRequest
-    elif type(aProtobufType) is DetermineWorkCycleResponse:       return PiewikDetermineWorkCycleResponse
-    elif type(aProtobufType) is ReportFinishedWorkAnnouncement:   return PiewikReportFinishedWorkAnnouncement
+    elif type(aProtobufType) is CantExecuteWorkNowAnnouncement:  return Piewik_CantExecuteWorkNowAnnouncement
+    elif type(aProtobufType) is Command_DetermineGraphCycle_Req: return Piewik_Command_DetermineGraphCycle_Req
+    elif type(aProtobufType) is Command_DetermineGraphCycle_Res: return Piewik_Command_DetermineGraphCycle_Res
+    elif type(aProtobufType) is Command_DetermineWorkCycle_Req:  return Piewik_Command_DetermineWorkCycle_Req
+    elif type(aProtobufType) is Command_DetermineWorkCycle_Res:  return Piewik_Command_DetermineWorkCycle_Res
+    elif type(aProtobufType) is Command_Election_Req:            return Piewik_Command_Election_Req
+    elif type(aProtobufType) is Command_Election_Res:            return Piewik_Command_Election_Res
+    elif type(aProtobufType) is Command_ExecuteGraph_Req:        return Piewik_Command_ExecuteGraph_Req
+    elif type(aProtobufType) is Command_ExecuteGraph_Res:        return Piewik_Command_ExecuteGraph_Res
+    elif type(aProtobufType) is Command_ExecuteWork_Req:         return Piewik_Command_ExecuteWork_Req
+    elif type(aProtobufType) is Command_ExecuteWork_Res:         return Piewik_Command_ExecuteWork_Res
+    elif type(aProtobufType) is Command_OrderWorkExecution_Req:  return Piewik_Command_OrderWorkExecution_Req
+    elif type(aProtobufType) is Command_OrderWorkExecution_Res:  return Piewik_Command_OrderWorkExecution_Res
+    elif type(aProtobufType) is HeartbeatAnnouncement:           return Piewik_HeartbeatAnnouncement
+    elif type(aProtobufType) is LoadGraphAndWorkRequest:         return Piewik_LoadGraphAndWorkRequest
+    elif type(aProtobufType) is LoadGraphAndWorkResponse:        return Piewik_LoadGraphAndWorkResponse
+    elif type(aProtobufType) is LoadWorkDetailsRequest:          return Piewik_LoadWorkDetailsRequest
+    elif type(aProtobufType) is LoadWorkDetailsResponse:         return Piewik_LoadWorkDetailsResponse
+    elif type(aProtobufType) is PokeAnnouncement:                return Piewik_PokeAnnouncement
+    elif type(aProtobufType) is PresentYourselfRequest:          return Piewik_PresentYourselfRequest
+    elif type(aProtobufType) is PresentYourselfResponse:         return Piewik_PresentYourselfResponse
     # TODO: A meaningful exception.
     # Not found.
     else:                                                         raise

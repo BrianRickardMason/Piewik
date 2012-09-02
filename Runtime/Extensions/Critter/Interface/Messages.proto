@@ -47,13 +47,6 @@ message PokeAnnouncement
     optional CritterData sender      = 2;
 }
 
-message ExecuteGraphAnnouncement
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional string      graphName   = 3;
-}
-
 // LoadGraphAndWorkRequest/Response: GraphYeeti -> Cribrarian -> GraphYeeti.
 
 message GraphData
@@ -89,47 +82,6 @@ message LoadGraphAndWorkResponse
     repeated WorkPredecessorData workPredecessors = 6;
 }
 
-// DetermineGraphCycleRequest/Response: GraphYeeti -> Cribrarian -> GraphYeeti.
-
-message DetermineGraphCycleRequest
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional string      graphName   = 3;
-}
-
-message DetermineGraphCycleResponse
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional CritterData receiver    = 3;
-    optional string      graphName   = 4;
-    optional uint32      cycle       = 5;
-}
-
-// CommandWorkExecutionAnnouncement: GraphYeeti -> Balancer.
-
-message CommandWorkExecutionAnnouncement
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional string      graphName   = 3;
-    optional uint32      cycle       = 4;
-    optional string      workName    = 5;
-}
-
-// ExecuteWorkAnnouncement: Balancer -> Worker.
-
-message ExecuteWorkAnnouncement
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional CritterData receiver    = 3;
-    optional string      graphName   = 4;
-    optional uint32      cycle       = 5;
-    optional string      workName    = 6;
-}
-
 // CantExecuteWorkNow: Worker -> Balancer.
 
 message CantExecuteWorkNowAnnouncement
@@ -140,43 +92,6 @@ message CantExecuteWorkNowAnnouncement
     optional string      graphName   = 4;
     optional uint32      cycle       = 5;
     optional string      workName    = 6;
-}
-
-// DetermineWorkCycleRequest/Response: Worker -> Cribrarian -> Worker.
-
-message DetermineWorkCycleRequest
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional string      graphName   = 3;
-    optional uint32      cycle       = 4;
-    optional string      workName    = 5;
-}
-
-message DetermineWorkCycleResponse
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional CritterData receiver    = 3;
-    optional string      graphName   = 4;
-    optional uint32      cycle       = 5;
-    optional string      workName    = 6;
-    optional uint32      workCycle   = 7;
-}
-
-// ReportFinishedWorkAnnouncement: Worker -> GraphYeeti.
-
-// TODO: Add missing information on whom inform about the result.
-
-message ReportFinishedWorkAnnouncement
-{
-    optional string      messageName = 1;
-    optional CritterData sender      = 2;
-    optional string      graphName   = 3;
-    optional uint32      graphCycle  = 4;
-    optional string      workName    = 5;
-    optional uint32      workCycle   = 6;
-    optional bool        result      = 7;
 }
 
 // LoadWorkDetailsRequest/Response: Worker -> Cribrarian -> Worker.
@@ -199,4 +114,153 @@ message LoadWorkDetailsResponse
     optional CritterData     sender      = 2;
     optional CritterData     receiver    = 3;
     repeated WorkDetailsData details     = 4;
+}
+
+//
+// An election.
+//
+
+//
+// Any -> Cribrarian.
+//
+message Command_Election_Req
+{
+    optional string messageName = 1;
+    optional string critthash   = 2;
+    optional string crittnick   = 3;
+}
+
+//
+// Cribrarian -> Any.
+//
+// TODO: Change crittnick to senderCrittnick.
+message Command_Election_Res
+{
+    optional string messageName = 1;
+    optional string critthash   = 2;
+    optional string crittnick   = 3;
+}
+
+//
+// A graph execution.
+//
+
+//
+// Criduler -> GraphYeeti.
+//
+message Command_ExecuteGraph_Req
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+}
+
+//
+// GraphYeeti -> Criduler.
+//
+message Command_ExecuteGraph_Res
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+}
+
+//
+// GraphYeeti -> Cribrarian.
+//
+message Command_DetermineGraphCycle_Req
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+}
+
+//
+// Cribrarian -> GraphYeeti.
+//
+message Command_DetermineGraphCycle_Res
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+}
+
+//
+// GraphYeeti -> Balancer.
+//
+message Command_OrderWorkExecution_Req
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+    optional string workExecutionCritthash  = 5;
+    optional string workName                = 6;
+}
+
+//
+// Balancer -> GraphYeeti.
+//
+message Command_OrderWorkExecution_Res
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+    optional string workExecutionCritthash  = 5;
+    optional string workName                = 6;
+}
+
+//
+// Balancer -> Worker.
+//
+message Command_ExecuteWork_Req
+{
+    optional string messageName             = 1;
+    optional string receiverCrittnick       = 2;
+    optional string graphExecutionCritthash = 3;
+    optional string graphName               = 4;
+    optional uint32 graphCycle              = 5;
+    optional string workExecutionCritthash  = 6;
+    optional string workName                = 7;
+}
+
+//
+// Worker -> Balancer.
+//
+message Command_ExecuteWork_Res
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+    optional string workExecutionCritthash  = 5;
+    optional string workName                = 6;
+}
+
+//
+// Worker -> Cribrarian.
+//
+message Command_DetermineWorkCycle_Req
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+    optional string workExecutionCritthash  = 5;
+    optional string workName                = 6;
+}
+
+//
+// Cribrarian -> Worker.
+//
+message Command_DetermineWorkCycle_Res
+{
+    optional string messageName             = 1;
+    optional string graphExecutionCritthash = 2;
+    optional string graphName               = 3;
+    optional uint32 graphCycle              = 4;
+    optional string workExecutionCritthash  = 5;
+    optional string workName                = 6;
+    optional uint32 workCycle               = 7;
 }

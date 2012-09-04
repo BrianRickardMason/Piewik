@@ -124,8 +124,10 @@ class Piewik_CantExecuteWorkNowAnnouncement(Record):
 class Piewik_WorkDetailsData(Record):
     def __init__(self):
         Record.__init__(self,
-                        {'workName': Charstring(),
-                         'dummy':    Integer()})
+                        {'workName':    Charstring(),
+                         'softTimeout': Integer(),
+                         'hardTimeout': Integer(),
+                         'dummy':       Integer()})
 
 class Piewik_RecordOfWorkDetailsData(RecordOf):
     def __init__(self):

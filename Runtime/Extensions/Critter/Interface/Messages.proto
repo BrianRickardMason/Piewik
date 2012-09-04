@@ -98,8 +98,10 @@ message CantExecuteWorkNowAnnouncement
 
 message WorkDetailsData
 {
-    optional string workName = 1;
-    optional uint32 dummy    = 2;
+    optional string workName    = 1;
+    optional uint32 softTimeout = 2;
+    optional uint32 hardTimeout = 3;
+    optional uint32 dummy       = 4;
 }
 
 message LoadWorkDetailsRequest
